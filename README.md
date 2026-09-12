@@ -1,1 +1,1 @@
-# atsugi.ayu.festival
+# atsugi-ayu-festival
