@@ -482,7 +482,7 @@ let scheduleFirebaseLoaded=false;
 let currentMap="park", currentDay="2026-10-10";
 let map, imageLayer, tileLayer, markerLayer, myLocationMarker, myAccuracyCircle, locationWatchId=null;
 let favorites=JSON.parse(localStorage.getItem("ayu_favorites")||"[]").map(String);
-let scheduleDelayMap=firebaseReady ? {} : JSON.parse(localStorage.getItem("ayu_demo_delays")||"{}");
+let scheduleDelayMap=JSON.parse(localStorage.getItem("ayu_demo_delays")||"{}");
 let currentDelay=0, currentUser=null, currentUserIsAdmin=false;
 let scheduleDelayInitialized=false;
 let scheduleUnread=false;
@@ -959,8 +959,8 @@ function toggleFavorite(id){
   const i=favorites.findIndex(favId=>String(favId)===id);
   if(i>=0)favorites.splice(i,1);else favorites.push(id);
   localStorage.setItem("ayu_favorites",JSON.stringify(favorites));
-  if(fcmInitialized && fcmToken && firebaseReady){
-    firebase.database().ref("notificationTokens/"+encodeURIComponent(fcmToken)+"/favorites").set(favorites).catch(e=>console.warn("FCM favorites sync error:",e));
+  if(fcmInitialized && fcmToken && firebaseReady && firebase.auth().currentUser){
+    firebase.database().ref("notificationTokens/"+firebase.auth().currentUser.uid+"/favorites").set(favorites).catch(e=>console.warn("FCM favorites sync error:",e));
   }
   renderSchedule();
   updateFavoriteDelayAlert();
@@ -1051,9 +1051,15 @@ async function initFCM(){
 
     fcmInitialized=true;
 
-    // 現在はログイン不要の一般ユーザーも通知登録できる構成。
-    // トークン自体をキーにしてFirebaseへ登録する。
-    await firebase.database().ref("notificationTokens/"+encodeURIComponent(fcmToken)).set({
+    // 一般ユーザーも通知登録できるよう、匿名認証のUIDを保存先に使う。
+    // Firebase Authenticationで「匿名」を有効にしておく必要があります。
+    if(!firebase.auth().currentUser){
+      await firebase.auth().signInAnonymously();
+    }
+    const notificationUid=firebase.auth().currentUser?.uid;
+    if(!notificationUid)throw new Error("FCM: 通知登録用UIDを取得できませんでした。");
+
+    await firebase.database().ref("notificationTokens/"+notificationUid).set({
       token:fcmToken,
       updatedAt:firebase.database.ServerValue.TIMESTAMP,
       userAgent:navigator.userAgent.slice(0,300),
@@ -1292,6 +1298,7 @@ async function saveDelay(){
   try{
     await firebase.database().ref(`scheduleDelays/${id}`).set(value);
     scheduleDelayMap[id]=value;
+    localStorage.setItem("ayu_demo_delays",JSON.stringify(scheduleDelayMap));
     renderSchedule();
     updateFavoriteDelayAlert();
     updateScheduleBadge();
@@ -1383,9 +1390,13 @@ function initFirebaseListeners(){
 
   firebase.database().ref("scheduleDelays").on("value",snapshot=>{
     const next=snapshot.val()||{};
-    clearLocalDemoDelayCache();
+    // Firebaseから最新値を受け取ったらキャッシュも更新。
+    localStorage.setItem("ayu_demo_delays",JSON.stringify(next));
 
-    if(scheduleDelayInitialized){
+    if(!scheduleDelayInitialized){
+      // 初回受信でも、現在遅延中のイベントがあれば未読として表示する。
+      if(Object.values(next).some(v=>Number(v||0)>0)) markScheduleUnread();
+    }else{
       let newDelayDetected=false;
       Object.keys(next).forEach(id=>{
         const old=Number(scheduleDelayMap[id]||0);
@@ -1491,7 +1502,6 @@ function initAuth(){
 }
 
 window.addEventListener("load",()=>{
-  if(firebaseReady)clearLocalDemoDelayCache();
   initMap();renderDayTabs();renderSchedule();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAuth();startNotifier();initFCM();
   if(!localStorage.getItem("ayu_welcome_seen")){setTimeout(()=>{openDrawer();openModal("modal-welcome");localStorage.setItem("ayu_welcome_seen","1")},450)}
 });

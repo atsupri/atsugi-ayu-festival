@@ -12,3 +12,35 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
+
+// data-only FCMでも閉じたページで通知を表示できるようにする。
+messaging.onBackgroundMessage((payload) => {
+  console.log("FCM background message:", payload);
+
+  const title = payload.notification?.title || payload.data?.title || "あつぎ鮎まつり案内";
+  const body = payload.notification?.body || payload.data?.body || "新しいお知らせがあります。";
+  const icon = payload.notification?.icon || payload.data?.icon || "/ayu-festival/icon-192.png";
+
+  self.registration.showNotification(title, {
+    body,
+    icon,
+    badge: icon,
+    data: { url: payload.data?.url || "/" }
+  });
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url = event.notification.data?.url || "/";
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if ("focus" in client) {
+          if ("navigate" in client) client.navigate(url);
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) return clients.openWindow(url);
+    })
+  );
+});
