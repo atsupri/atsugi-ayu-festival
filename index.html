@@ -92,7 +92,7 @@ button,input,select{font:inherit}
 .stepper-vertical{width:150px;margin:14px auto;display:flex;flex-direction:column;align-items:center;gap:5px}.stepper-vertical strong{display:flex;align-items:center;justify-content:center;width:150px;min-height:58px;border:1px solid var(--border);border-radius:12px;background:#fff;font-size:27px}.delay-arrow{width:150px;height:38px;border:1px solid var(--border);border-radius:10px;background:#f3f4f6;color:#374151;font-size:19px;font-weight:900;line-height:1}.delay-arrow:active{transform:scale(.97);background:#e5e7eb}
 .notice{padding:10px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:10px;font-size:12px;margin-bottom:10px}
 
-.admin-place-tools{margin-top:12px;border-top:1px dashed var(--border);padding-top:14px}.admin-place-tools h4{margin-bottom:8px}.admin-place-list{max-height:260px;overflow:auto;margin-top:8px}.admin-place-row{display:flex;gap:8px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-place-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-place-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-place-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-place-edit{background:#ecfdf5;color:#065f46}.admin-place-delete{background:#fef2f2;color:#b91c1c}.admin-place-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-place-form.show{display:block}.admin-place-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-place-form input,.admin-place-form select,.admin-place-form textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-place-form textarea{min-height:70px;resize:vertical}.admin-place-map-picker{height:240px;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:7px;background:#fff}.admin-place-location{font-size:11px;color:#6b7280;margin-top:6px;line-height:1.5}.admin-place-actions{display:flex;gap:7px;margin-top:9px}.admin-place-actions button{flex:1}.admin-place-upload{font-size:11px;color:#6b7280;margin-top:5px}.admin-migrate-note{font-size:11px;color:#6b7280;line-height:1.5;margin:7px 0}
+.admin-section-select{margin:10px 0 12px}.admin-section{display:none}.admin-section.active{display:block}.admin-section-title{font-size:14px;font-weight:900;margin:0 0 8px}.admin-schedule-list{max-height:300px;overflow:auto;margin-top:9px}.admin-schedule-row{display:flex;gap:7px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-schedule-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-schedule-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-schedule-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-schedule-edit{background:#ecfdf5;color:#065f46}.admin-schedule-delete{background:#fef2f2;color:#b91c1c}.admin-schedule-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-schedule-form.show{display:block}.admin-schedule-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-schedule-form input,.admin-schedule-form textarea,.admin-schedule-form select{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-schedule-time-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-schedule-actions{display:flex;gap:7px;margin-top:9px}.admin-schedule-actions button{flex:1}.admin-place-tools{margin-top:12px;border-top:1px dashed var(--border);padding-top:14px}.admin-place-tools h4{margin-bottom:8px}.admin-place-list{max-height:260px;overflow:auto;margin-top:8px}.admin-place-row{display:flex;gap:8px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-place-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-place-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-place-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-place-edit{background:#ecfdf5;color:#065f46}.admin-place-delete{background:#fef2f2;color:#b91c1c}.admin-place-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-place-form.show{display:block}.admin-place-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-place-form input,.admin-place-form select,.admin-place-form textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-place-form textarea{min-height:70px;resize:vertical}.admin-place-map-picker{height:240px;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:7px;background:#fff}.admin-place-location{font-size:11px;color:#6b7280;margin-top:6px;line-height:1.5}.admin-place-actions{display:flex;gap:7px;margin-top:9px}.admin-place-actions button{flex:1}.admin-place-upload{font-size:11px;color:#6b7280;margin-top:5px}.admin-migrate-note{font-size:11px;color:#6b7280;line-height:1.5;margin:7px 0}
 </style>
 </head>
 <body>
@@ -122,10 +122,7 @@ button,input,select{font:inherit}
 <section id="schedule-page" class="page">
   <div class="schedule-head">
     <div class="dance-legend-fixed-notice">🎵 ダンスレジェンドは厚木中央公園で行われています！</div>
-    <div class="day-tabs">
-      <button id="day-10" class="day-tab active" onclick="switchDay(10)">10月10日（土）</button>
-      <button id="day-11" class="day-tab" onclick="switchDay(11)">10月11日（日）</button>
-    </div>
+    <div id="day-tabs" class="day-tabs"></div>
     <div class="schedule-note">⭐でお気に入り登録。管理者が登録した遅延は、そのイベント自身の開始時間に反映されます。遅延が発生するとスケジュールアイコンに「!」が表示されます。</div>
   </div>
   <div id="timeline"></div>
@@ -236,20 +233,46 @@ button,input,select{font:inherit}
    <button id="admin-tool-open" class="auth-btn" style="display:none;background:#0f766e" onclick="openAdminTool()">🛠️ 管理者ツールを開く</button>
    <button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="logout()">ログアウト</button>
    <div id="admin-controls" class="admin-box" style="display:none">
-    <h4>🛠️ 遅延設定</h4>
-    <select id="admin-day" class="auth-input" onchange="loadAdminEvents()"></select>
-    <select id="admin-event" class="auth-input" onchange="loadDelay()"></select>
-    <div class="stepper-vertical" aria-label="遅延時間を上下ボタンで選択">
-      <button type="button" class="delay-arrow" onclick="changeDelay(1)" aria-label="1分増やす">▲</button>
-      <strong id="delay-value">0分</strong>
-      <button type="button" class="delay-arrow" onclick="changeDelay(-1)" aria-label="1分減らす">▼</button>
-    </div>
-    <button class="auth-btn" onclick="saveDelay()">📢 遅延を保存して配信</button>
-    <button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="setDelay(0)">↺ 0分に戻す</button>
-    <p style="font-size:11px;color:#6b7280;margin-top:8px">0〜120分。▲▼をカチカチ押して1分ずつ変更できます。設定したイベント自身だけに反映します。</p>
+    <h4>🛠️ 管理者ツール</h4>
+    <select id="admin-section-select" class="auth-input admin-section-select" onchange="switchAdminSection(this.value)">
+      <option value="delay">⏱️ 遅延設定</option>
+      <option value="schedule">📅 スケジュール管理</option>
+      <option value="places">🏪 店舗・施設管理</option>
+    </select>
 
-    <div class="admin-place-tools">
-      <h4>🏪 店舗・施設管理</h4>
+    <div id="admin-section-delay" class="admin-section active">
+      <div class="admin-section-title">⏱️ 遅延設定</div>
+      <select id="admin-day" class="auth-input" onchange="loadAdminEvents()"></select>
+      <select id="admin-event" class="auth-input" onchange="loadDelay()"></select>
+      <div class="stepper-vertical" aria-label="遅延時間を上下ボタンで選択">
+        <button type="button" class="delay-arrow" onclick="changeDelay(1)" aria-label="1分増やす">▲</button>
+        <strong id="delay-value">0分</strong>
+        <button type="button" class="delay-arrow" onclick="changeDelay(-1)" aria-label="1分減らす">▼</button>
+      </div>
+      <button class="auth-btn" onclick="saveDelay()">📢 遅延を保存して配信</button>
+      <button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="setDelay(0)">↺ 0分に戻す</button>
+      <p style="font-size:11px;color:#6b7280;margin-top:8px">0〜120分。▲▼をカチカチ押して1分ずつ変更できます。設定したイベント自身だけに反映します。</p>
+    </div>
+
+    <div id="admin-section-schedule" class="admin-section">
+      <div class="admin-section-title">📅 スケジュール管理</div>
+      <p class="admin-migrate-note">スケジュールはFirebaseを正本として管理します。ここから追加・編集・削除できます。</p>
+      <select id="admin-schedule-date" class="auth-input" onchange="renderAdminScheduleList()"></select>
+      <button class="auth-btn" style="margin-top:7px" onclick="openScheduleEditor()">＋ 新しい予定を追加</button>
+      <div id="admin-schedule-list" class="admin-schedule-list"></div>
+      <div id="admin-schedule-form" class="admin-schedule-form">
+        <input type="hidden" id="schedule-edit-id">
+        <label>開催日</label><input id="schedule-date" class="auth-input" type="date">
+        <label>開始・終了時刻</label>
+        <div class="admin-schedule-time-row"><input id="schedule-start" class="auth-input" type="time"><input id="schedule-end" class="auth-input" type="time"></div>
+        <label>イベント名</label><input id="schedule-name" class="auth-input" placeholder="例：オープニングセレモニー">
+        <label>会場・場所（任意）</label><input id="schedule-venue" class="auth-input" placeholder="例：中央公園">
+        <div class="admin-schedule-actions"><button class="auth-btn" onclick="saveScheduleFromAdmin()">💾 保存</button><button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="closeScheduleEditor()">キャンセル</button></div>
+      </div>
+    </div>
+
+    <div id="admin-section-places" class="admin-section">
+      <div class="admin-section-title">🏪 店舗・施設管理</div>
       <p class="admin-migrate-note">店舗情報はFirebaseから読み込みます。ここから追加・編集・削除できます。</p>
       <button class="auth-btn" style="margin-top:7px" onclick="openPlaceEditor()">＋ 新しい店舗・施設を追加</button>
       <div id="admin-place-list" class="admin-place-list"></div>
@@ -266,7 +289,7 @@ button,input,select{font:inherit}
         <div id="place-picker-map" class="admin-place-map-picker"></div>
         <div id="place-location-text" class="admin-place-location">地図をタップして位置を指定してください。</div>
         <label>画像ファイル名</label><input id="place-image-name" placeholder="例：yakisoba.jpg">
-        <div class="admin-place-upload">GitHubに画像を置き、ここにはファイル名だけ入力します。リポジトリ直下の画像にも対応しています。Firebaseにはこのファイル名だけ保存されます。例：<code>temp.yakisoba.png</code></div>
+        <div class="admin-place-upload">GitHubのリポジトリ内に画像を置き、ここにはファイル名またはパスだけ入力します。Firebaseにはこのファイル名だけ保存されます。</div>
         <div class="admin-place-actions"><button class="auth-btn" onclick="savePlaceFromAdmin()">💾 保存</button><button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="closePlaceEditor()">キャンセル</button></div>
       </div>
     </div>
@@ -308,7 +331,7 @@ function resolvePlaceImage(image){
   if(!value) return "";
   // 既存のURLもそのまま利用できるようにしておく。
   if(/^https?:\/\//i.test(value) || /^data:/i.test(value) || /^\.\//.test(value) || /^\//.test(value)) return value;
-  return PLACE_IMAGE_BASE_PATH + value.replace(/^images\//i, "");
+  return PLACE_IMAGE_BASE_PATH + value.replace(/^\/+/, "");
 }
 
 // 📍 ピンデザイン設定
@@ -340,79 +363,11 @@ let placePickerMarker=null;
 let placePickerPosition=null;
 let placeImagePreviewData="";
 
-const timeScheduleData = [
- {id:101,day:10,time:"09:00 - 17:00",name:"Atsugi Dance Legend",venue:"厚木中央公園"},
- {id:102,day:10,time:"09:00 - 20:00",name:"市民出店村",venue:"厚木中央公園"},
- {id:103,day:10,time:"13:00 - 13:15",name:"オープニングセレモニー",venue:"中央通り"},
- {id:104,day:10,time:"13:15 - 13:45",name:"オープニングパレード",venue:"中央通り〜厚木なかちょう大通り"},
- {id:105,day:10,time:"14:30 - 15:00",name:"民踊総おどり",venue:"厚木なかちょう大通り"},
- {id:106,day:10,time:"17:40 - 19:00",name:"大花火大会",venue:"相模川三川合流点"},
- 
- 
- 
- 
- 
- 
- 
+let timeScheduleData = [];
+let scheduleFirebaseLoaded=false;
 
- // 11日：DanceLegend チーム別ステージスケジュール
- {id:301,day:11,time:"09:00 - 09:05",name:"Spread",venue:"厚木中央公園"},
- {id:302,day:11,time:"09:05 - 09:10",name:"HaDeS",venue:"厚木中央公園"},
- {id:303,day:11,time:"09:10 - 09:15",name:"ILLBABI",venue:"厚木中央公園"},
- {id:304,day:11,time:"09:15 - 09:20",name:"Heart shell",venue:"厚木中央公園"},
- {id:305,day:11,time:"09:20 - 09:25",name:"ATSUGI ALL☆STARS WHITE",venue:"厚木中央公園"},
- {id:306,day:11,time:"09:25 - 09:30",name:"HKDC-CREW",venue:"厚木中央公園"},
- {id:307,day:11,time:"09:30 - 09:35",name:"WA∞RP",venue:"厚木中央公園"},
- {id:308,day:11,time:"09:35 - 09:40",name:"ATSUGI ALL☆STARS RED",venue:"厚木中央公園"},
- {id:309,day:11,time:"09:40 - 09:45",name:"Sugar☆K☆Souls",venue:"厚木中央公園"},
- {id:310,day:11,time:"09:45 - 09:50",name:"Wednesday",venue:"厚木中央公園"},
- {id:311,day:11,time:"09:50 - 09:55",name:"SUPER JAB",venue:"厚木中央公園"},
- {id:312,day:11,time:"09:55 - 10:00",name:"D-Zorn",venue:"厚木中央公園"},
- {id:313,day:11,time:"10:00 - 10:05",name:"The Lowline 246",venue:"厚木中央公園"},
- {id:314,day:11,time:"10:05 - 10:10",name:"Shuseiナンバー",venue:"厚木中央公園"},
- {id:315,day:11,time:"10:10 - 10:15",name:"OOPS!!",venue:"厚木中央公園"},
- {id:316,day:11,time:"10:15 - 10:20",name:"アランチャ",venue:"厚木中央公園"},
- {id:317,day:11,time:"10:20 - 10:25",name:"SPLASH",venue:"厚木中央公園"},
- {id:318,day:11,time:"10:25 - 10:30",name:"Astra",venue:"厚木中央公園"},
- {id:319,day:11,time:"10:42 - 10:47",name:"Kool Steelo",venue:"厚木中央公園"},
- {id:320,day:11,time:"10:47 - 10:52",name:"Ke'ena A'o Hula o Kapua",venue:"厚木中央公園"},
- {id:321,day:11,time:"10:52 - 10:57",name:"ENERGY",venue:"厚木中央公園"},
- {id:322,day:11,time:"10:57 - 11:02",name:"mws",venue:"厚木中央公園"},
- {id:323,day:11,time:"11:02 - 11:07",name:"Da-L",venue:"厚木中央公園"},
- {id:324,day:11,time:"11:07 - 11:12",name:"￥OUNGER",venue:"厚木中央公園"},
- {id:325,day:11,time:"11:12 - 11:17",name:"CROWN",venue:"厚木中央公園"},
- {id:326,day:11,time:"11:17 - 11:22",name:"SMD_ladies",venue:"厚木中央公園"},
- {id:327,day:11,time:"11:22 - 11:27",name:"ちゅッPAちゅッPS",venue:"厚木中央公園"},
- {id:328,day:11,time:"11:27 - 11:32",name:"GALΦ",venue:"厚木中央公園"},
- {id:329,day:11,time:"11:32 - 11:37",name:"Sound Element",venue:"厚木中央公園"},
- {id:330,day:11,time:"11:37 - 11:42",name:"Daisy's CROWN",venue:"厚木中央公園"},
- {id:331,day:11,time:"11:42 - 11:47",name:"OOPS !N!N!TY!!",venue:"厚木中央公園"},
- {id:332,day:11,time:"11:47 - 11:52",name:"D.teal crew",venue:"厚木中央公園"},
- {id:333,day:11,time:"11:52 - 11:57",name:"FUN DANCE STUDIO arei選抜",venue:"厚木中央公園"},
- {id:334,day:11,time:"11:57 - 12:02",name:"Shi→k",venue:"厚木中央公園"},
- {id:335,day:11,time:"13:04 - 13:09",name:"Sugary☆",venue:"厚木中央公園"},
- {id:336,day:11,time:"13:09 - 13:14",name:"VIBE SLUGGERZ",venue:"厚木中央公園"},
- {id:337,day:11,time:"13:14 - 13:19",name:"ASTRO",venue:"厚木中央公園"},
- {id:338,day:11,time:"13:19 - 13:24",name:"RIM BUBBLE",venue:"厚木中央公園"},
- {id:339,day:11,time:"13:24 - 13:29",name:"$G",venue:"厚木中央公園"},
- {id:340,day:11,time:"13:29 - 13:34",name:"紫 from愛川キッズビクス",venue:"厚木中央公園"},
- {id:341,day:11,time:"13:34 - 13:39",name:"Spicy Sugar",venue:"厚木中央公園"},
- {id:342,day:11,time:"13:39 - 13:44",name:"厚木BlueAngels",venue:"厚木中央公園"},
- {id:343,day:11,time:"13:44 - 13:49",name:"Cheer dance team RAVE",venue:"厚木中央公園"},
- {id:344,day:11,time:"13:49 - 13:54",name:"ILLGGG",venue:"厚木中央公園"},
- {id:345,day:11,time:"13:54 - 13:59",name:"BiBie",venue:"厚木中央公園"},
- {id:346,day:11,time:"13:59 - 14:04",name:"三丸大サーカスfromB.exciting",venue:"厚木中央公園"},
- {id:347,day:11,time:"14:04 - 14:09",name:"AJITO CREW",venue:"厚木中央公園"},
- {id:348,day:11,time:"14:09 - 14:14",name:"P@ptic",venue:"厚木中央公園"},
- {id:349,day:11,time:"14:14 - 14:19",name:"FΦΦDER",venue:"厚木中央公園"},
- {id:350,day:11,time:"14:19 - 14:24",name:"Twinkle Candy",venue:"厚木中央公園"},
- {id:351,day:11,time:"14:24 - 14:29",name:"graphite",venue:"厚木中央公園"},
- {id:352,day:11,time:"14:29 - 14:34",name:"RΛSH",venue:"厚木中央公園"},
- {id:353,day:11,time:"14:34 - 14:39",name:"Angel Familiar",venue:"厚木中央公園"},
- {id:354,day:11,time:"14:39 - 14:44",name:"Sugar☆Souls",venue:"厚木中央公園"}
-];
 
-let currentMap="park", currentDay=10;
+let currentMap="park", currentDay="2026-10-10";
 let map, imageLayer, tileLayer, markerLayer, myLocationMarker, myAccuracyCircle, locationWatchId=null;
 let favorites=JSON.parse(localStorage.getItem("ayu_favorites")||"[]");
 let scheduleDelayMap=firebaseReady ? {} : JSON.parse(localStorage.getItem("ayu_demo_delays")||"{}");
@@ -510,8 +465,8 @@ function searchMenu(){
     </button>`;
   });
   events.slice(0,8).forEach(e=>{
-    out+=`<button class="search-result" onclick="closeDrawer();switchPage('schedule-page');switchDay(${e.day})">
-      🕒 ${e.name}<small>${e.day}月${e.day===10?'10':'11'}日・${e.time}・${e.venue}</small>
+    out+=`<button class="search-result" onclick="closeDrawer();switchPage('schedule-page');switchDay(${e.dateKey})">
+      🕒 ${e.name}<small>${e.dateLabel||e.dateKey}・${e.time}${e.venue?`・${e.venue}`:""}</small>
     </button>`;
   });
 
@@ -754,12 +709,27 @@ function switchPage(id){
   if(id==="map-page")setTimeout(()=>map.invalidateSize(),50);
   ga("select_content",{content:id});
 }
-function switchDay(day){
-  currentDay=day;
-  document.getElementById("day-10").classList.toggle("active",day===10);
-  document.getElementById("day-11").classList.toggle("active",day===11);
+function scheduleDates(){
+  const map=new Map();
+  timeScheduleData.forEach(e=>{
+    if(!e.dateKey)return;
+    if(!map.has(e.dateKey)) map.set(e.dateKey,e.dateLabel||e.dateKey);
+  });
+  return [...map.entries()].sort((a,b)=>a[0].localeCompare(b[0]));
+}
+function renderDayTabs(){
+  const el=document.getElementById("day-tabs");
+  if(!el)return;
+  const dates=scheduleDates();
+  if(!dates.length){el.innerHTML="<div style=\"font-size:12px;color:#6b7280;padding:8px 2px\">スケジュールを読み込み中です…</div>";return;}
+  if(!dates.some(([key])=>key===currentDay)) currentDay=dates[0][0];
+  el.innerHTML=dates.map(([key,label])=>`<button class="day-tab ${key===currentDay?"active":""}" onclick="switchDay('${key}')">${escapeHtml(label)}</button>`).join("");
+}
+function switchDay(dateKey){
+  currentDay=String(dateKey);
+  renderDayTabs();
   renderSchedule();
-  ga("select_day",{day:String(day)});
+  ga("select_day",{day:currentDay});
 }
 function timeToMinutes(s){const p=s.trim().split(":");if(p.length!==2)return null;return +p[0]*60 + +p[1]}
 function shiftRange(range,delay){
@@ -771,7 +741,7 @@ function shiftRange(range,delay){
 function renderSchedule(){
   const el=document.getElementById("timeline");
   const items=timeScheduleData
-    .filter(x=>x.day===currentDay)
+    .filter(x=>x.dateKey===currentDay)
     .slice()
     .sort((a,b)=>timeToMinutes(a.time.split("-")[0].trim())-timeToMinutes(b.time.split("-")[0].trim()));
   el.innerHTML=items.map(x=>{
@@ -1016,55 +986,117 @@ function renderAdminPlaceList(){
 }
 function escapeHtml(v){return String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));}
 
+function switchAdminSection(section){
+  ["delay","schedule","places"].forEach(key=>{
+    document.getElementById(`admin-section-${key}`)?.classList.toggle("active",key===section);
+  });
+  if(section==="delay"){loadAdminDays();}
+  if(section==="schedule"){renderAdminScheduleDates();renderAdminScheduleList();}
+  if(section==="places"){renderAdminPlaceList();}
+}
 function openAdminTool(){
   if(!currentUserIsAdmin){alert("管理者権限がありません。");return;}
   const controls=document.getElementById("admin-controls");
   if(!controls)return;
   controls.style.display="block";
-  loadAdminDays();
-  renderAdminPlaceList();
+  const selected=document.getElementById("admin-section-select")?.value||"delay";
+  switchAdminSection(selected);
   controls.scrollIntoView({behavior:"smooth",block:"start"});
 }
-
 function loadAdminDays(){
   const s=document.getElementById("admin-day");
-  s.innerHTML=`<option value="10">10月10日（土）</option><option value="11">10月11日（日）</option>`;
+  const dates=scheduleDates();
+  s.innerHTML=dates.map(([key,label])=>`<option value="${key}">${escapeHtml(label)}</option>`).join("");
+  if(!dates.length){document.getElementById("admin-event").innerHTML="";document.getElementById("delay-value").textContent="0分";return;}
+  if(!dates.some(([key])=>key===s.value))s.value=dates[0][0];
   loadAdminEvents();
 }
 function loadAdminEvents(){
-  const day=Number(document.getElementById("admin-day").value);
+  const dateKey=document.getElementById("admin-day").value;
   const s=document.getElementById("admin-event");
-  s.innerHTML=timeScheduleData.filter(e=>e.day===day).map(e=>`<option value="${e.id}">${e.time} - ${e.name}</option>`).join("");
+  const events=timeScheduleData.filter(e=>e.dateKey===dateKey).slice().sort((a,b)=>timeToMinutes(a.start||a.time.split("-")[0].trim())-timeToMinutes(b.start||b.time.split("-")[0].trim()));
+  s.innerHTML=events.map(e=>`<option value="${e.id}">${escapeHtml(e.time)} - ${escapeHtml(e.name)}</option>`).join("");
   loadDelay();
 }
-function loadDelay(){currentDelay=Number(scheduleDelayMap[document.getElementById("admin-event").value]||0);document.getElementById("delay-value").textContent=currentDelay+"分"}
+function loadDelay(){const id=document.getElementById("admin-event")?.value;currentDelay=Number(scheduleDelayMap[id]||0);const el=document.getElementById("delay-value");if(el)el.textContent=currentDelay+"分"}
 function changeDelay(n){currentDelay=Math.max(0,Math.min(120,currentDelay+n));document.getElementById("delay-value").textContent=currentDelay+"分"}
-async function saveDelay(){
-  if(!currentUserIsAdmin){alert("管理者権限が必要です。");return}
-  const id=document.getElementById("admin-event").value;
-  const e=timeScheduleData.find(x=>String(x.id)===String(id));
-  if(!e)return;
-
+function setDelay(n){currentDelay=Math.max(0,Math.min(120,Number(n)||0));document.getElementById("delay-value").textContent=currentDelay+"分"}
+function renderAdminScheduleDates(){
+  const s=document.getElementById("admin-schedule-date");if(!s)return;
+  const dates=scheduleDates();
+  const current=s.value||currentDay;
+  s.innerHTML=dates.map(([key,label])=>`<option value="${key}">${escapeHtml(label)}</option>`).join("");
+  if(dates.length)s.value=dates.some(([key])=>key===current)?current:dates[0][0];
+}
+function renderAdminScheduleList(){
+  const el=document.getElementById("admin-schedule-list");if(!el)return;
+  renderAdminScheduleDates();
+  const dateKey=document.getElementById("admin-schedule-date")?.value;
+  const list=timeScheduleData.filter(e=>e.dateKey===dateKey).slice().sort((a,b)=>timeToMinutes((a.start||a.time.split("-")[0]).trim())-timeToMinutes((b.start||b.time.split("-")[0]).trim()));
+  el.innerHTML=list.map(e=>`<div class="admin-schedule-row"><div class="name">${escapeHtml(e.name)}<small>${escapeHtml(e.time)}${e.venue?` ・ ${escapeHtml(e.venue)}`:""}</small></div><button class="admin-schedule-edit" onclick="openScheduleEditor('${e.id}')">編集</button><button class="admin-schedule-delete" onclick="deleteScheduleFromAdmin('${e.id}')">削除</button></div>`).join("")||'<div style="font-size:11px;color:#6b7280;padding:8px">この日の予定はありません。</div>';
+}
+function openScheduleEditor(id=""){
+  const form=document.getElementById("admin-schedule-form");if(!form)return;
+  const e=id?timeScheduleData.find(x=>String(x.id)===String(id)):null;
+  document.getElementById("schedule-edit-id").value=e?e.id:"";
+  document.getElementById("schedule-date").value=e?.dateKey||document.getElementById("admin-schedule-date")?.value||"";
+  document.getElementById("schedule-start").value=e?.start||(e?.time?.split("-")[0]||"").trim();
+  document.getElementById("schedule-end").value=e?.end||(e?.time?.split("-")[1]||"").trim();
+  document.getElementById("schedule-name").value=e?.name||"";
+  document.getElementById("schedule-venue").value=e?.venue||"";
+  form.classList.add("show");
+  form.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function closeScheduleEditor(){document.getElementById("admin-schedule-form")?.classList.remove("show");}
+function dateLabelFromKey(key){
+  const d=new Date(`${key}T00:00:00`);if(Number.isNaN(d.getTime()))return key;
+  return `${d.getMonth()+1}月${d.getDate()}日（${"日月火水木金土"[d.getDay()]}）`;
+}
+async function saveScheduleFromAdmin(){
+  if(!currentUserIsAdmin){alert("管理者権限が必要です。");return;}
+  const editId=document.getElementById("schedule-edit-id").value;
+  const dateKey=document.getElementById("schedule-date").value;
+  const start=document.getElementById("schedule-start").value;
+  const end=document.getElementById("schedule-end").value;
+  const name=document.getElementById("schedule-name").value.trim();
+  const venue=document.getElementById("schedule-venue").value.trim();
+  if(!dateKey||!start||!end||!name){alert("開催日・開始時刻・終了時刻・イベント名を入力してください。");return;}
+  if(timeToMinutes(start)>=timeToMinutes(end)){alert("終了時刻は開始時刻より後にしてください。");return;}
+  const id=editId||`event-${Date.now()}`;
+  const d=new Date(`${dateKey}T00:00:00`);
+  const data={id,dateKey,dateLabel:dateLabelFromKey(dateKey),day:d.getDate(),start,end,time:`${start} - ${end}`,name,venue};
   try{
-    // Firebaseを正本として保存。Realtime Databaseのルールは scheduleDelays を使用。
-    await firebase.database().ref("scheduleDelays/"+id).set(currentDelay);
-    await firebase.database().ref("broadcast").set({
-      message:currentDelay
-        ? `【遅延速報】${e.name} は約${currentDelay}分遅れて進行しています。`
-        : `【進行案内】${e.name} の遅延設定が解除されました。`,
-      updatedAt:firebase.database.ServerValue.TIMESTAMP,
-      eventId:Number(id),
-      delayMinutes:currentDelay
-    });
-    clearLocalDemoDelayCache();
-    alert("遅延設定を保存して全ユーザーへ反映しました。");
-  }catch(err){
-    console.error(err);
-    alert("保存に失敗しました。FirebaseのRealtime Databaseルールと管理者権限を確認してください。");
-  }
+    await firebase.database().ref(`schedule/${id}`).set(data);
+    closeScheduleEditor();
+    alert(editId?"スケジュールを更新しました。":"スケジュールを追加しました。");
+  }catch(e){console.error(e);alert("保存に失敗しました。Firebase Rulesと管理者権限を確認してください。");}
+}
+async function deleteScheduleFromAdmin(id){
+  if(!currentUserIsAdmin)return;
+  const e=timeScheduleData.find(x=>String(x.id)===String(id));if(!e)return;
+  if(!confirm(`「${e.name}」を削除しますか？`))return;
+  try{await firebase.database().ref(`schedule/${id}`).remove();await firebase.database().ref(`scheduleDelays/${id}`).remove();alert("削除しました。");}catch(err){console.error(err);alert("削除に失敗しました。Firebase Rulesを確認してください。");}
 }
 function initFirebaseListeners(){
   if(!firebaseReady)return;
+
+  firebase.database().ref("schedule").on("value",snapshot=>{
+    const data=snapshot.val();
+    timeScheduleData=(data && typeof data === "object")
+      ? Object.values(data).filter(Boolean).map(e=>{
+          const dateKey=String(e.dateKey||"");
+          const time=String(e.time||`${e.start||""} - ${e.end||""}`).trim();
+          const parts=time.split("-").map(v=>v.trim());
+          return {...e,dateKey,dateLabel:e.dateLabel||dateLabelFromKey(dateKey),start:e.start||parts[0]||"",end:e.end||parts[1]||"",time};
+        })
+      : [];
+    scheduleFirebaseLoaded=true;
+    renderDayTabs();
+    renderSchedule();
+    updateFavoriteDelayAlert();
+    updateScheduleBadge();
+    if(currentUserIsAdmin){loadAdminDays();renderAdminScheduleDates();renderAdminScheduleList();}
+  },err=>console.error("schedule listener error:",err));
 
   initPlaceDataListener();
 
@@ -1173,13 +1205,13 @@ function initAuth(){
     status.textContent=currentUserIsAdmin?"🛡️ 管理者権限あり":"👤 一般アカウント";
     status.style.color=currentUserIsAdmin?"#166534":"#6b7280";
     document.getElementById("admin-controls").style.display=currentUserIsAdmin?"block":"none";
-    if(currentUserIsAdmin){loadAdminDays();renderAdminPlaceList();}
+    if(currentUserIsAdmin){loadAdminDays();renderAdminScheduleDates();renderAdminScheduleList();renderAdminPlaceList();}
   });
 }
 
 window.addEventListener("load",()=>{
   if(firebaseReady)clearLocalDemoDelayCache();
-  initMap();renderSchedule();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAuth();startNotifier();initFCM();
+  initMap();renderDayTabs();renderSchedule();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAuth();startNotifier();initFCM();
   if(!localStorage.getItem("ayu_welcome_seen")){setTimeout(()=>{openDrawer();openModal("modal-welcome");localStorage.setItem("ayu_welcome_seen","1")},450)}
 });
 </script>
