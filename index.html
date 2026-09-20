@@ -264,7 +264,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.4.0</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.4.4</span></div>
   </div>
  </div>
 </div>
@@ -272,7 +272,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
 <div id="modal-notify" class="modal" onclick="overlayClose(event,'modal-notify')">
  <div class="modal-card">
   <div class="modal-title"><h3>🔔 遅延設定</h3><button onclick="closeModal('modal-notify')">×</button></div>
-  <div class="notice">通知を許可すると、お気に入り登録したイベントの開始前や遅延情報をお知らせします。現在はウェブページ内・ブラウザ通知の仕組みを使用しています。本格的なバックグラウンドプッシュ（FCM）は次段階で追加できます。</div>
+  <div class="notice">通知を許可すると、お気に入り登録したイベントの開始前や遅延情報をお知らせします。FCMを使用したバックグラウンド通知に対応しています。通知を許可すると、このページを閉じている場合でも通知を受け取れる構成です。</div>
   <p id="notify-status" style="font-size:13px;color:#6b7280;margin-bottom:8px"></p>
   <button id="notify-btn" class="auth-btn" onclick="requestNotification()">通知を許可する</button>
   <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px">
@@ -416,9 +416,12 @@ const firebaseConfig = {
   measurementId: "G-Y0W73T4552"
 };
 let firebaseReady = false;
+// FCM Web Push用のVAPID公開鍵をここに設定してください。
+// Firebaseコンソール → プロジェクトの設定 → Cloud Messaging → Web Push証明書
 const FCM_VAPID_PUBLIC_KEY = "BBXrn-R_yF_N7wAtd57t42omm8CusCC9PgGu6Y3KOYferTccOqMwUYFrB_9LUG7edrmKAWF2K81Nqd2pxvn00cY";
-let messaging = null;
-let fcmToken = null;
+let fcmMessaging = null;
+let fcmToken = "";
+let fcmInitialized = false;
 let notificationPrefs = JSON.parse(localStorage.getItem("ayu_notification_prefs") || "{\"tenMin\":true,\"delay\":true}");
 let unreadFavoriteDelay = JSON.parse(localStorage.getItem("ayu_unread_favorite_delay") || "{}");
 try{
@@ -952,9 +955,11 @@ function toggleFavorite(id){
   const i=favorites.indexOf(id);
   if(i>=0)favorites.splice(i,1);else favorites.push(id);
   localStorage.setItem("ayu_favorites",JSON.stringify(favorites));
+  if(fcmInitialized && fcmToken && firebaseReady){
+    firebase.database().ref("notificationTokens/"+encodeURIComponent(fcmToken)+"/favorites").set(favorites).catch(e=>console.warn("FCM favorites sync error:",e));
+  }
   renderSchedule();
   updateFavoriteDelayAlert();
-  if(fcmToken) saveFCMToken();
   const e=timeScheduleData.find(x=>x.id===id);ga("toggle_favorite",{item_id:String(id),item_name:e?.name||"",action:i>=0?"remove":"add"});
 }
 function showScheduleHint(){
@@ -1008,55 +1013,66 @@ function clearScheduleUnread(){
 }
 
 async function initFCM(){
-  if(!firebaseReady || !window.firebase?.messaging) return false;
-  if(!window.isSecureContext) return false;
-  if(!('Notification' in window)) return false;
+  if(fcmInitialized)return fcmToken;
+  if(!firebaseReady)return "";
+  if(!window.isSecureContext){console.warn("FCM: HTTPSが必要です。");return "";}
+  if(!("Notification" in window) || Notification.permission!=="granted")return "";
+  if(FCM_VAPID_PUBLIC_KEY.startsWith("YOUR_")){
+    console.warn("FCM: VAPID公開鍵が未設定です。");
+    return "";
+  }
+  if(!("serviceWorker" in navigator)){
+    console.warn("FCM: Service Workerに対応していません。");
+    return "";
+  }
   try{
-    messaging = firebase.messaging();
-    if(!('serviceWorker' in navigator)) throw new Error('Service Worker非対応');
-    const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
-    messaging.useServiceWorker(registration);
-
-    // 公開ユーザー用の匿名Firebase認証を確保。管理者のメールログインとは別扱いにする。
-    if(!firebase.auth().currentUser){
-      await firebase.auth().signInAnonymously();
+    if(firebase.messaging.isSupported && !(await firebase.messaging.isSupported())){
+      console.warn("FCM: このブラウザ環境ではFirebase Messagingが利用できません。");
+      return "";
     }
 
-    if(Notification.permission !== 'granted') return;
-    const tokenSaved = await saveFCMToken();
-    if(!tokenSaved) return false;
+    const registration=await navigator.serviceWorker.register("./firebase-messaging-sw.js");
+    await navigator.serviceWorker.ready;
+    fcmMessaging=firebase.messaging();
 
-    messaging.onMessage(payload=>{
-      const title = payload?.notification?.title || 'あつぎ鮎まつり案内';
-      const body = payload?.notification?.body || '新しいお知らせがあります。';
-      showInAppToast(title, body);
+    fcmToken=await fcmMessaging.getToken({
+      vapidKey:FCM_VAPID_PUBLIC_KEY,
+      serviceWorkerRegistration:registration
     });
-    return true;
-  }catch(err){
-    console.error('FCM初期化エラー:', err);
-    return false;
-  }
-}
 
-async function saveFCMToken(){
-  if(!messaging || !firebaseReady) return false;
-  try{
-    const user = firebase.auth().currentUser;
-    if(!user) return false;
-    fcmToken = await messaging.getToken({vapidKey:FCM_VAPID_PUBLIC_KEY});
-    if(!fcmToken) return false;
-    await firebase.database().ref(`notificationTokens/${user.uid}`).set({
+    if(!fcmToken){
+      console.warn("FCM: トークンを取得できませんでした。");
+      return "";
+    }
+
+    fcmInitialized=true;
+
+    // 現在はログイン不要の一般ユーザーも通知登録できる構成。
+    // トークン自体をキーにしてFirebaseへ登録する。
+    await firebase.database().ref("notificationTokens/"+encodeURIComponent(fcmToken)).set({
       token:fcmToken,
       updatedAt:firebase.database.ServerValue.TIMESTAMP,
-      favorites:favorites.map(String)
+      userAgent:navigator.userAgent.slice(0,300),
+      permission:"granted",
+      favorites:favorites || [],
+      notificationPrefs:notificationPrefs || {tenMin:true,delay:true}
     });
-    console.log('FCMトークン登録成功');
-    return true;
+
+    fcmMessaging.onMessage(payload=>{
+      console.log("FCM foreground message:",payload);
+      const title=payload.notification?.title || payload.data?.title || "あつぎ鮎まつり案内";
+      const body=payload.notification?.body || payload.data?.body || "新しいお知らせがあります。";
+      showInAppToast(title,body);
+    });
+
+    console.log("FCM登録完了",fcmToken);
+    return fcmToken;
   }catch(err){
-    console.error('FCMトークン取得/保存エラー:',err);
-    return false;
+    console.error("FCM initialization error:",err);
+    return "";
   }
 }
+
 function showInAppToast(title,body){
   let t=document.getElementById("ayu-toast");
   if(!t){t=document.createElement("div");t.id="ayu-toast";t.style.cssText="position:fixed;left:12px;right:12px;bottom:76px;z-index:2500;background:#fff;border:1px solid #fecaca;box-shadow:0 5px 18px #0002;border-radius:12px;padding:12px;font-size:13px";document.body.appendChild(t);}
@@ -1078,9 +1094,8 @@ async function requestNotification(closeWelcome=false){
   }
   if(Notification.permission==="granted"){
     updateNotifyUI();
+    await initFCM();
     if(closeWelcome)closeModal("modal-welcome");
-    const ok = await initFCM();
-    if(ok===false) showInAppToast("FCM登録エラー","通知は許可されていますが、プッシュ通知の登録に失敗しました。");
     return;
   }
   if(Notification.permission==="denied"){
@@ -1094,13 +1109,11 @@ async function requestNotification(closeWelcome=false){
     updateNotifyUI();
     ga("notification_permission",{result:permission});
     if(permission==="granted"){
+      await initFCM();
       if(closeWelcome)closeModal("modal-welcome");
-      const fcmOk = await initFCM();
-      if(fcmOk !== false){
-        showInAppToast("通知設定完了","お気に入り・遅延情報の通知を受け取れる状態になりました。");
-      }else{
-        showInAppToast("通知は許可されました","FCMの登録に失敗しました。ブラウザのコンソールをご確認ください。");
-      }
+      // モバイルブラウザでは Notification() が使えない場合があるため、
+      // 許可直後のテスト通知は無理に生成しない。
+      showInAppToast("通知設定完了","お気に入り・遅延情報の通知を受け取れる状態になりました。");
     }else if(permission==="denied"){
       alert("通知は許可されませんでした。必要ならブラウザのサイト設定から変更できます。");
     }
@@ -1266,6 +1279,23 @@ function loadAdminEvents(){
   const events=timeScheduleData.filter(e=>e.dateKey===dateKey).slice().sort((a,b)=>timeToMinutes(a.start||a.time.split("-")[0].trim())-timeToMinutes(b.start||b.time.split("-")[0].trim()));
   s.innerHTML=events.map(e=>`<option value="${e.id}">${escapeHtml(e.time)} - ${escapeHtml(e.name)}</option>`).join("");
   loadDelay();
+}
+async function saveDelay(){
+  if(!currentUserIsAdmin){alert("管理者権限が必要です。");return;}
+  const id=document.getElementById("admin-event")?.value;
+  if(!id){alert("遅延を設定するイベントを選択してください。");return;}
+  const value=Math.max(0,Math.min(120,Number(currentDelay)||0));
+  try{
+    await firebase.database().ref(`scheduleDelays/${id}`).set(value);
+    scheduleDelayMap[id]=value;
+    renderSchedule();
+    updateFavoriteDelayAlert();
+    updateScheduleBadge();
+    alert(value>0 ? `「${timeScheduleData.find(e=>String(e.id)===String(id))?.name||"選択したイベント"}」を${value}分遅延に設定しました。` : "遅延を0分に戻しました。");
+  }catch(err){
+    console.error("saveDelay error:",err);
+    alert("遅延の保存に失敗しました。Firebase Rulesと管理者権限を確認してください。");
+  }
 }
 function loadDelay(){const id=document.getElementById("admin-event")?.value;currentDelay=Number(scheduleDelayMap[id]||0);const el=document.getElementById("delay-value");if(el)el.textContent=currentDelay+"分"}
 function changeDelay(n){currentDelay=Math.max(0,Math.min(120,currentDelay+n));document.getElementById("delay-value").textContent=currentDelay+"分"}
@@ -1433,13 +1463,12 @@ function initAuth(){
   firebase.auth().onAuthStateChanged(async user=>{
     currentUser=user;
     currentUserIsAdmin=false;
-    const isAnonymous = !!user?.isAnonymous;
-    document.getElementById("auth-login").style.display=(user && !isAnonymous)?"none":"block";
-    document.getElementById("auth-logged").style.display=(user && !isAnonymous)?"block":"none";
+    document.getElementById("auth-login").style.display=user?"none":"block";
+    document.getElementById("auth-logged").style.display=user?"block":"none";
     document.getElementById("admin-controls").style.display="none";
     document.getElementById("admin-tool-open").style.display="none";
 
-    if(!user || isAnonymous)return;
+    if(!user)return;
 
     document.getElementById("user-name").textContent=user.email||"ログイン中";
     try{
