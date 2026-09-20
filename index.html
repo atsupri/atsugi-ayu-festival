@@ -168,7 +168,7 @@ button,input,select{font:inherit}
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.2.5</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.2.6</span></div>
   </div>
  </div>
 </div>
@@ -250,8 +250,7 @@ button,input,select{font:inherit}
 
     <div class="admin-place-tools">
       <h4>🏪 店舗・施設管理</h4>
-      <p class="admin-migrate-note">店舗情報をFirebaseで管理します。最初に既存の店舗情報をFirebaseへ移行すると、以後はここから追加・編集・削除できます。</p>
-      <button class="auth-btn" style="background:#0f766e" onclick="seedPlacesToFirebase()">📦 既存の店舗情報をFirebaseへ移行</button>
+      <p class="admin-migrate-note">店舗情報はFirebaseから読み込みます。ここから追加・編集・削除できます。</p>
       <button class="auth-btn" style="margin-top:7px" onclick="openPlaceEditor()">＋ 新しい店舗・施設を追加</button>
       <div id="admin-place-list" class="admin-place-list"></div>
       <div id="admin-place-form" class="admin-place-form">
@@ -267,7 +266,7 @@ button,input,select{font:inherit}
         <div id="place-picker-map" class="admin-place-map-picker"></div>
         <div id="place-location-text" class="admin-place-location">地図をタップして位置を指定してください。</div>
         <label>画像ファイル名</label><input id="place-image-name" placeholder="例：yakisoba.jpg">
-        <div class="admin-place-upload">GitHubの <code>images</code> フォルダに画像を置き、ここにはファイル名だけ入力します。Firebaseにはこのファイル名だけ保存されます。例：<code>yakisoba.jpg</code></div>
+        <div class="admin-place-upload">GitHubに画像を置き、ここにはファイル名だけ入力します。リポジトリ直下の画像にも対応しています。Firebaseにはこのファイル名だけ保存されます。例：<code>temp.yakisoba.png</code></div>
         <div class="admin-place-actions"><button class="auth-btn" onclick="savePlaceFromAdmin()">💾 保存</button><button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="closePlaceEditor()">キャンセル</button></div>
       </div>
     </div>
@@ -303,7 +302,7 @@ const MAPS = {
 
 // 店舗・施設画像はFirebase Storageではなく、GitHub Pagesのimagesフォルダから読み込みます。
 // Firebaseには「画像ファイル名」だけを保存します。
-const PLACE_IMAGE_BASE_PATH = "./images/";
+const PLACE_IMAGE_BASE_PATH = "./";
 function resolvePlaceImage(image){
   const value = String(image || "").trim();
   if(!value) return "";
@@ -333,18 +332,7 @@ const PIN_TYPES = {
   food:   { shape:"rect",   bg:"#dc2626" }
 };
 
-let placeData = [
- {id:"p1",map:"park",x:620,y:420,name:"市民出店村",detail:"9:00〜（10日 20:00まで／11日 17:00まで）",description:"市民出店村の詳細情報をここに入力します。正式な店舗情報が届いたら、この項目を更新できます。",image:"",icon:"fa-store",type:"shop"},
- {id:"p2",map:"park",x:760,y:300,name:"Atsugi Dance Legend",detail:"9:00〜17:00",description:"出演・会場などの詳細情報をここに入力できます。",image:"",icon:"fa-music",type:"stage"},
- {id:"p3",map:"park",x:430,y:280,name:"メイン会場周辺",detail:"イベント会場（仮）",description:"会場案内などの詳細情報をここに入力できます。",image:"",icon:"fa-location-dot",type:"info"},
- {id:"s1",map:"station",lat:35.439338,lng:139.364261,name:"本厚木駅",detail:"駅周辺の案内",description:"本厚木駅周辺の案内です。",image:"",icon:"fa-train",type:"info"},
- {id:"s2",map:"station",lat:35.440600,lng:139.362075,name:"厚木公園",detail:"DREAMフェスタ会場",description:"DREAMフェスタ会場の案内です。",image:"",icon:"fa-tree",type:"stage"},
- {id:"s3",map:"station",lat:35.442500,lng:139.366200,name:"厚木なかちょう大通り",detail:"パレード・みこし等",description:"パレード・みこしなどの案内です。",image:"",icon:"fa-road",type:"info"}
-
- // 例：
- // {id:"toilet-1",map:"park",x:500,y:350,name:"トイレ",detail:"",description:"案内文",image:"toilet-1.png",icon:"fa-restroom",type:"toilet"},
- // type:"toilet" にすると丸いピンになります。
-];
+let placeData = [];
 
 let placeFirebaseLoaded=false;
 let placePickerMap=null;
@@ -930,30 +918,14 @@ async function initPlaceDataListener(){
   if(!firebaseReady)return;
   firebase.database().ref("places").on("value",snapshot=>{
     const data=snapshot.val();
-    if(data && typeof data === "object"){
-      placeData=Object.values(data).filter(Boolean).map(p=>({...p,searchKeywords:Array.isArray(p.searchKeywords)?p.searchKeywords:[]}));
-      placeFirebaseLoaded=true;
-      renderMapMarkers();
-      renderPlaceList();
-      if(document.getElementById("admin-controls")?.style.display!="none") renderAdminPlaceList();
-    }
+    placeData=(data && typeof data === "object")
+      ? Object.values(data).filter(Boolean).map(p=>({...p,searchKeywords:Array.isArray(p.searchKeywords)?p.searchKeywords:[]}))
+      : [];
+    placeFirebaseLoaded=true;
+    renderMapMarkers();
+    renderPlaceList();
+    if(document.getElementById("admin-controls")?.style.display!="none") renderAdminPlaceList();
   },err=>console.error("places listener error:",err));
-}
-
-async function seedPlacesToFirebase(){
-  if(!currentUserIsAdmin){alert("管理者権限が必要です。");return;}
-  if(!firebaseReady)return;
-  const snap=await firebase.database().ref("places").once("value");
-  if(snap.exists()){
-    alert("Firebaseにはすでに店舗情報があります。既存データは上書きしません。");
-    return;
-  }
-  const payload={};
-  placeData.forEach(p=>payload[p.id]={...p,searchKeywords:Array.isArray(p.searchKeywords)?p.searchKeywords:[]});
-  try{
-    await firebase.database().ref("places").set(payload);
-    alert("既存の店舗情報をFirebaseへ移行しました。これからは管理者ツールから編集できます。");
-  }catch(e){console.error(e);alert("移行に失敗しました。Firebase Rulesと管理者権限を確認してください。");}
 }
 
 function openPlaceEditor(id=null){
