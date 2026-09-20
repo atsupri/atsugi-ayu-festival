@@ -161,7 +161,7 @@ button,input,select{font:inherit}
    <i class="fa-solid fa-bullhorn"></i>お知らせ
   </button>
   <button class="side-btn" onclick="closeDrawer();openModal('modal-notify')">
-   <i class="fa-solid fa-bell"></i>通知設定
+   <i class="fa-solid fa-bell"></i>遅延設定
   </button>
   <div class="side-section">その他</div>
   <button class="side-btn" onclick="closeDrawer();openModal('modal-about')">
@@ -181,7 +181,7 @@ button,input,select{font:inherit}
 
 <div id="modal-notify" class="modal" onclick="overlayClose(event,'modal-notify')">
  <div class="modal-card">
-  <div class="modal-title"><h3>🔔 通知設定</h3><button onclick="closeModal('modal-notify')">×</button></div>
+  <div class="modal-title"><h3>🔔 遅延設定</h3><button onclick="closeModal('modal-notify')">×</button></div>
   <div class="notice">通知を許可すると、お気に入り登録したイベントの開始前や遅延情報をお知らせします。現在はウェブページ内・ブラウザ通知の仕組みを使用しています。本格的なバックグラウンドプッシュ（FCM）は次段階で追加できます。</div>
   <p id="notify-status" style="font-size:13px;color:#6b7280;margin-bottom:8px"></p>
   <button id="notify-btn" class="auth-btn" onclick="requestNotification()">通知を許可する</button>
@@ -201,7 +201,7 @@ button,input,select{font:inherit}
   <p style="line-height:1.8;font-size:13px">見たいイベントを⭐お気に入り登録すると、開始時間の10分前にウェブ内でリマインドします。また、開始時刻の変更・遅延情報もお知らせします。ぜひ通知権限を許可して、快適に鮎まつりをお楽しみください！</p>
   <button class="auth-btn" onclick="requestNotification(true)">通知を許可する</button>
   <button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="closeModal('modal-welcome')">スキップ</button>
-  <p style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px">※メニューの「通知設定」から後で変更できます。</p>
+  <p style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px">※メニューの「遅延設定」から後で変更できます。</p>
  </div>
 </div>
 
@@ -246,10 +246,10 @@ button,input,select{font:inherit}
     <div class="admin-accordion" id="admin-accordion">
       <div class="admin-accordion-item" data-admin-section="notification">
         <button type="button" class="admin-accordion-trigger" onclick="toggleAdminSection('notification')">
-          <span>🔔 通知設定</span><span class="admin-accordion-arrow">➤</span>
+          <span>🔔 遅延設定</span><span class="admin-accordion-arrow">➤</span>
         </button>
         <div id="admin-section-notification" class="admin-accordion-panel">
-          <div class="admin-section-title">🔔 通知設定</div>
+          <div class="admin-section-title">🔔 遅延設定</div>
           <select id="admin-day" class="auth-input" onchange="loadAdminEvents()"></select>
           <select id="admin-event" class="auth-input" onchange="loadDelay()"></select>
           <div class="stepper-vertical" aria-label="遅延時間を上下ボタンで選択">
@@ -293,10 +293,10 @@ button,input,select{font:inherit}
 
       <div class="admin-accordion-item" data-admin-section="schedule">
         <button type="button" class="admin-accordion-trigger" onclick="toggleAdminSection('schedule')">
-          <span>📅 スケジュール設定</span><span class="admin-accordion-arrow">➤</span>
+          <span>📅 ダンスレジェンドスケジュール</span><span class="admin-accordion-arrow">➤</span>
         </button>
         <div id="admin-section-schedule" class="admin-accordion-panel">
-          <div class="admin-section-title">📅 スケジュール設定</div>
+          <div class="admin-section-title">📅 ダンスレジェンドスケジュール</div>
           <p class="admin-migrate-note">スケジュールはFirebaseを正本として管理します。ここから追加・編集・削除できます。</p>
           <select id="admin-schedule-date" class="auth-input" onchange="renderAdminScheduleList()"></select>
           <button class="auth-btn" style="margin-top:7px" onclick="openScheduleEditor()">＋ 新しい予定を追加</button>
@@ -792,7 +792,7 @@ function updateNotifyUI(){
   const t=document.getElementById("notify-status"),b=document.getElementById("notify-btn");
   if(!("Notification" in window)){t.textContent="このブラウザは通知に対応していません。";b.disabled=true;return}
   if(Notification.permission==="granted"){t.textContent="現在：通知は許可されています。";b.textContent="✅ 通知は許可されています"}
-  else if(Notification.permission==="denied"){t.textContent="現在：通知はブロックされています。ブラウザのサイト設定から変更できます。";b.textContent="⚠️ 通知設定を確認"}
+  else if(Notification.permission==="denied"){t.textContent="現在：通知はブロックされています。ブラウザのサイト設定から変更できます。";b.textContent="⚠️ 遅延設定を確認"}
   else{t.textContent="現在：通知は未設定です。";b.textContent="🔔 通知を許可する"}
 }
 function saveNotifyPrefs(){
@@ -875,13 +875,13 @@ async function requestNotification(closeWelcome=false){
       if(closeWelcome)closeModal("modal-welcome");
       // モバイルブラウザでは Notification() が使えない場合があるため、
       // 許可直後のテスト通知は無理に生成しない。
-      showInAppToast("通知設定完了","お気に入り・遅延情報の通知を受け取れる状態になりました。");
+      showInAppToast("遅延設定完了","お気に入り・遅延情報の通知を受け取れる状態になりました。");
     }else if(permission==="denied"){
       alert("通知は許可されませんでした。必要ならブラウザのサイト設定から変更できます。");
     }
   }catch(err){
     console.error("Notification permission error:",err);
-    alert("通知の許可画面を開けませんでした。ブラウザの通知設定をご確認ください。");
+    alert("通知の許可画面を開けませんでした。ブラウザの遅延設定をご確認ください。");
   }
 }
 function startNotifier(){setInterval(checkNotifications,30000)}
