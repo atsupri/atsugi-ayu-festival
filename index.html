@@ -92,7 +92,16 @@ button,input,select{font:inherit}
 .stepper-vertical{width:150px;margin:14px auto;display:flex;flex-direction:column;align-items:center;gap:5px}.stepper-vertical strong{display:flex;align-items:center;justify-content:center;width:150px;min-height:58px;border:1px solid var(--border);border-radius:12px;background:#fff;font-size:27px}.delay-arrow{width:150px;height:38px;border:1px solid var(--border);border-radius:10px;background:#f3f4f6;color:#374151;font-size:19px;font-weight:900;line-height:1}.delay-arrow:active{transform:scale(.97);background:#e5e7eb}
 .notice{padding:10px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:10px;font-size:12px;margin-bottom:10px}
 
-.admin-section-select{margin:10px 0 12px}.admin-section{display:none}.admin-section.active{display:block}.admin-section-title{font-size:14px;font-weight:900;margin:0 0 8px}.admin-schedule-list{max-height:300px;overflow:auto;margin-top:9px}.admin-schedule-row{display:flex;gap:7px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-schedule-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-schedule-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-schedule-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-schedule-edit{background:#ecfdf5;color:#065f46}.admin-schedule-delete{background:#fef2f2;color:#b91c1c}.admin-schedule-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-schedule-form.show{display:block}.admin-schedule-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-schedule-form input,.admin-schedule-form textarea,.admin-schedule-form select{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-schedule-time-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-schedule-actions{display:flex;gap:7px;margin-top:9px}.admin-schedule-actions button{flex:1}.admin-place-tools{margin-top:12px;border-top:1px dashed var(--border);padding-top:14px}.admin-place-tools h4{margin-bottom:8px}.admin-place-list{max-height:260px;overflow:auto;margin-top:8px}.admin-place-row{display:flex;gap:8px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-place-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-place-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-place-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-place-edit{background:#ecfdf5;color:#065f46}.admin-place-delete{background:#fef2f2;color:#b91c1c}.admin-place-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-place-form.show{display:block}.admin-place-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-place-form input,.admin-place-form select,.admin-place-form textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-place-form textarea{min-height:70px;resize:vertical}.admin-place-map-picker{height:240px;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:7px;background:#fff}.admin-place-location{font-size:11px;color:#6b7280;margin-top:6px;line-height:1.5}.admin-place-actions{display:flex;gap:7px;margin-top:9px}.admin-place-actions button{flex:1}.admin-place-upload{font-size:11px;color:#6b7280;margin-top:5px}.admin-migrate-note{font-size:11px;color:#6b7280;line-height:1.5;margin:7px 0}
+/* 管理者ツール：3項目を常時表示し、タップで下に展開 */
+.admin-accordion{margin-top:10px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff}
+.admin-accordion-item + .admin-accordion-item{border-top:1px solid var(--border)}
+.admin-accordion-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;border:0;background:#fff;color:var(--text);padding:14px 13px;font-size:13px;font-weight:900;text-align:left;cursor:pointer}
+.admin-accordion-trigger:active{background:#f8fafc}
+.admin-accordion-arrow{font-size:15px;color:#6b7280;transition:transform .22s ease}
+.admin-accordion-item.open .admin-accordion-arrow{transform:rotate(90deg)}
+.admin-accordion-panel{display:none;padding:0 12px 13px;border-top:1px solid #f0f1f3;background:#fff}
+.admin-accordion-item.open .admin-accordion-panel{display:block}
+.admin-section-title{font-size:14px;font-weight:900;margin:12px 0 8px}.admin-schedule-list{max-height:300px;overflow:auto;margin-top:9px}.admin-schedule-row{display:flex;gap:7px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-schedule-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-schedule-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-schedule-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-schedule-edit{background:#ecfdf5;color:#065f46}.admin-schedule-delete{background:#fef2f2;color:#b91c1c}.admin-schedule-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-schedule-form.show{display:block}.admin-schedule-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-schedule-form input,.admin-schedule-form textarea,.admin-schedule-form select{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-schedule-time-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-schedule-actions{display:flex;gap:7px;margin-top:9px}.admin-schedule-actions button{flex:1}.admin-place-tools{margin-top:12px;border-top:1px dashed var(--border);padding-top:14px}.admin-place-tools h4{margin-bottom:8px}.admin-place-list{max-height:260px;overflow:auto;margin-top:8px}.admin-place-row{display:flex;gap:8px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-place-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-place-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-place-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-place-edit{background:#ecfdf5;color:#065f46}.admin-place-delete{background:#fef2f2;color:#b91c1c}.admin-place-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-place-form.show{display:block}.admin-place-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-place-form input,.admin-place-form select,.admin-place-form textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-place-form textarea{min-height:70px;resize:vertical}.admin-place-map-picker{height:240px;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:7px;background:#fff}.admin-place-location{font-size:11px;color:#6b7280;margin-top:6px;line-height:1.5}.admin-place-actions{display:flex;gap:7px;margin-top:9px}.admin-place-actions button{flex:1}.admin-place-upload{font-size:11px;color:#6b7280;margin-top:5px}.admin-migrate-note{font-size:11px;color:#6b7280;line-height:1.5;margin:7px 0}
 </style>
 </head>
 <body>
@@ -234,63 +243,73 @@ button,input,select{font:inherit}
    <button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="logout()">ログアウト</button>
    <div id="admin-controls" class="admin-box" style="display:none">
     <h4>🛠️ 管理者ツール</h4>
-    <select id="admin-section-select" class="auth-input admin-section-select" onchange="switchAdminSection(this.value)">
-      <option value="delay">⏱️ 遅延設定</option>
-      <option value="schedule">📅 スケジュール管理</option>
-      <option value="places">🏪 店舗・施設管理</option>
-    </select>
-
-    <div id="admin-section-delay" class="admin-section active">
-      <div class="admin-section-title">⏱️ 遅延設定</div>
-      <select id="admin-day" class="auth-input" onchange="loadAdminEvents()"></select>
-      <select id="admin-event" class="auth-input" onchange="loadDelay()"></select>
-      <div class="stepper-vertical" aria-label="遅延時間を上下ボタンで選択">
-        <button type="button" class="delay-arrow" onclick="changeDelay(1)" aria-label="1分増やす">▲</button>
-        <strong id="delay-value">0分</strong>
-        <button type="button" class="delay-arrow" onclick="changeDelay(-1)" aria-label="1分減らす">▼</button>
+    <div class="admin-accordion" id="admin-accordion">
+      <div class="admin-accordion-item" data-admin-section="notification">
+        <button type="button" class="admin-accordion-trigger" onclick="toggleAdminSection('notification')">
+          <span>🔔 通知設定</span><span class="admin-accordion-arrow">➤</span>
+        </button>
+        <div id="admin-section-notification" class="admin-accordion-panel">
+          <div class="admin-section-title">🔔 通知設定</div>
+          <select id="admin-day" class="auth-input" onchange="loadAdminEvents()"></select>
+          <select id="admin-event" class="auth-input" onchange="loadDelay()"></select>
+          <div class="stepper-vertical" aria-label="遅延時間を上下ボタンで選択">
+            <button type="button" class="delay-arrow" onclick="changeDelay(1)" aria-label="1分増やす">▲</button>
+            <strong id="delay-value">0分</strong>
+            <button type="button" class="delay-arrow" onclick="changeDelay(-1)" aria-label="1分減らす">▼</button>
+          </div>
+          <button class="auth-btn" onclick="saveDelay()">📢 遅延を保存して配信</button>
+          <button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="setDelay(0)">↺ 0分に戻す</button>
+          <p style="font-size:11px;color:#6b7280;margin-top:8px">0〜120分。▲▼をカチカチ押して1分ずつ変更できます。設定したイベント自身だけに反映します。</p>
+        </div>
       </div>
-      <button class="auth-btn" onclick="saveDelay()">📢 遅延を保存して配信</button>
-      <button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="setDelay(0)">↺ 0分に戻す</button>
-      <p style="font-size:11px;color:#6b7280;margin-top:8px">0〜120分。▲▼をカチカチ押して1分ずつ変更できます。設定したイベント自身だけに反映します。</p>
-    </div>
 
-    <div id="admin-section-schedule" class="admin-section">
-      <div class="admin-section-title">📅 スケジュール管理</div>
-      <p class="admin-migrate-note">スケジュールはFirebaseを正本として管理します。ここから追加・編集・削除できます。</p>
-      <select id="admin-schedule-date" class="auth-input" onchange="renderAdminScheduleList()"></select>
-      <button class="auth-btn" style="margin-top:7px" onclick="openScheduleEditor()">＋ 新しい予定を追加</button>
-      <div id="admin-schedule-list" class="admin-schedule-list"></div>
-      <div id="admin-schedule-form" class="admin-schedule-form">
-        <input type="hidden" id="schedule-edit-id">
-        <label>開催日</label><input id="schedule-date" class="auth-input" type="date">
-        <label>開始・終了時刻</label>
-        <div class="admin-schedule-time-row"><input id="schedule-start" class="auth-input" type="time"><input id="schedule-end" class="auth-input" type="time"></div>
-        <label>イベント名</label><input id="schedule-name" class="auth-input" placeholder="例：オープニングセレモニー">
-        <label>会場・場所（任意）</label><input id="schedule-venue" class="auth-input" placeholder="例：中央公園">
-        <div class="admin-schedule-actions"><button class="auth-btn" onclick="saveScheduleFromAdmin()">💾 保存</button><button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="closeScheduleEditor()">キャンセル</button></div>
+      <div class="admin-accordion-item" data-admin-section="places">
+        <button type="button" class="admin-accordion-trigger" onclick="toggleAdminSection('places')">
+          <span>🏪 店舗・施設設定</span><span class="admin-accordion-arrow">➤</span>
+        </button>
+        <div id="admin-section-places" class="admin-accordion-panel">
+          <div class="admin-section-title">🏪 店舗・施設設定</div>
+          <p class="admin-migrate-note">店舗情報はFirebaseから読み込みます。ここから追加・編集・削除できます。</p>
+          <button class="auth-btn" style="margin-top:7px" onclick="openPlaceEditor()">＋ 新しい店舗・施設を追加</button>
+          <div id="admin-place-list" class="admin-place-list"></div>
+          <div id="admin-place-form" class="admin-place-form">
+            <input type="hidden" id="place-edit-id">
+            <label>名称</label><input id="place-name" placeholder="店舗名・施設名">
+            <label>短い説明</label><input id="place-detail" placeholder="例：10:00〜17:00">
+            <label>詳細説明</label><textarea id="place-description" placeholder="店舗・施設の詳しい説明"></textarea>
+            <label>検索キーワード</label><input id="place-search-keywords" placeholder="例：やきそば,ヤキソバ,ソース焼きそば">
+            <div class="admin-place-upload">カンマ・読点・改行で区切れます。店舗名にない呼び方もここに追加できます。</div>
+            <label>種類</label><select id="place-type"><option value="shop">店舗</option><option value="food">飲食</option><option value="stage">ステージ・会場</option><option value="info">案内・施設</option><option value="toilet">トイレ</option></select>
+            <label>アイコン</label><input id="place-icon" value="fa-store" placeholder="例：fa-store">
+            <label>地図</label><select id="place-map" onchange="resetPlacePicker()"><option value="park">中央公園</option><option value="station">本厚木駅周辺</option></select>
+            <div id="place-picker-map" class="admin-place-map-picker"></div>
+            <div id="place-location-text" class="admin-place-location">地図をタップして位置を指定してください。</div>
+            <label>画像ファイル名</label><input id="place-image-name" placeholder="例：yakisoba.jpg">
+            <div class="admin-place-upload">GitHubのリポジトリ内に画像を置き、ここにはファイル名またはパスだけ入力します。Firebaseにはこのファイル名だけ保存されます。</div>
+            <div class="admin-place-actions"><button class="auth-btn" onclick="savePlaceFromAdmin()">💾 保存</button><button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="closePlaceEditor()">キャンセル</button></div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div id="admin-section-places" class="admin-section">
-      <div class="admin-section-title">🏪 店舗・施設管理</div>
-      <p class="admin-migrate-note">店舗情報はFirebaseから読み込みます。ここから追加・編集・削除できます。</p>
-      <button class="auth-btn" style="margin-top:7px" onclick="openPlaceEditor()">＋ 新しい店舗・施設を追加</button>
-      <div id="admin-place-list" class="admin-place-list"></div>
-      <div id="admin-place-form" class="admin-place-form">
-        <input type="hidden" id="place-edit-id">
-        <label>名称</label><input id="place-name" placeholder="店舗名・施設名">
-        <label>短い説明</label><input id="place-detail" placeholder="例：10:00〜17:00">
-        <label>詳細説明</label><textarea id="place-description" placeholder="店舗・施設の詳しい説明"></textarea>
-        <label>検索キーワード</label><input id="place-search-keywords" placeholder="例：やきそば,ヤキソバ,ソース焼きそば">
-        <div class="admin-place-upload">カンマ・読点・改行で区切れます。店舗名にない呼び方もここに追加できます。</div>
-        <label>種類</label><select id="place-type"><option value="shop">店舗</option><option value="food">飲食</option><option value="stage">ステージ・会場</option><option value="info">案内・施設</option><option value="toilet">トイレ</option></select>
-        <label>アイコン</label><input id="place-icon" value="fa-store" placeholder="例：fa-store">
-        <label>地図</label><select id="place-map" onchange="resetPlacePicker()"><option value="park">中央公園</option><option value="station">本厚木駅周辺</option></select>
-        <div id="place-picker-map" class="admin-place-map-picker"></div>
-        <div id="place-location-text" class="admin-place-location">地図をタップして位置を指定してください。</div>
-        <label>画像ファイル名</label><input id="place-image-name" placeholder="例：yakisoba.jpg">
-        <div class="admin-place-upload">GitHubのリポジトリ内に画像を置き、ここにはファイル名またはパスだけ入力します。Firebaseにはこのファイル名だけ保存されます。</div>
-        <div class="admin-place-actions"><button class="auth-btn" onclick="savePlaceFromAdmin()">💾 保存</button><button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="closePlaceEditor()">キャンセル</button></div>
+      <div class="admin-accordion-item" data-admin-section="schedule">
+        <button type="button" class="admin-accordion-trigger" onclick="toggleAdminSection('schedule')">
+          <span>📅 スケジュール設定</span><span class="admin-accordion-arrow">➤</span>
+        </button>
+        <div id="admin-section-schedule" class="admin-accordion-panel">
+          <div class="admin-section-title">📅 スケジュール設定</div>
+          <p class="admin-migrate-note">スケジュールはFirebaseを正本として管理します。ここから追加・編集・削除できます。</p>
+          <select id="admin-schedule-date" class="auth-input" onchange="renderAdminScheduleList()"></select>
+          <button class="auth-btn" style="margin-top:7px" onclick="openScheduleEditor()">＋ 新しい予定を追加</button>
+          <div id="admin-schedule-list" class="admin-schedule-list"></div>
+          <div id="admin-schedule-form" class="admin-schedule-form">
+            <input type="hidden" id="schedule-edit-id">
+            <label>開催日</label><input id="schedule-date" class="auth-input" type="date">
+            <label>開始・終了時刻</label>
+            <div class="admin-schedule-time-row"><input id="schedule-start" class="auth-input" type="time"><input id="schedule-end" class="auth-input" type="time"></div>
+            <label>イベント名</label><input id="schedule-name" class="auth-input" placeholder="例：オープニングセレモニー">
+            <div class="admin-schedule-actions"><button class="auth-btn" onclick="saveScheduleFromAdmin()">💾 保存</button><button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="closeScheduleEditor()">キャンセル</button></div>
+          </div>
+        </div>
       </div>
     </div>
    </div>
@@ -986,11 +1005,17 @@ function renderAdminPlaceList(){
 }
 function escapeHtml(v){return String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));}
 
-function switchAdminSection(section){
-  ["delay","schedule","places"].forEach(key=>{
-    document.getElementById(`admin-section-${key}`)?.classList.toggle("active",key===section);
-  });
-  if(section==="delay"){loadAdminDays();}
+function closeAllAdminSections(){
+  document.querySelectorAll("#admin-accordion .admin-accordion-item").forEach(item=>item.classList.remove("open"));
+}
+function toggleAdminSection(section){
+  const item=document.querySelector(`#admin-accordion .admin-accordion-item[data-admin-section="${section}"]`);
+  if(!item)return;
+  const willOpen=!item.classList.contains("open");
+  closeAllAdminSections();
+  if(!willOpen)return;
+  item.classList.add("open");
+  if(section==="notification"){loadAdminDays();}
   if(section==="schedule"){renderAdminScheduleDates();renderAdminScheduleList();}
   if(section==="places"){renderAdminPlaceList();}
 }
@@ -999,8 +1024,7 @@ function openAdminTool(){
   const controls=document.getElementById("admin-controls");
   if(!controls)return;
   controls.style.display="block";
-  const selected=document.getElementById("admin-section-select")?.value||"delay";
-  switchAdminSection(selected);
+  closeAllAdminSections();
   controls.scrollIntoView({behavior:"smooth",block:"start"});
 }
 function loadAdminDays(){
@@ -1033,7 +1057,7 @@ function renderAdminScheduleList(){
   renderAdminScheduleDates();
   const dateKey=document.getElementById("admin-schedule-date")?.value;
   const list=timeScheduleData.filter(e=>e.dateKey===dateKey).slice().sort((a,b)=>timeToMinutes((a.start||a.time.split("-")[0]).trim())-timeToMinutes((b.start||b.time.split("-")[0]).trim()));
-  el.innerHTML=list.map(e=>`<div class="admin-schedule-row"><div class="name">${escapeHtml(e.name)}<small>${escapeHtml(e.time)}${e.venue?` ・ ${escapeHtml(e.venue)}`:""}</small></div><button class="admin-schedule-edit" onclick="openScheduleEditor('${e.id}')">編集</button><button class="admin-schedule-delete" onclick="deleteScheduleFromAdmin('${e.id}')">削除</button></div>`).join("")||'<div style="font-size:11px;color:#6b7280;padding:8px">この日の予定はありません。</div>';
+  el.innerHTML=list.map(e=>`<div class="admin-schedule-row"><div class="name">${escapeHtml(e.name)}<small>${escapeHtml(e.time)}</small></div><button class="admin-schedule-edit" onclick="openScheduleEditor('${e.id}')">編集</button><button class="admin-schedule-delete" onclick="deleteScheduleFromAdmin('${e.id}')">削除</button></div>`).join("")||'<div style="font-size:11px;color:#6b7280;padding:8px">この日の予定はありません。</div>';
 }
 function openScheduleEditor(id=""){
   const form=document.getElementById("admin-schedule-form");if(!form)return;
@@ -1043,7 +1067,6 @@ function openScheduleEditor(id=""){
   document.getElementById("schedule-start").value=e?.start||(e?.time?.split("-")[0]||"").trim();
   document.getElementById("schedule-end").value=e?.end||(e?.time?.split("-")[1]||"").trim();
   document.getElementById("schedule-name").value=e?.name||"";
-  document.getElementById("schedule-venue").value=e?.venue||"";
   form.classList.add("show");
   form.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
@@ -1059,7 +1082,6 @@ async function saveScheduleFromAdmin(){
   const start=document.getElementById("schedule-start").value;
   const end=document.getElementById("schedule-end").value;
   const name=document.getElementById("schedule-name").value.trim();
-  const venue=document.getElementById("schedule-venue").value.trim();
   if(!dateKey||!start||!end||!name){alert("開催日・開始時刻・終了時刻・イベント名を入力してください。");return;}
   if(timeToMinutes(start)>=timeToMinutes(end)){alert("終了時刻は開始時刻より後にしてください。");return;}
   const id=editId||`event-${Date.now()}`;
