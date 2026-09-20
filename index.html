@@ -40,7 +40,7 @@ button,input,select{font:inherit}
 .map-tools{background:white;padding:8px;border-bottom:1px solid var(--border)}
 .map-tabs{display:flex;gap:7px}.map-tab{flex:1;border:1px solid var(--border);background:#f3f4f6;border-radius:10px;padding:10px 6px;font-weight:700;color:#4b5563}
 .map-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-#map{height:44vh;min-height:280px;flex:0 0 44vh;background:#fff;position:relative;z-index:1}
+#map{height:38vh;min-height:240px;flex:0 0 38vh;background:#fff;position:relative;z-index:1}
 .location-btn{position:absolute;right:12px;bottom:12px;z-index:650;border:1px solid #d1d5db;background:#fff;color:#374151;border-radius:11px;padding:9px 11px;font-weight:800;box-shadow:0 2px 8px #0003}.location-btn:active{transform:scale(.97)}.location-btn.active{background:#eff6ff;color:#2563eb;border-color:#93c5fd}.location-note{font-size:11px;color:#6b7280;padding:6px 2px 0;line-height:1.5}.leaflet-control-attribution{font-size:10px}
 
 .place-detail-panel{display:block;position:absolute;left:10px;right:10px;bottom:10px;z-index:700;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 8px 28px #0003;max-height:min(58vh,460px);overflow:auto;transform:translateY(calc(100% + 30px));opacity:0;pointer-events:none;transition:transform .28s ease,opacity .22s ease}.place-detail-panel.show{transform:translateY(0);opacity:1;pointer-events:auto}.place-detail-inner{padding:14px 14px 16px}.place-detail-top{display:flex;gap:11px;align-items:flex-start}.place-detail-icon{width:46px;height:46px;flex:0 0 46px;border-radius:12px;background:#ecfdf5;color:var(--primary);display:grid;place-items:center;font-size:19px}.place-detail-title{flex:1}.place-detail-title h3{font-size:17px;line-height:1.35}.place-detail-title small{display:block;color:var(--sub);margin-top:4px;line-height:1.5}.place-detail-close{border:0;background:#f3f4f6;color:#6b7280;width:34px;height:34px;border-radius:50%;font-size:19px}.place-detail-image{width:100%;max-height:220px;object-fit:contain;border-radius:11px;margin-top:12px;background:#f8fafc;border:1px solid var(--border)}.place-detail-body{font-size:13px;line-height:1.7;margin-top:12px;white-space:pre-wrap}.place-detail-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.place-detail-tag{font-size:11px;padding:5px 8px;border-radius:999px;background:#f3f4f6;color:#4b5563}
@@ -602,6 +602,8 @@ function createMapInstance(key){
   });
   markerLayer=L.layerGroup().addTo(map);
   map.on("zoomend", applyPinScale);
+  // ピン以外の地図をタップしたときだけ、表示中の店舗名吹き出しを閉じる。
+  map.on("click", closeAllPlaceTooltips);
 }
 
 function switchMap(key){
@@ -749,9 +751,12 @@ function renderMapMarkers(){
       opacity:1,
       className:"ayu-place-tooltip",
       permanent:false,
-      sticky:false
+      sticky:false,
+      closeOnClick:false
     });
-    marker.on("click",()=>{
+    marker.on("click",e=>{
+      // ピンのクリックを地図クリックへ伝播させず、吹き出しをそのまま表示する。
+      L.DomEvent.stopPropagation(e);
       openPlaceTooltip(p.id);
       pulsePlacePin(p.id);
       showPlaceDetail(p.id,true);
@@ -810,6 +815,13 @@ function findPlaceMarker(id){
     if(String(layer._ayuPlaceId)===String(id)) found=layer;
   });
   return found;
+}
+
+function closeAllPlaceTooltips(){
+  if(!markerLayer)return;
+  markerLayer.eachLayer(layer=>{
+    if(layer.isTooltipOpen?.()) layer.closeTooltip();
+  });
 }
 
 function openPlaceTooltip(id){
