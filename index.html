@@ -21,7 +21,6 @@ gtag('config', 'G-Y0W73T4552', {
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -46,7 +45,7 @@ button,input,select{font:inherit}
 
 .place-detail-panel{display:block;position:absolute;left:10px;right:10px;bottom:10px;z-index:700;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 8px 28px #0003;max-height:min(58vh,460px);overflow:auto;transform:translateY(calc(100% + 30px));opacity:0;pointer-events:none;transition:transform .28s ease,opacity .22s ease}.place-detail-panel.show{transform:translateY(0);opacity:1;pointer-events:auto}.place-detail-inner{padding:14px 14px 16px}.place-detail-top{display:flex;gap:11px;align-items:flex-start}.place-detail-icon{width:46px;height:46px;flex:0 0 46px;border-radius:12px;background:#ecfdf5;color:var(--primary);display:grid;place-items:center;font-size:19px}.place-detail-title{flex:1}.place-detail-title h3{font-size:17px;line-height:1.35}.place-detail-title small{display:block;color:var(--sub);margin-top:4px;line-height:1.5}.place-detail-close{border:0;background:#f3f4f6;color:#6b7280;width:34px;height:34px;border-radius:50%;font-size:19px}.place-detail-image{width:100%;max-height:220px;object-fit:contain;border-radius:11px;margin-top:12px;background:#f8fafc;border:1px solid var(--border)}.place-detail-body{font-size:13px;line-height:1.7;margin-top:12px;white-space:pre-wrap}.place-detail-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.place-detail-tag{font-size:11px;padding:5px 8px;border-radius:999px;background:#f3f4f6;color:#4b5563}
 .map-list{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;padding:10px 10px 36px}
-.place-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:9px;display:flex;gap:10px;align-items:flex-start;cursor:pointer}.place-card.expanded{display:block;padding:12px}.place-card-row{display:flex;gap:10px;align-items:center}.place-card-content{flex:1;min-width:0}.place-card-detail{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}.place-card-detail img{width:100%;max-height:240px;object-fit:contain;border-radius:11px;background:#f8fafc;border:1px solid var(--border);margin-bottom:10px}.place-card-detail p{font-size:13px;line-height:1.7;white-space:pre-wrap}.place-card-detail .detail-meta{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 9px}.place-card-detail .detail-tag{font-size:11px;padding:5px 8px;border-radius:999px;background:#f3f4f6;color:#4b5563}.place-card-detail .detail-close{float:right;border:0;background:#f3f4f6;color:#6b7280;width:32px;height:32px;border-radius:50%;font-size:18px;margin-left:8px}.place-card:last-child{margin-bottom:24px}
+.place-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:9px;display:flex;gap:10px;align-items:flex-start;cursor:pointer}.place-card.expanded{display:block;padding:12px}.place-card-row{display:flex;gap:10px;align-items:center}.place-card-content{flex:1;min-width:0}.place-card-detail{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);position:relative}.place-card-detail-content{display:flex;align-items:flex-start;gap:12px}.place-card-detail.has-image .place-card-detail-image{width:76px;height:76px;flex:0 0 76px;object-fit:cover;border-radius:9px;background:#f8fafc;border:1px solid var(--border)}.place-card-detail.no-image .place-card-detail-text{width:100%}.place-card-detail-text{flex:1;min-width:0}.place-card-detail p{font-size:13px;line-height:1.7;white-space:pre-wrap;margin:0}.place-card-detail .detail-meta{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 7px}.place-card-detail .detail-tag{font-size:11px;padding:5px 8px;border-radius:999px;background:#f3f4f6;color:#4b5563}.place-card-detail .detail-close{float:right;border:0;background:#f3f4f6;color:#6b7280;width:32px;height:32px;border-radius:50%;font-size:18px;margin-left:8px;position:relative;z-index:2}.place-card:last-child{margin-bottom:24px}
 .place-icon{width:40px;height:40px;border-radius:11px;background:#ecfdf5;color:var(--primary);display:grid;place-items:center}
 .place-card b{font-size:14px}.place-card small{display:block;color:var(--sub);margin-top:3px}
 .alert{display:none;position:fixed;top:56px;left:0;right:0;z-index:900;background:#b91c1c;color:#fff;padding:10px 42px 10px 12px;font-size:13px;font-weight:700}
@@ -169,7 +168,7 @@ button,input,select{font:inherit}
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.2.4</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.2.5</span></div>
   </div>
  </div>
 </div>
@@ -268,7 +267,7 @@ button,input,select{font:inherit}
         <div id="place-picker-map" class="admin-place-map-picker"></div>
         <div id="place-location-text" class="admin-place-location">地図をタップして位置を指定してください。</div>
         <label>画像ファイル名</label><input id="place-image-name" placeholder="例：yakisoba.jpg">
-        <div class="admin-place-upload">GitHubの <code>images</code> フォルダに画像を置き、ここにはファイル名だけ入力します。例：<code>yakisoba.jpg</code></div>
+        <div class="admin-place-upload">GitHubの <code>images</code> フォルダに画像を置き、ここにはファイル名だけ入力します。Firebaseにはこのファイル名だけ保存されます。例：<code>yakisoba.jpg</code></div>
         <div class="admin-place-actions"><button class="auth-btn" onclick="savePlaceFromAdmin()">💾 保存</button><button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="closePlaceEditor()">キャンセル</button></div>
       </div>
     </div>
@@ -705,13 +704,18 @@ function renderPlaceList(){
   el.innerHTML=list.map(p=>{
     const expanded=expandedPlaceId===p.id;
     const imageSrc=resolvePlaceImage(p.image);
-    const imageHtml=imageSrc ? `<img src="${imageSrc}" alt="${p.name}の画像" onerror="this.style.display='none'">` : "";
+    const imageHtml=imageSrc ? `<img class="place-card-detail-image" src="${imageSrc}" alt="${escapeHtml(p.name)}の画像" onerror="this.style.display='none'">` : "";
     const typeLabel=(PIN_TYPES[p.type]||PIN_TYPES.shop).shape==="circle" ? "施設・案内" : "会場・店舗";
-    const detailHtml=expanded ? `<div class="place-card-detail">
+    const detailClass=imageSrc ? "has-image" : "no-image";
+    const detailHtml=expanded ? `<div class="place-card-detail ${detailClass}">
       <button class="detail-close" aria-label="詳細を閉じる" onclick="event.stopPropagation();closePlaceDetail()">×</button>
-      ${imageHtml}
-      <div class="detail-meta"><span class="detail-tag">${typeLabel}</span></div>
-      <p>${p.description||"詳細情報は準備中です。"}</p>
+      <div class="place-card-detail-content">
+        ${imageHtml}
+        <div class="place-card-detail-text">
+          <div class="detail-meta"><span class="detail-tag">${typeLabel}</span></div>
+          <p>${escapeHtml(p.description||"詳細情報は準備中です。")}</p>
+        </div>
+      </div>
     </div>` : "";
     return `<div class="place-card ${expanded?"expanded":""}" onclick="focusPlace('${p.id}',true)">
       <div class="place-card-row"><div class="place-icon"><i class="fa-solid ${p.icon}"></i></div><div class="place-card-content"><b>${p.name}</b><small>${p.detail||""}</small></div></div>
