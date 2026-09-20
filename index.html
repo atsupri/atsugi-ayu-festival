@@ -150,11 +150,15 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   font-weight: 800;
   box-shadow: 0 5px 18px rgba(15,23,42,.18);
   white-space: nowrap;
-  opacity: 0;
-  animation: ayuTooltipIn .22s ease forwards;
 }
 .ayu-place-tooltip:before {
   border-top-color: rgba(255,255,255,.97) !important;
+}
+/* Leaflet自身が吹き出し位置をtransformで管理するため、
+   tooltip本体ではtransformアニメーションを使わず、中身だけをアニメーションさせる。 */
+.ayu-place-tooltip > span {
+  display: block;
+  animation: ayuTooltipIn .22s ease both;
 }
 @keyframes ayuTooltipIn {
   from { opacity: 0; transform: translateY(5px) scale(.94); }
