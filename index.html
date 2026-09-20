@@ -21,6 +21,7 @@ gtag('config', 'G-Y0W73T4552', {
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -91,6 +92,8 @@ button,input,select{font:inherit}
 .admin-box{margin-top:14px;border-top:1px dashed var(--border);padding-top:14px}
 .stepper-vertical{width:150px;margin:14px auto;display:flex;flex-direction:column;align-items:center;gap:5px}.stepper-vertical strong{display:flex;align-items:center;justify-content:center;width:150px;min-height:58px;border:1px solid var(--border);border-radius:12px;background:#fff;font-size:27px}.delay-arrow{width:150px;height:38px;border:1px solid var(--border);border-radius:10px;background:#f3f4f6;color:#374151;font-size:19px;font-weight:900;line-height:1}.delay-arrow:active{transform:scale(.97);background:#e5e7eb}
 .notice{padding:10px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:10px;font-size:12px;margin-bottom:10px}
+
+.admin-place-tools{margin-top:12px;border-top:1px dashed var(--border);padding-top:14px}.admin-place-tools h4{margin-bottom:8px}.admin-place-list{max-height:260px;overflow:auto;margin-top:8px}.admin-place-row{display:flex;gap:8px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-place-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-place-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-place-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-place-edit{background:#ecfdf5;color:#065f46}.admin-place-delete{background:#fef2f2;color:#b91c1c}.admin-place-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-place-form.show{display:block}.admin-place-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-place-form input,.admin-place-form select,.admin-place-form textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-place-form textarea{min-height:70px;resize:vertical}.admin-place-map-picker{height:240px;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:7px;background:#fff}.admin-place-location{font-size:11px;color:#6b7280;margin-top:6px;line-height:1.5}.admin-place-actions{display:flex;gap:7px;margin-top:9px}.admin-place-actions button{flex:1}.admin-place-upload{font-size:11px;color:#6b7280;margin-top:5px}.admin-migrate-note{font-size:11px;color:#6b7280;line-height:1.5;margin:7px 0}
 </style>
 </head>
 <body>
@@ -191,7 +194,7 @@ button,input,select{font:inherit}
   <div class="modal-title"><h3>🎆 鮎まつり案内へようこそ！</h3><button onclick="closeModal('modal-welcome')">×</button></div>
   <div class="notice">厚木中央公園にてDanceLegend（ダンスレジェンド）を開催します！！</div>
   <p style="line-height:1.8;font-size:13px">見たいイベントを⭐お気に入り登録すると、開始時間の10分前にウェブ内でリマインドします。また、開始時刻の変更・遅延情報もお知らせします。ぜひ通知権限を許可して、快適に鮎まつりをお楽しみください！</p>
-  <button class="auth-btn" onclick="requestNotification();closeModal('modal-welcome')">通知を許可する</button>
+  <button class="auth-btn" onclick="requestNotification(true)">通知を許可する</button>
   <button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="closeModal('modal-welcome')">スキップ</button>
   <p style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px">※メニューの「通知設定」から後で変更できます。</p>
  </div>
@@ -245,6 +248,30 @@ button,input,select{font:inherit}
     <button class="auth-btn" onclick="saveDelay()">📢 遅延を保存して配信</button>
     <button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="setDelay(0)">↺ 0分に戻す</button>
     <p style="font-size:11px;color:#6b7280;margin-top:8px">0〜120分。▲▼をカチカチ押して1分ずつ変更できます。設定したイベント自身だけに反映します。</p>
+
+    <div class="admin-place-tools">
+      <h4>🏪 店舗・施設管理</h4>
+      <p class="admin-migrate-note">店舗情報をFirebaseで管理します。最初に既存の店舗情報をFirebaseへ移行すると、以後はここから追加・編集・削除できます。</p>
+      <button class="auth-btn" style="background:#0f766e" onclick="seedPlacesToFirebase()">📦 既存の店舗情報をFirebaseへ移行</button>
+      <button class="auth-btn" style="margin-top:7px" onclick="openPlaceEditor()">＋ 新しい店舗・施設を追加</button>
+      <div id="admin-place-list" class="admin-place-list"></div>
+      <div id="admin-place-form" class="admin-place-form">
+        <input type="hidden" id="place-edit-id">
+        <label>名称</label><input id="place-name" placeholder="店舗名・施設名">
+        <label>短い説明</label><input id="place-detail" placeholder="例：10:00〜17:00">
+        <label>詳細説明</label><textarea id="place-description" placeholder="店舗・施設の詳しい説明"></textarea>
+        <label>検索キーワード</label><input id="place-search-keywords" placeholder="例：やきそば,ヤキソバ,ソース焼きそば">
+        <div class="admin-place-upload">カンマ・読点・改行で区切れます。店舗名にない呼び方もここに追加できます。</div>
+        <label>種類</label><select id="place-type"><option value="shop">店舗</option><option value="food">飲食</option><option value="stage">ステージ・会場</option><option value="info">案内・施設</option><option value="toilet">トイレ</option></select>
+        <label>アイコン</label><input id="place-icon" value="fa-store" placeholder="例：fa-store">
+        <label>地図</label><select id="place-map" onchange="resetPlacePicker()"><option value="park">中央公園</option><option value="station">本厚木駅周辺</option></select>
+        <div id="place-picker-map" class="admin-place-map-picker"></div>
+        <div id="place-location-text" class="admin-place-location">地図をタップして位置を指定してください。</div>
+        <label>画像</label><input id="place-image-file" type="file" accept="image/*" onchange="previewPlaceImage()"><div class="admin-place-upload">画像はFirebase Storageへアップロードします。</div>
+        <input id="place-image-url" placeholder="画像URL（既存画像を使う場合）" style="margin-top:6px">
+        <div class="admin-place-actions"><button class="auth-btn" onclick="savePlaceFromAdmin()">💾 保存</button><button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="closePlaceEditor()">キャンセル</button></div>
+      </div>
+    </div>
    </div>
   </div>
  </div>
@@ -296,7 +323,7 @@ const PIN_TYPES = {
   food:   { shape:"rect",   bg:"#dc2626" }
 };
 
-const placeData = [
+let placeData = [
  {id:"p1",map:"park",x:620,y:420,name:"市民出店村",detail:"9:00〜（10日 20:00まで／11日 17:00まで）",description:"市民出店村の詳細情報をここに入力します。正式な店舗情報が届いたら、この項目を更新できます。",image:"",icon:"fa-store",type:"shop"},
  {id:"p2",map:"park",x:760,y:300,name:"Atsugi Dance Legend",detail:"9:00〜17:00",description:"出演・会場などの詳細情報をここに入力できます。",image:"",icon:"fa-music",type:"stage"},
  {id:"p3",map:"park",x:430,y:280,name:"メイン会場周辺",detail:"イベント会場（仮）",description:"会場案内などの詳細情報をここに入力できます。",image:"",icon:"fa-location-dot",type:"info"},
@@ -308,6 +335,12 @@ const placeData = [
  // {id:"toilet-1",map:"park",x:500,y:350,name:"トイレ",detail:"",description:"案内文",image:"toilet-1.png",icon:"fa-restroom",type:"toilet"},
  // type:"toilet" にすると丸いピンになります。
 ];
+
+let placeFirebaseLoaded=false;
+let placePickerMap=null;
+let placePickerMarker=null;
+let placePickerPosition=null;
+let placeImagePreviewData="";
 
 const timeScheduleData = [
  {id:101,day:10,time:"09:00 - 17:00",name:"Atsugi Dance Legend",venue:"厚木中央公園"},
@@ -426,16 +459,50 @@ function updateFavoriteDelayAlert(){
   bar.style.display="block";
 }
 
+// 🔎 検索用：全角・半角、ひらがな・カタカナの違いを吸収します。
+function normalizeSearchText(value){
+  return String(value||"")
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[ァ-ヶ]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60))
+    .replace(/[ーｰ]/g, "ー")
+    .replace(/[\s　・･._-]+/g, "");
+}
+
+// よくある表記ゆれ。今後必要な語はここへ追加できます。
+const SEARCH_EQUIVALENTS = {
+  "やきそば":"焼きそば",
+  "焼そば":"焼きそば",
+  "ヤキソバ":"焼きそば"
+};
+
+function searchCandidates(value){
+  const raw=String(value||"").trim();
+  const normalized=normalizeSearchText(raw);
+  const equivalent=SEARCH_EQUIVALENTS[raw] || SEARCH_EQUIVALENTS[normalized] || "";
+  return [normalized, normalizeSearchText(equivalent)].filter(Boolean);
+}
+
+function searchableText(...values){
+  return values.map(normalizeSearchText).join(" ");
+}
+
+function matchesSearch(values, query){
+  const candidates=searchCandidates(query);
+  const text=searchableText(...values);
+  return candidates.some(candidate => text.includes(candidate));
+}
+
 function searchMenu(){
-  const q=(document.getElementById("menu-search").value||"").trim().toLowerCase();
+  const q=(document.getElementById("menu-search").value||"").trim();
   const el=document.getElementById("menu-search-results");
   if(!q){el.innerHTML="";return;}
 
   const places=placeData.filter(p=>
-    p.name.toLowerCase().includes(q) || (p.detail||"").toLowerCase().includes(q)
+    matchesSearch([p.name, p.detail, p.description, ...(Array.isArray(p.searchKeywords)?p.searchKeywords:[])], q)
   );
   const events=timeScheduleData.filter(e=>
-    e.name.toLowerCase().includes(q) || (e.venue||"").toLowerCase().includes(q)
+    matchesSearch([e.name, e.venue], q)
   );
 
   let out="";
@@ -780,10 +847,45 @@ function showInAppToast(title,body){
   clearTimeout(t._timer);t._timer=setTimeout(()=>t.remove(),5000);
 }
 
-function requestNotification(){
+async function requestNotification(closeWelcome=false){
+  // 通知許可の要求は「ユーザーが押した瞬間」の操作として直接実行する。
+  // モーダルを先に閉じたり、別処理を挟んだりせず、requestPermission()をここで呼ぶ。
   saveNotifyPrefs();
-  if(!("Notification" in window))return alert("このブラウザは通知に対応していません。");
-  Notification.requestPermission().then(p=>{updateNotifyUI();ga("notification_permission",{result:p});if(p==="granted")new Notification("あつぎ鮎まつり案内",{body:"通知設定が完了しました。お気に入り・遅延情報をお知らせします。"})})
+  if(!window.isSecureContext){
+    alert("通知を許可するにはHTTPSでこのサイトを開いてください。");
+    return;
+  }
+  if(!("Notification" in window) || typeof Notification.requestPermission!=="function"){
+    alert("このブラウザはWeb通知に対応していません。");
+    return;
+  }
+  if(Notification.permission==="granted"){
+    updateNotifyUI();
+    if(closeWelcome)closeModal("modal-welcome");
+    return;
+  }
+  if(Notification.permission==="denied"){
+    updateNotifyUI();
+    alert("通知がブロックされています。ブラウザのサイト設定から通知を許可してください。");
+    return;
+  }
+  try{
+    // ここは必ずクリックイベントの同期処理中に呼び出す。
+    const permission=await Notification.requestPermission();
+    updateNotifyUI();
+    ga("notification_permission",{result:permission});
+    if(permission==="granted"){
+      if(closeWelcome)closeModal("modal-welcome");
+      // モバイルブラウザでは Notification() が使えない場合があるため、
+      // 許可直後のテスト通知は無理に生成しない。
+      showInAppToast("通知設定完了","お気に入り・遅延情報の通知を受け取れる状態になりました。");
+    }else if(permission==="denied"){
+      alert("通知は許可されませんでした。必要ならブラウザのサイト設定から変更できます。");
+    }
+  }catch(err){
+    console.error("Notification permission error:",err);
+    alert("通知の許可画面を開けませんでした。ブラウザの通知設定をご確認ください。");
+  }
 }
 function startNotifier(){setInterval(checkNotifications,30000)}
 function checkNotifications(){
@@ -804,12 +906,147 @@ function checkNotifications(){
   })
 }
 
+async function initPlaceDataListener(){
+  if(!firebaseReady)return;
+  firebase.database().ref("places").on("value",snapshot=>{
+    const data=snapshot.val();
+    if(data && typeof data === "object"){
+      placeData=Object.values(data).filter(Boolean).map(p=>({...p,searchKeywords:Array.isArray(p.searchKeywords)?p.searchKeywords:[]}));
+      placeFirebaseLoaded=true;
+      renderMapMarkers();
+      renderPlaceList();
+      if(document.getElementById("admin-controls")?.style.display!="none") renderAdminPlaceList();
+    }
+  },err=>console.error("places listener error:",err));
+}
+
+async function seedPlacesToFirebase(){
+  if(!currentUserIsAdmin){alert("管理者権限が必要です。");return;}
+  if(!firebaseReady)return;
+  const snap=await firebase.database().ref("places").once("value");
+  if(snap.exists()){
+    alert("Firebaseにはすでに店舗情報があります。既存データは上書きしません。");
+    return;
+  }
+  const payload={};
+  placeData.forEach(p=>payload[p.id]={...p,searchKeywords:Array.isArray(p.searchKeywords)?p.searchKeywords:[]});
+  try{
+    await firebase.database().ref("places").set(payload);
+    alert("既存の店舗情報をFirebaseへ移行しました。これからは管理者ツールから編集できます。");
+  }catch(e){console.error(e);alert("移行に失敗しました。Firebase Rulesと管理者権限を確認してください。");}
+}
+
+function openPlaceEditor(id=null){
+  if(!currentUserIsAdmin){alert("管理者権限が必要です。");return;}
+  const form=document.getElementById("admin-place-form");
+  form.classList.add("show");
+  placeImagePreviewData="";
+  const p=id ? placeData.find(x=>x.id===id) : null;
+  document.getElementById("place-edit-id").value=p?.id||"";
+  document.getElementById("place-name").value=p?.name||"";
+  document.getElementById("place-detail").value=p?.detail||"";
+  document.getElementById("place-description").value=p?.description||"";
+  document.getElementById("place-search-keywords").value=Array.isArray(p?.searchKeywords)?p.searchKeywords.join(", "):(p?.searchKeywords||"");
+  document.getElementById("place-type").value=p?.type||"shop";
+  document.getElementById("place-icon").value=p?.icon||"fa-store";
+  document.getElementById("place-map").value=p?.map||"park";
+  document.getElementById("place-image-url").value=p?.image||"";
+  placePickerPosition=p ? (p.map==="station" ? {lat:p.lat,lng:p.lng} : {x:p.x,y:p.y}) : null;
+  resetPlacePicker();
+}
+function closePlaceEditor(){document.getElementById("admin-place-form")?.classList.remove("show");if(placePickerMap){placePickerMap.remove();placePickerMap=null;placePickerMarker=null;}}
+function resetPlacePicker(){
+  const key=document.getElementById("place-map").value;
+  if(placePickerMap){placePickerMap.remove();placePickerMap=null;placePickerMarker=null;}
+  placePickerPosition=null;
+  const el=document.getElementById("place-picker-map");
+  if(key==="park"){
+    placePickerMap=L.map(el,{crs:L.CRS.Simple,zoomControl:true,attributionControl:false,minZoom:-1.25,maxZoom:2});
+    const bounds=[[0,0],[760,1200]];
+    L.imageOverlay(MAPS.park.image,bounds).addTo(placePickerMap);
+    placePickerMap.fitBounds(bounds,{padding:[4,4]});
+    placePickerMap.on("click",e=>{placePickerPosition={x:e.latlng.lng,y:760-e.latlng.lat};updatePlacePickerMarker(e.latlng);});
+    const p=document.getElementById("place-edit-id").value && placeData.find(x=>x.id===document.getElementById("place-edit-id").value);
+    if(p?.map==="park" && Number.isFinite(p.x)&&Number.isFinite(p.y)){placePickerPosition={x:p.x,y:p.y};updatePlacePickerMarker(L.latLng(760-p.y,p.x));placePickerMap.setView([760-p.y,p.x],0);}
+  }else{
+    placePickerMap=L.map(el,{zoomControl:true,attributionControl:true,minZoom:16,maxZoom:19});
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,minZoom:16,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>'}).addTo(placePickerMap);
+    placePickerMap.setMaxBounds(STATION_MAP_BOUNDS);placePickerMap.options.maxBoundsViscosity=1.0;placePickerMap.setView([35.4402,139.3643],16);
+    placePickerMap.on("click",e=>{placePickerPosition={lat:e.latlng.lat,lng:e.latlng.lng};updatePlacePickerMarker(e.latlng);});
+    const p=document.getElementById("place-edit-id").value && placeData.find(x=>x.id===document.getElementById("place-edit-id").value);
+    if(p?.map==="station" && Number.isFinite(p.lat)&&Number.isFinite(p.lng)){placePickerPosition={lat:p.lat,lng:p.lng};updatePlacePickerMarker(L.latLng(p.lat,p.lng));placePickerMap.setView([p.lat,p.lng],17);}
+  }
+  setTimeout(()=>placePickerMap?.invalidateSize(),50);
+  updatePlacePickerText();
+}
+function updatePlacePickerMarker(ll){
+  if(!placePickerMap)return;
+  if(placePickerMarker)placePickerMarker.setLatLng(ll);
+  else placePickerMarker=L.marker(ll,{draggable:false}).addTo(placePickerMap);
+  updatePlacePickerText();
+}
+function updatePlacePickerText(){
+  const el=document.getElementById("place-location-text");
+  if(!el)return;
+  if(!placePickerPosition){el.textContent="地図をタップして位置を指定してください。";return;}
+  if(document.getElementById("place-map").value==="station") el.textContent=`指定位置：緯度 ${placePickerPosition.lat.toFixed(6)} / 経度 ${placePickerPosition.lng.toFixed(6)}`;
+  else el.textContent=`指定位置：X ${Math.round(placePickerPosition.x)} / Y ${Math.round(placePickerPosition.y)}`;
+}
+function previewPlaceImage(){
+  const f=document.getElementById("place-image-file").files[0];
+  if(!f){placeImagePreviewData="";return;}
+  if(f.size>8*1024*1024){alert("画像は8MB以下にしてください。");document.getElementById("place-image-file").value="";return;}
+  placeImagePreviewData=f;
+}
+async function uploadPlaceImage(file,id){
+  if(!file)return "";
+  if(!firebaseReady || !firebase.storage)throw new Error("Firebase Storageが利用できません。");
+  const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"");
+  const ref=firebase.storage().ref(`place-images/${currentUser.uid}/${id}.${ext}`);
+  await ref.put(file,{contentType:file.type||"image/jpeg"});
+  return await ref.getDownloadURL();
+}
+async function savePlaceFromAdmin(){
+  if(!currentUserIsAdmin){alert("管理者権限が必要です。");return;}
+  const name=document.getElementById("place-name").value.trim();
+  const mapKey=document.getElementById("place-map").value;
+  if(!name){alert("名称を入力してください。");return;}
+  if(!placePickerPosition){alert("地図をタップして位置を指定してください。");return;}
+  const editId=document.getElementById("place-edit-id").value;
+  const id=editId || `place-${Date.now()}`;
+  const old=placeData.find(p=>p.id===id);
+  let image=document.getElementById("place-image-url").value.trim();
+  const file=document.getElementById("place-image-file").files[0];
+  try{
+    if(file) image=await uploadPlaceImage(file,id);
+    const searchKeywords=String(document.getElementById("place-search-keywords").value||"").split(/[,、\n]/).map(v=>v.trim()).filter(Boolean);
+    const p={id,map:mapKey,name,detail:document.getElementById("place-detail").value.trim(),description:document.getElementById("place-description").value.trim(),searchKeywords,image,icon:document.getElementById("place-icon").value.trim()||"fa-store",type:document.getElementById("place-type").value};
+    if(mapKey==="station"){p.lat=placePickerPosition.lat;p.lng=placePickerPosition.lng;}else{p.x=Math.round(placePickerPosition.x);p.y=Math.round(placePickerPosition.y);}
+    await firebase.database().ref("places/"+id).set(p);
+    alert(editId?"店舗情報を更新しました。":"店舗・施設を追加しました。");
+    closePlaceEditor();renderAdminPlaceList();
+  }catch(e){console.error(e);alert("保存に失敗しました。Firebase Rules、Storage Rules、管理者権限を確認してください。");}
+}
+async function deletePlaceFromAdmin(id){
+  if(!currentUserIsAdmin)return;
+  const p=placeData.find(x=>x.id===id);if(!p)return;
+  if(!confirm(`「${p.name}」を削除しますか？`))return;
+  try{await firebase.database().ref("places/"+id).remove();alert("削除しました。");}catch(e){console.error(e);alert("削除に失敗しました。Firebase Rulesを確認してください。");}
+}
+function renderAdminPlaceList(){
+  const el=document.getElementById("admin-place-list");if(!el)return;
+  const list=[...placeData].sort((a,b)=>String(a.name).localeCompare(String(b.name),"ja"));
+  el.innerHTML=list.map(p=>`<div class="admin-place-row"><div class="name">${escapeHtml(p.name)}<small>${p.map==="station"?"🚉 本厚木駅周辺":"🌳 中央公園"}</small></div><button class="admin-place-edit" onclick="openPlaceEditor('${p.id}')">編集</button><button class="admin-place-delete" onclick="deletePlaceFromAdmin('${p.id}')">削除</button></div>`).join("") || '<div style="font-size:11px;color:#6b7280;padding:8px">店舗情報がありません。</div>';
+}
+function escapeHtml(v){return String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));}
+
 function openAdminTool(){
   if(!currentUserIsAdmin){alert("管理者権限がありません。");return;}
   const controls=document.getElementById("admin-controls");
   if(!controls)return;
   controls.style.display="block";
   loadAdminDays();
+  renderAdminPlaceList();
   controls.scrollIntoView({behavior:"smooth",block:"start"});
 }
 
@@ -852,6 +1089,8 @@ async function saveDelay(){
 }
 function initFirebaseListeners(){
   if(!firebaseReady)return;
+
+  initPlaceDataListener();
 
   firebase.database().ref("scheduleDelays").on("value",snapshot=>{
     const next=snapshot.val()||{};
@@ -958,7 +1197,7 @@ function initAuth(){
     status.textContent=currentUserIsAdmin?"🛡️ 管理者権限あり":"👤 一般アカウント";
     status.style.color=currentUserIsAdmin?"#166534":"#6b7280";
     document.getElementById("admin-controls").style.display=currentUserIsAdmin?"block":"none";
-    if(currentUserIsAdmin)loadAdminDays();
+    if(currentUserIsAdmin){loadAdminDays();renderAdminPlaceList();}
   });
 }
 
