@@ -169,7 +169,7 @@ button,input,select{font:inherit}
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.1.2</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.2.4</span></div>
   </div>
  </div>
 </div>
@@ -267,8 +267,8 @@ button,input,select{font:inherit}
         <label>地図</label><select id="place-map" onchange="resetPlacePicker()"><option value="park">中央公園</option><option value="station">本厚木駅周辺</option></select>
         <div id="place-picker-map" class="admin-place-map-picker"></div>
         <div id="place-location-text" class="admin-place-location">地図をタップして位置を指定してください。</div>
-        <label>画像</label><input id="place-image-file" type="file" accept="image/*" onchange="previewPlaceImage()"><div class="admin-place-upload">画像はFirebase Storageへアップロードします。</div>
-        <input id="place-image-url" placeholder="画像URL（既存画像を使う場合）" style="margin-top:6px">
+        <label>画像ファイル名</label><input id="place-image-name" placeholder="例：yakisoba.jpg">
+        <div class="admin-place-upload">GitHubの <code>images</code> フォルダに画像を置き、ここにはファイル名だけ入力します。例：<code>yakisoba.jpg</code></div>
         <div class="admin-place-actions"><button class="auth-btn" onclick="savePlaceFromAdmin()">💾 保存</button><button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="closePlaceEditor()">キャンセル</button></div>
       </div>
     </div>
@@ -301,6 +301,17 @@ const MAPS = {
  park:{image:"map_central_park.png"},
  station:{image:"map_station.png"}
 };
+
+// 店舗・施設画像はFirebase Storageではなく、GitHub Pagesのimagesフォルダから読み込みます。
+// Firebaseには「画像ファイル名」だけを保存します。
+const PLACE_IMAGE_BASE_PATH = "./images/";
+function resolvePlaceImage(image){
+  const value = String(image || "").trim();
+  if(!value) return "";
+  // 既存のURLもそのまま利用できるようにしておく。
+  if(/^https?:\/\//i.test(value) || /^data:/i.test(value) || /^\.\//.test(value) || /^\//.test(value)) return value;
+  return PLACE_IMAGE_BASE_PATH + value.replace(/^images\//i, "");
+}
 
 // 📍 ピンデザイン設定
 // ここを変更すると、ピンを自由に近い形へ調整できます。
@@ -646,8 +657,12 @@ function getPinScale(){
     return Math.max(0.34, Math.min(1, z < referenceZoom ? zoomOutScale : 0.72 + (z * 0.28)));
   }
 
-  // 駅周辺の通常地図は従来どおり。
-  return Math.max(PIN_STYLE.minScale, Math.min(1, 0.72 + (z * 0.28)));
+  // 本厚木駅周辺も、中央公園と同じく「縮小するとピンも縮む」方式にする。
+  // OSMはズーム16〜19なので、16で最小、19で通常サイズ。
+  const stationMinZoom = 16;
+  const stationMaxZoom = 19;
+  const t = Math.max(0, Math.min(1, (z - stationMinZoom) / (stationMaxZoom - stationMinZoom)));
+  return PIN_STYLE.minScale + ((1 - PIN_STYLE.minScale) * t);
 }
 
 function applyPinScale(){
@@ -689,7 +704,8 @@ function renderPlaceList(){
   const list=placeData.filter(p=>p.map===currentMap);
   el.innerHTML=list.map(p=>{
     const expanded=expandedPlaceId===p.id;
-    const imageHtml=p.image ? `<img src="${p.image}" alt="${p.name}の画像" onerror="this.style.display='none'">` : "";
+    const imageSrc=resolvePlaceImage(p.image);
+    const imageHtml=imageSrc ? `<img src="${imageSrc}" alt="${p.name}の画像" onerror="this.style.display='none'">` : "";
     const typeLabel=(PIN_TYPES[p.type]||PIN_TYPES.shop).shape==="circle" ? "施設・案内" : "会場・店舗";
     const detailHtml=expanded ? `<div class="place-card-detail">
       <button class="detail-close" aria-label="詳細を閉じる" onclick="event.stopPropagation();closePlaceDetail()">×</button>
@@ -950,7 +966,7 @@ function openPlaceEditor(id=null){
   document.getElementById("place-type").value=p?.type||"shop";
   document.getElementById("place-icon").value=p?.icon||"fa-store";
   document.getElementById("place-map").value=p?.map||"park";
-  document.getElementById("place-image-url").value=p?.image||"";
+  document.getElementById("place-image-name").value=p?.image||"";
   placePickerPosition=p ? (p.map==="station" ? {lat:p.lat,lng:p.lng} : {x:p.x,y:p.y}) : null;
   resetPlacePicker();
 }
@@ -992,20 +1008,6 @@ function updatePlacePickerText(){
   if(document.getElementById("place-map").value==="station") el.textContent=`指定位置：緯度 ${placePickerPosition.lat.toFixed(6)} / 経度 ${placePickerPosition.lng.toFixed(6)}`;
   else el.textContent=`指定位置：X ${Math.round(placePickerPosition.x)} / Y ${Math.round(placePickerPosition.y)}`;
 }
-function previewPlaceImage(){
-  const f=document.getElementById("place-image-file").files[0];
-  if(!f){placeImagePreviewData="";return;}
-  if(f.size>8*1024*1024){alert("画像は8MB以下にしてください。");document.getElementById("place-image-file").value="";return;}
-  placeImagePreviewData=f;
-}
-async function uploadPlaceImage(file,id){
-  if(!file)return "";
-  if(!firebaseReady || !firebase.storage)throw new Error("Firebase Storageが利用できません。");
-  const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"");
-  const ref=firebase.storage().ref(`place-images/${currentUser.uid}/${id}.${ext}`);
-  await ref.put(file,{contentType:file.type||"image/jpeg"});
-  return await ref.getDownloadURL();
-}
 async function savePlaceFromAdmin(){
   if(!currentUserIsAdmin){alert("管理者権限が必要です。");return;}
   const name=document.getElementById("place-name").value.trim();
@@ -1015,17 +1017,15 @@ async function savePlaceFromAdmin(){
   const editId=document.getElementById("place-edit-id").value;
   const id=editId || `place-${Date.now()}`;
   const old=placeData.find(p=>p.id===id);
-  let image=document.getElementById("place-image-url").value.trim();
-  const file=document.getElementById("place-image-file").files[0];
+  const image=document.getElementById("place-image-name").value.trim();
   try{
-    if(file) image=await uploadPlaceImage(file,id);
     const searchKeywords=String(document.getElementById("place-search-keywords").value||"").split(/[,、\n]/).map(v=>v.trim()).filter(Boolean);
     const p={id,map:mapKey,name,detail:document.getElementById("place-detail").value.trim(),description:document.getElementById("place-description").value.trim(),searchKeywords,image,icon:document.getElementById("place-icon").value.trim()||"fa-store",type:document.getElementById("place-type").value};
     if(mapKey==="station"){p.lat=placePickerPosition.lat;p.lng=placePickerPosition.lng;}else{p.x=Math.round(placePickerPosition.x);p.y=Math.round(placePickerPosition.y);}
     await firebase.database().ref("places/"+id).set(p);
     alert(editId?"店舗情報を更新しました。":"店舗・施設を追加しました。");
     closePlaceEditor();renderAdminPlaceList();
-  }catch(e){console.error(e);alert("保存に失敗しました。Firebase Rules、Storage Rules、管理者権限を確認してください。");}
+  }catch(e){console.error(e);alert("保存に失敗しました。Firebase Rules、管理者権限、画像ファイル名を確認してください。");}
 }
 async function deletePlaceFromAdmin(id){
   if(!currentUserIsAdmin)return;
