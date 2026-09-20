@@ -102,6 +102,91 @@ button,input,select{font:inherit}
 .admin-accordion-panel{display:none;padding:0 12px 13px;border-top:1px solid #f0f1f3;background:#fff}
 .admin-accordion-item.open .admin-accordion-panel{display:block}
 .admin-section-title{font-size:14px;font-weight:900;margin:12px 0 8px}.admin-schedule-list{max-height:300px;overflow:auto;margin-top:9px}.admin-schedule-row{display:flex;gap:7px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-schedule-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-schedule-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-schedule-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-schedule-edit{background:#ecfdf5;color:#065f46}.admin-schedule-delete{background:#fef2f2;color:#b91c1c}.admin-schedule-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-schedule-form.show{display:block}.admin-schedule-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-schedule-form input,.admin-schedule-form textarea,.admin-schedule-form select{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-schedule-time-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-schedule-actions{display:flex;gap:7px;margin-top:9px}.admin-schedule-actions button{flex:1}.admin-place-tools{margin-top:12px;border-top:1px dashed var(--border);padding-top:14px}.admin-place-tools h4{margin-bottom:8px}.admin-place-list{max-height:260px;overflow:auto;margin-top:8px}.admin-place-row{display:flex;gap:8px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-place-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-place-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-place-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-place-edit{background:#ecfdf5;color:#065f46}.admin-place-delete{background:#fef2f2;color:#b91c1c}.admin-place-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-place-form.show{display:block}.admin-place-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-place-form input,.admin-place-form select,.admin-place-form textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-place-form textarea{min-height:70px;resize:vertical}.admin-place-map-picker{height:240px;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:7px;background:#fff}.admin-place-location{font-size:11px;color:#6b7280;margin-top:6px;line-height:1.5}.admin-place-actions{display:flex;gap:7px;margin-top:9px}.admin-place-actions button{flex:1}.admin-place-upload{font-size:11px;color:#6b7280;margin-top:5px}.admin-migrate-note{font-size:11px;color:#6b7280;line-height:1.5;margin:7px 0}
+
+/* =========================================================
+   v1.4.0：店舗選択・操作アニメーション
+   ========================================================= */
+html { scroll-behavior: smooth; }
+
+button, .place-card, .search-result, .map-tab, .day-tab, .close, .detail-close {
+  transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease,
+              border-color .16s ease, opacity .16s ease, color .16s ease;
+}
+button:active, .place-card:active, .search-result:active, .map-tab:active, .day-tab:active {
+  transform: scale(.975);
+}
+
+.place-card {
+  will-change: transform;
+  overflow: hidden;
+}
+.place-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(15,23,42,.08);
+}
+.place-card.expanded {
+  box-shadow: 0 7px 20px rgba(15,23,42,.10);
+}
+.place-card-row {
+  transition: background-color .18s ease;
+}
+.place-card.expanded .place-card-row {
+  background: #f8fafc;
+}
+
+.search-result:hover {
+  background: #f0fdfa;
+  transform: translateX(2px);
+}
+
+/* 地図上の店舗名吹き出し */
+.ayu-place-tooltip {
+  background: rgba(255,255,255,.97);
+  color: #0f172a;
+  border: 0;
+  border-radius: 11px;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 5px 18px rgba(15,23,42,.18);
+  white-space: nowrap;
+  opacity: 0;
+  animation: ayuTooltipIn .22s ease forwards;
+}
+.ayu-place-tooltip:before {
+  border-top-color: rgba(255,255,255,.97) !important;
+}
+@keyframes ayuTooltipIn {
+  from { opacity: 0; transform: translateY(5px) scale(.94); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* 選択したピンをふわっと強調 */
+.ayu-pin-focus {
+  animation: ayuPinPulse .75s ease-out 1;
+}
+@keyframes ayuPinPulse {
+  0%   { filter: drop-shadow(0 0 0 rgba(15,118,110,0)); }
+  45%  { filter: drop-shadow(0 0 9px rgba(15,118,110,.55)); }
+  100% { filter: drop-shadow(0 0 0 rgba(15,118,110,0)); }
+}
+
+/* 画面切り替えを少しだけ気持ちよく */
+.page {
+  transition: opacity .18s ease;
+}
+.modal-card, .modal-box {
+  animation: ayuModalIn .2s ease;
+}
+@keyframes ayuModalIn {
+  from { opacity: 0; transform: translateY(7px) scale(.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* メニューの開閉を滑らかに */
+#drawer .drawer-panel, #drawer .drawer-inner {
+  transition: transform .28s cubic-bezier(.22,.8,.25,1), opacity .22s ease;
+}
 </style>
 </head>
 <body>
@@ -174,7 +259,7 @@ button,input,select{font:inherit}
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.2.6</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.4.0</span></div>
   </div>
  </div>
 </div>
@@ -249,7 +334,6 @@ button,input,select{font:inherit}
           <span>🔔 遅延設定</span><span class="admin-accordion-arrow">➤</span>
         </button>
         <div id="admin-section-notification" class="admin-accordion-panel">
-          <div class="admin-section-title">🔔 遅延設定</div>
           <select id="admin-day" class="auth-input" onchange="loadAdminEvents()"></select>
           <select id="admin-event" class="auth-input" onchange="loadDelay()"></select>
           <div class="stepper-vertical" aria-label="遅延時間を上下ボタンで選択">
@@ -268,7 +352,6 @@ button,input,select{font:inherit}
           <span>🏪 店舗・施設設定</span><span class="admin-accordion-arrow">➤</span>
         </button>
         <div id="admin-section-places" class="admin-accordion-panel">
-          <div class="admin-section-title">🏪 店舗・施設設定</div>
           <p class="admin-migrate-note">店舗情報はFirebaseから読み込みます。ここから追加・編集・削除できます。</p>
           <button class="auth-btn" style="margin-top:7px" onclick="openPlaceEditor()">＋ 新しい店舗・施設を追加</button>
           <div id="admin-place-list" class="admin-place-list"></div>
@@ -296,7 +379,6 @@ button,input,select{font:inherit}
           <span>📅 ダンスレジェンドスケジュール</span><span class="admin-accordion-arrow">➤</span>
         </button>
         <div id="admin-section-schedule" class="admin-accordion-panel">
-          <div class="admin-section-title">📅 ダンスレジェンドスケジュール</div>
           <p class="admin-migrate-note">スケジュールはFirebaseを正本として管理します。ここから追加・編集・削除できます。</p>
           <select id="admin-schedule-date" class="auth-input" onchange="renderAdminScheduleList()"></select>
           <button class="auth-btn" style="margin-top:7px" onclick="openScheduleEditor()">＋ 新しい予定を追加</button>
@@ -655,8 +737,21 @@ function renderMapMarkers(){
       })
     }).addTo(markerLayer);
 
-    marker.bindTooltip(p.name,{direction:"top",offset:[0,-12]});
-    marker.on("click",()=>showPlaceDetail(p.id,true));
+    // 店舗・施設IDをマーカー自身に持たせ、検索・一覧からも同じ吹き出しを開けるようにする。
+    marker._ayuPlaceId = String(p.id);
+    marker.bindTooltip(`<span>${escapeHtml(p.name)}</span>`,{
+      direction:"top",
+      offset:[0,-16],
+      opacity:1,
+      className:"ayu-place-tooltip",
+      permanent:false,
+      sticky:false
+    });
+    marker.on("click",()=>{
+      openPlaceTooltip(p.id);
+      pulsePlacePin(p.id);
+      showPlaceDetail(p.id,true);
+    });
   });
 }
 
@@ -704,11 +799,69 @@ function closePlaceDetail(){
   expandedPlaceId=null;
   renderPlaceList();
 }
+function findPlaceMarker(id){
+  if(!markerLayer)return null;
+  let found=null;
+  markerLayer.eachLayer(layer=>{
+    if(String(layer._ayuPlaceId)===String(id)) found=layer;
+  });
+  return found;
+}
+
+function openPlaceTooltip(id){
+  if(!markerLayer)return;
+  markerLayer.eachLayer(layer=>{
+    if(String(layer._ayuPlaceId)!==String(id) && layer.isTooltipOpen?.()) layer.closeTooltip();
+  });
+  const marker=findPlaceMarker(id);
+  if(!marker)return;
+  marker.openTooltip();
+}
+
+function pulsePlacePin(id){
+  const marker=findPlaceMarker(id);
+  if(!marker)return;
+  const el=marker.getElement()?.querySelector(".ayu-pin");
+  if(!el)return;
+  el.classList.remove("ayu-pin-focus");
+  // 再クリックでもアニメーションが最初から再生されるようにする。
+  void el.offsetWidth;
+  el.classList.add("ayu-pin-focus");
+}
+
 function focusPlace(id,showDetail=true){
   const p=placeData.find(x=>x.id===id);if(!p)return;
-  if(currentMap!==p.map)switchMap(p.map);
-  if(currentMap==="station" && Number.isFinite(p.lat) && Number.isFinite(p.lng)) map.setView([p.lat,p.lng],17);
-  else if(p.x!==null && p.y!==null) map.setView([760-p.y,p.x],0);
+
+  const moveAndHighlight=()=>{
+    if(!map)return;
+    let target=null, zoom=null;
+    if(currentMap==="station" && Number.isFinite(p.lat) && Number.isFinite(p.lng)){
+      target=[p.lat,p.lng];
+      zoom=17;
+    }else if(p.x!==null && p.y!==null){
+      target=[760-p.y,p.x];
+      zoom=0;
+    }
+    if(target){
+      map.flyTo(target,zoom,{duration:.62,easeLinearity:.2});
+      map.once("moveend",()=>{
+        openPlaceTooltip(id);
+        pulsePlacePin(id);
+      });
+    }else{
+      openPlaceTooltip(id);
+      pulsePlacePin(id);
+    }
+  };
+
+  if(currentMap!==p.map){
+    switchMap(p.map);
+    // switchMap()で新しいマーカーが生成されたあとに移動する。
+    requestAnimationFrame(()=>setTimeout(moveAndHighlight,70));
+  }else{
+    moveAndHighlight();
+  }
+
   if(showDetail)showPlaceDetail(id,true);
   ga("select_place",{place_id:id});
 }
