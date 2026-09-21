@@ -416,12 +416,6 @@ const firebaseConfig = {
   appId: "1:371571796436:web:4703b40e3f1e5f648b8e41",
   measurementId: "G-Y0W73T4552"
 };
-
-// Firebase App Check（reCAPTCHA Enterprise）
-const APP_CHECK_SITE_KEY = "6LcNxMYtAAAAAM3AhpQJ963fl4VpjODMlMufoPft";
-let appCheckReady = false;
-let fcmTokenKey = "";
-
 let firebaseReady = false;
 // FCM Web Push用のVAPID公開鍵をここに設定してください。
 // Firebaseコンソール → プロジェクトの設定 → Cloud Messaging → Web Push証明書
@@ -435,18 +429,17 @@ try{
   if(firebaseConfig.apiKey.startsWith("YOUR_")) throw new Error("Firebase placeholder");
   firebase.initializeApp(firebaseConfig);
 
-  // App Checkを有効化。トークンは自動更新します。
-  // EnforcementをONにするまでは、既存ユーザーにも影響しません。
-  if (window.firebase?.appCheck && APP_CHECK_SITE_KEY) {
-    try {
-      const appCheck = firebase.appCheck();
-      appCheck.activate(
+  // Firebase App Check（reCAPTCHA Enterprise）
+  // ※EnforcementはFirebase Console側で確認後に有効化します。
+  const APP_CHECK_SITE_KEY = "6LcNxMYtAAAAAM3AhpQJ963fl4VpjODMlMufoPft";
+  if(window.firebase?.appCheck && APP_CHECK_SITE_KEY){
+    try{
+      firebase.appCheck().activate(
         new firebase.appCheck.ReCaptchaEnterpriseProvider(APP_CHECK_SITE_KEY),
         true
       );
-      appCheckReady = true;
       console.log("Firebase App Check 初期化完了");
-    } catch (appCheckError) {
+    }catch(appCheckError){
       console.warn("Firebase App Checkの初期化に失敗しました。", appCheckError);
     }
   }
@@ -979,8 +972,11 @@ function toggleFavorite(id){
   const i=favorites.indexOf(id);
   if(i>=0)favorites.splice(i,1);else favorites.push(id);
   localStorage.setItem("ayu_favorites",JSON.stringify(favorites));
-  if(fcmInitialized && fcmToken && fcmTokenKey && firebaseReady){
-    firebase.database().ref("notificationTokens/"+fcmTokenKey+"/favorites").set(favorites).catch(e=>console.warn("FCM favorites sync error:",e));
+  if(fcmInitialized && fcmToken && firebaseReady){
+    makeNotificationTokenKey(fcmToken).then(tokenHash=>{
+      firebase.database().ref("notificationTokens/"+tokenHash+"/favorites").set(favorites)
+        .catch(e=>console.warn("FCM favorites sync error:",e));
+    }).catch(e=>console.warn("FCM token hash error:",e));
   }
   renderSchedule();
   updateFavoriteDelayAlert();
@@ -1037,12 +1033,11 @@ function clearScheduleUnread(){
 }
 
 async function makeNotificationTokenKey(token){
-  if(!token)throw new Error("FCM: トークンが空です。");
-  if(!window.crypto?.subtle)throw new Error("FCM: Web Crypto APIを利用できません。");
-  const data=new TextEncoder().encode(token);
-  const digest=await crypto.subtle.digest("SHA-256",data);
-  const bytes=new Uint8Array(digest);
-  return Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("");
+  const data = new TextEncoder().encode(token);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(digest))
+    .map(b=>b.toString(16).padStart(2,"0"))
+    .join("");
 }
 
 async function initFCM(){
@@ -1078,21 +1073,21 @@ async function initFCM(){
       return "";
     }
 
-    // Firebase Authenticationは使わず、FCMトークンのSHA-256をDBキーにする。
-    // 匿名Authアカウントを新規作成しないため、通知登録のたびにAuthユーザーが増えません。
-    fcmTokenKey=await makeNotificationTokenKey(fcmToken);
+    fcmInitialized=true;
 
-    await firebase.database().ref("notificationTokens/"+fcmTokenKey).set({
+    // 一般ユーザーの通知登録はFirebase Authenticationを使わず、
+    // FCMトークンのSHA-256ハッシュをRealtime Databaseのキーとして使用する。
+    const tokenHash = await makeNotificationTokenKey(fcmToken);
+
+    await firebase.database().ref("notificationTokens/"+tokenHash).set({
       token:fcmToken,
-      tokenHash:fcmTokenKey,
+      tokenHash:tokenHash,
       updatedAt:firebase.database.ServerValue.TIMESTAMP,
       userAgent:navigator.userAgent.slice(0,300),
       permission:"granted",
       favorites:favorites || [],
       notificationPrefs:notificationPrefs || {tenMin:true,delay:true}
     });
-
-    fcmInitialized=true;
 
     fcmMessaging.onMessage(payload=>{
       console.log("FCM foreground message:",payload);
@@ -1101,7 +1096,7 @@ async function initFCM(){
       showInAppToast(title,body);
     });
 
-    console.log("FCM登録完了（App Check + token hash）",fcmTokenKey);
+    console.log("FCM登録完了（App Check + token hash）", tokenHash);
     return fcmToken;
   }catch(err){
     console.error("FCM initialization error:",err);
