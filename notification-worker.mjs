@@ -363,7 +363,16 @@ async function main() {
   console.log("通知Worker完了");
 }
 
-main().catch(error => {
+try {
+  await main();
+} catch (error) {
   console.error("通知Worker全体エラー:", error);
-  process.exit(1);
-});
+  process.exitCode = 1;
+} finally {
+  try {
+    await admin.app().delete();
+    console.log("Firebase接続を終了しました。");
+  } catch (error) {
+    console.error("Firebase終了処理エラー:", error);
+  }
+}
