@@ -22,6 +22,7 @@ gtag('config', 'G-Y0W73T4552', {
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -83,11 +84,7 @@ button,input,select{font:inherit}
 .side-btn{width:100%;border:0;background:#fff;text-align:left;padding:12px 8px;border-radius:8px;font-size:13px;color:var(--text)}
 .side-btn:active{background:#ecfdf5}
 .side-btn i{width:23px;color:var(--primary);margin-right:5px;text-align:center}
-.side-footer-links{margin-top:auto;padding-top:18px;text-align:center;font-size:10px;color:#9ca3af;line-height:1.7} .quiet-admin-link{border:0;background:none;color:#b6bcc5;font-size:10px;padding:7px 8px;cursor:pointer}.quiet-admin-link:hover{color:#6b7280}
-.manager-login-note{padding:10px;background:#f8fafc;border:1px solid var(--border);border-radius:10px;font-size:12px;line-height:1.6;color:#6b7280;margin-bottom:10px}
-.manager-login-btn{width:100%;padding:11px;border:1px solid #99f6e4;border-radius:9px;background:#ecfdf5;color:#065f46;font-weight:900;margin-top:4px}
-.manager-login-btn:active{transform:scale(.98)}
-
+.side-footer-links{margin-top:auto;padding-top:18px;text-align:center;font-size:10px;color:#9ca3af;line-height:1.7}.quiet-admin-link{border:0;background:none;color:#b6bcc5;font-size:10px;padding:7px 8px;cursor:pointer}.quiet-admin-link:hover{color:#6b7280}
 .side-footer-note{font-size:11px;color:var(--sub);line-height:1.6;border-top:1px dashed var(--border);margin-top:18px;padding-top:12px}
 .modal{display:none;position:fixed;inset:0;background:#0007;z-index:3000;align-items:center;justify-content:center;padding:16px}.modal.show{display:flex}
 .modal-card{background:white;border-radius:16px;width:min(520px,100%);max-height:90vh;overflow:auto;padding:18px}
@@ -268,7 +265,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.4.5</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.4.4</span></div>
   </div>
  </div>
 </div>
@@ -323,24 +320,18 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
 <div id="modal-auth" class="modal" onclick="overlayClose(event,'modal-auth')">
  <div class="modal-card">
   <div class="modal-title"><h3>🛠️ 関係者ログイン</h3><button onclick="closeModal('modal-auth')">×</button></div>
-  <p style="font-size:11px;color:#6b7280;margin:-5px 0 8px">この画面は管理者用です。通知用の一般アカウントは、この端末からログアウトしない仕組みになっています。</p>
+  <p style="font-size:11px;color:#6b7280;margin:-5px 0 8px">Firebase Authenticationで登録された関係者アカウント専用です。</p>
   <div id="auth-login">
-   <div class="manager-login-note">
-    👤 通知用アカウントはこの端末で自動的に維持されます。<br>
-    管理者以外の方は、ここでログインする必要はありません。
-   </div>
-   <button id="manager-login-open" class="manager-login-btn" type="button" onclick="showManagerLogin()">🛡️ 管理者はこちら</button>
-   <div id="manager-login-fields" style="display:none;margin-top:10px">
-    <input id="email" class="auth-input" type="email" placeholder="管理者メールアドレス">
-    <input id="password" class="auth-input" type="password" placeholder="管理者パスワード">
-    <button class="auth-btn" onclick="login()">管理者としてログイン</button>
-    <p id="auth-error" style="color:#b91c1c;font-size:12px;margin-top:8px"></p>
-   </div>
+   <input id="email" class="auth-input" type="email" placeholder="メールアドレス">
+   <input id="password" class="auth-input" type="password" placeholder="パスワード">
+   <button class="auth-btn" onclick="login()">ログイン</button>
+   <p id="auth-error" style="color:#b91c1c;font-size:12px;margin-top:8px"></p>
   </div>
   <div id="auth-logged" style="display:none">
    <p id="user-name" style="font-weight:800"></p>
    <p id="admin-status" style="font-size:12px;color:#6b7280;margin:5px 0 10px"></p>
    <button id="admin-tool-open" class="auth-btn" style="display:none;background:#0f766e" onclick="openAdminTool()">🛠️ 管理者ツールを開く</button>
+   <button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="logout()">ログアウト</button>
    <div id="admin-controls" class="admin-box" style="display:none">
     <h4>🛠️ 管理者ツール</h4>
     <div class="admin-accordion" id="admin-accordion">
@@ -426,12 +417,9 @@ const firebaseConfig = {
   measurementId: "G-Y0W73T4552"
 };
 let firebaseReady = false;
-// 通知用の匿名認証は管理者ログイン用の認証状態と分離します。
-// これにより一般ユーザーが管理者ログインをしても通知用UIDを失わず、
-// また管理者ログインの状態を通知システムから切り離せます。
-let notificationFirebase = null;
-let notificationAuth = null;
-let notificationDatabase = null;
+let appCheckReady = false;
+// Firebase App Check（reCAPTCHA Enterprise）用サイトキー
+const APP_CHECK_SITE_KEY = "6LcNxMYtAAAAAM3AhpQJ963fl4VpjODMlMufoPft";
 // FCM Web Push用のVAPID公開鍵をここに設定してください。
 // Firebaseコンソール → プロジェクトの設定 → Cloud Messaging → Web Push証明書
 const FCM_VAPID_PUBLIC_KEY = "BBXrn-R_yF_N7wAtd57t42omm8CusCC9PgGu6Y3KOYferTccOqMwUYFrB_9LUG7edrmKAWF2K81Nqd2pxvn00cY";
@@ -443,13 +431,24 @@ let unreadFavoriteDelay = JSON.parse(localStorage.getItem("ayu_unread_favorite_d
 try{
   if(firebaseConfig.apiKey.startsWith("YOUR_")) throw new Error("Firebase placeholder");
   firebase.initializeApp(firebaseConfig);
-  // 既定アプリ：管理者メール＋パスワード認証
-  // 通知用アプリ：匿名認証
-  notificationFirebase = firebase.initializeApp(firebaseConfig, "notification");
-  notificationAuth = notificationFirebase.auth();
-  notificationDatabase = notificationFirebase.database();
   firebaseReady = true;
-}catch(e){ console.warn("Firebaseは未設定の仮状態です。", e); }
+
+  // App Checkを有効化。トークンは自動更新する。
+  // まずは監視・動作確認を行い、Firebase側の「適用」は後から有効化する。
+  if (window.firebase?.appCheck && APP_CHECK_SITE_KEY && !APP_CHECK_SITE_KEY.startsWith("YOUR_")) {
+    try {
+      const appCheck = firebase.appCheck();
+      appCheck.activate(
+        new firebase.appCheck.ReCaptchaEnterpriseProvider(APP_CHECK_SITE_KEY),
+        true
+      );
+      appCheckReady = true;
+      console.log("Firebase App Check 初期化完了");
+    } catch (appCheckError) {
+      console.warn("Firebase App Checkの初期化に失敗しました。", appCheckError);
+    }
+  }
+}catch(e){ console.warn("Firebaseは未設定の仮状態です。"); }
 
 const MAPS = {
  park:{image:"map_central_park.png"},
@@ -502,8 +501,8 @@ let scheduleFirebaseLoaded=false;
 
 let currentMap="park", currentDay="2026-10-10";
 let map, imageLayer, tileLayer, markerLayer, myLocationMarker, myAccuracyCircle, locationWatchId=null;
-let favorites=JSON.parse(localStorage.getItem("ayu_favorites")||"[]").map(String);
-let scheduleDelayMap=JSON.parse(localStorage.getItem("ayu_demo_delays")||"{}");
+let favorites=JSON.parse(localStorage.getItem("ayu_favorites")||"[]");
+let scheduleDelayMap=firebaseReady ? {} : JSON.parse(localStorage.getItem("ayu_demo_delays")||"{}");
 let currentDelay=0, currentUser=null, currentUserIsAdmin=false;
 let scheduleDelayInitialized=false;
 let scheduleUnread=false;
@@ -530,7 +529,7 @@ function updateFavoriteDelayAlert(){
 
   // 上部の赤いバーはお気に入りイベントだけを対象にする。
   const delayedFavorites=timeScheduleData.filter(e=>
-    isFavorite(e.id) && Number(scheduleDelayMap[e.id]||0)>0
+    favorites.includes(e.id) && Number(scheduleDelayMap[e.id]||0)>0
   );
 
   if(!delayedFavorites.length){
@@ -961,31 +960,27 @@ function renderSchedule(){
     .slice()
     .sort((a,b)=>timeToMinutes(a.time.split("-")[0].trim())-timeToMinutes(b.time.split("-")[0].trim()));
   el.innerHTML=items.map(x=>{
-    const d=Number(scheduleDelayMap[x.id]||0), delayed=d>0, fav=isFavorite(x.id);
+    const d=Number(scheduleDelayMap[x.id]||0), delayed=d>0, fav=favorites.includes(x.id);
     return `<article class="event ${delayed?"delayed":""}">
       <div class="event-main">
         <div class="time">${x.time}</div>
         <div class="event-name">${x.name}</div>
         ${delayed?`<div class="delay">⚠️ ${d}分遅れ → ${shiftRange(x.time,d)}</div>`:""}
       </div>
-      <button class="fav ${fav?"active":""}" onclick='toggleFavorite(${JSON.stringify(String(x.id))})'><i class="fa-${fav?"solid":"regular"} fa-star"></i></button>
+      <button class="fav ${fav?"active":""}" onclick="toggleFavorite(${x.id})"><i class="fa-${fav?"solid":"regular"} fa-star"></i></button>
     </article>`
   }).join("");
 }
-function isFavorite(id){
-  return favorites.some(favId=>String(favId)===String(id));
-}
 function toggleFavorite(id){
-  id=String(id);
-  const i=favorites.findIndex(favId=>String(favId)===id);
+  const i=favorites.indexOf(id);
   if(i>=0)favorites.splice(i,1);else favorites.push(id);
   localStorage.setItem("ayu_favorites",JSON.stringify(favorites));
-  if(fcmInitialized && fcmToken && firebaseReady && notificationAuth?.currentUser && notificationDatabase){
-    notificationDatabase.ref("notificationTokens/"+notificationAuth.currentUser.uid+"/favorites").set(favorites).catch(e=>console.warn("FCM favorites sync error:",e));
+  if(fcmInitialized && fcmToken && firebaseReady){
+    firebase.database().ref("notificationTokens/"+encodeURIComponent(fcmToken)+"/favorites").set(favorites).catch(e=>console.warn("FCM favorites sync error:",e));
   }
   renderSchedule();
   updateFavoriteDelayAlert();
-  const e=timeScheduleData.find(x=>String(x.id)===id);ga("toggle_favorite",{item_id:id,item_name:e?.name||"",action:i>=0?"remove":"add"});
+  const e=timeScheduleData.find(x=>x.id===id);ga("toggle_favorite",{item_id:String(id),item_name:e?.name||"",action:i>=0?"remove":"add"});
 }
 function showScheduleHint(){
   if("Notification" in window && Notification.permission!=="granted"){
@@ -1072,18 +1067,9 @@ async function initFCM(){
 
     fcmInitialized=true;
 
-    // 一般ユーザー用の通知登録は、管理者ログインとは別の匿名Authで行う。
-    // Firebase Authenticationで「匿名」を有効にしておく必要があります。
-    if(!notificationAuth || !notificationDatabase){
-      throw new Error("FCM: 通知用Firebase Authの初期化に失敗しました。");
-    }
-    if(!notificationAuth.currentUser){
-      await notificationAuth.signInAnonymously();
-    }
-    const notificationUid=notificationAuth.currentUser?.uid;
-    if(!notificationUid)throw new Error("FCM: 通知登録用UIDを取得できませんでした。");
-
-    await notificationDatabase.ref("notificationTokens/"+notificationUid).set({
+    // 現在はログイン不要の一般ユーザーも通知登録できる構成。
+    // トークン自体をキーにしてFirebaseへ登録する。
+    await firebase.database().ref("notificationTokens/"+encodeURIComponent(fcmToken)).set({
       token:fcmToken,
       updatedAt:firebase.database.ServerValue.TIMESTAMP,
       userAgent:navigator.userAgent.slice(0,300),
@@ -1161,7 +1147,7 @@ function checkNotifications(){
   if(!("Notification" in window)||Notification.permission!=="granted")return;
   const now=new Date(),cur=now.getHours()*60+now.getMinutes();
   timeScheduleData.forEach(e=>{
-    if(!isFavorite(e.id))return;
+    if(!favorites.includes(e.id))return;
     if(notificationPrefs.tenMin===false)return;
     const d=Number(scheduleDelayMap[e.id]||0);
     const start=timeToMinutes(e.time.split("-")[0].trim());
@@ -1322,7 +1308,6 @@ async function saveDelay(){
   try{
     await firebase.database().ref(`scheduleDelays/${id}`).set(value);
     scheduleDelayMap[id]=value;
-    localStorage.setItem("ayu_demo_delays",JSON.stringify(scheduleDelayMap));
     renderSchedule();
     updateFavoriteDelayAlert();
     updateScheduleBadge();
@@ -1414,13 +1399,9 @@ function initFirebaseListeners(){
 
   firebase.database().ref("scheduleDelays").on("value",snapshot=>{
     const next=snapshot.val()||{};
-    // Firebaseから最新値を受け取ったらキャッシュも更新。
-    localStorage.setItem("ayu_demo_delays",JSON.stringify(next));
+    clearLocalDemoDelayCache();
 
-    if(!scheduleDelayInitialized){
-      // 初回受信は「現在の状態の読み込み」なので未読にはしない。
-      // 本当にこのページを開いている間に新しい遅延が発生した場合だけ「!」を出す。
-    }else{
+    if(scheduleDelayInitialized){
       let newDelayDetected=false;
       Object.keys(next).forEach(id=>{
         const old=Number(scheduleDelayMap[id]||0);
@@ -1433,7 +1414,7 @@ function initFirebaseListeners(){
         }
 
         // 遅延通知はお気に入り登録したイベントだけ。
-        if(e && isFavorite(e.id) && old!==now && now>0 && notificationPrefs.delay!==false){
+        if(e && favorites.includes(e.id) && old!==now && now>0 && notificationPrefs.delay!==false){
           if("Notification" in window && Notification.permission==="granted"){
             new Notification("お気に入りのイベントが遅延しています",{
               body:`⭐ ${e.name}\n約${now}分遅れています。`
@@ -1464,15 +1445,6 @@ function initFirebaseListeners(){
     console.error("broadcast listener error:",err);
   });
 }
-function showManagerLogin(){
-  const fields=document.getElementById("manager-login-fields");
-  const btn=document.getElementById("manager-login-open");
-  if(!fields)return;
-  fields.style.display="block";
-  if(btn)btn.style.display="none";
-  setTimeout(()=>document.getElementById("email")?.focus(),50);
-}
-
 async function login(){
   const email=document.getElementById("email").value.trim();
   const password=document.getElementById("password").value;
@@ -1504,24 +1476,11 @@ async function login(){
     error.textContent=messages[e.code]||"ログインに失敗しました。";
   }
 }
-async function logout(){
-  // 通知用匿名アカウントも管理者アカウントも、この画面からはログアウトさせない。
-  // 一般ユーザーが誤って通知用UIDを失うことを防ぎ、管理者の操作も固定します。
-  alert("このアプリでは、通知機能を維持するためログアウトはできません。");
-}
-
+async function logout(){if(firebaseReady){await firebase.auth().signOut();closeModal("modal-auth");}}
 function initAuth(){
   if(!firebaseReady)return;
 
   firebase.auth().onAuthStateChanged(async user=>{
-    // 旧バージョンで既定Authに匿名ユーザーが残っている場合は、
-    // 通知用Authへ役割を移したため既定Authからだけサインアウトする。
-    // 通知用Authの匿名セッションには影響しません。
-    if(user?.isAnonymous){
-      try{ await firebase.auth().signOut(); }catch(e){ console.error("旧一般Authの整理に失敗:",e); }
-      return;
-    }
-
     currentUser=user;
     currentUserIsAdmin=false;
     document.getElementById("auth-login").style.display=user?"none":"block";
@@ -1529,16 +1488,9 @@ function initAuth(){
     document.getElementById("admin-controls").style.display="none";
     document.getElementById("admin-tool-open").style.display="none";
 
-    if(!user){
-      // 管理者ログインフォームを毎回初期状態に戻す。
-      const fields=document.getElementById("manager-login-fields");
-      const btn=document.getElementById("manager-login-open");
-      if(fields)fields.style.display="none";
-      if(btn)btn.style.display="block";
-      return;
-    }
+    if(!user)return;
 
-    document.getElementById("user-name").textContent=user.email||"管理者アカウント";
+    document.getElementById("user-name").textContent=user.email||"ログイン中";
     try{
       const snap=await firebase.database().ref("admins/"+user.uid+"/role").once("value");
       currentUserIsAdmin=snap.val()==="admin";
@@ -1547,26 +1499,15 @@ function initAuth(){
     }
 
     const status=document.getElementById("admin-status");
-    if(currentUserIsAdmin){
-      status.textContent="🛡️ 管理者権限あり";
-      status.style.color="#166534";
-      document.getElementById("admin-controls").style.display="block";
-      document.getElementById("admin-tool-open").style.display="block";
-      loadAdminDays();
-      renderAdminScheduleDates();
-      renderAdminScheduleList();
-      renderAdminPlaceList();
-    }else{
-      // 管理者メールでログインしてもadmins/roleがなければ管理機能を開かない。
-      status.textContent="このアカウントには管理者権限がありません。";
-      status.style.color="#b91c1c";
-      document.getElementById("admin-controls").style.display="none";
-      document.getElementById("admin-tool-open").style.display="none";
-    }
+    status.textContent=currentUserIsAdmin?"🛡️ 管理者権限あり":"👤 一般アカウント";
+    status.style.color=currentUserIsAdmin?"#166534":"#6b7280";
+    document.getElementById("admin-controls").style.display=currentUserIsAdmin?"block":"none";
+    if(currentUserIsAdmin){loadAdminDays();renderAdminScheduleDates();renderAdminScheduleList();renderAdminPlaceList();}
   });
 }
 
 window.addEventListener("load",()=>{
+  if(firebaseReady)clearLocalDemoDelayCache();
   initMap();renderDayTabs();renderSchedule();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAuth();startNotifier();initFCM();
   if(!localStorage.getItem("ayu_welcome_seen")){setTimeout(()=>{openDrawer();openModal("modal-welcome");localStorage.setItem("ayu_welcome_seen","1")},450)}
 });
