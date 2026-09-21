@@ -1079,15 +1079,20 @@ async function initFCM(){
     // FCMトークンのSHA-256ハッシュをRealtime Databaseのキーとして使用する。
     const tokenHash = await makeNotificationTokenKey(fcmToken);
 
-    await firebase.database().ref("notificationTokens/"+tokenHash).set({
-      token:fcmToken,
-      tokenHash:tokenHash,
-      updatedAt:firebase.database.ServerValue.TIMESTAMP,
-      userAgent:navigator.userAgent.slice(0,300),
-      permission:"granted",
-      favorites:favorites || [],
-      notificationPrefs:notificationPrefs || {tenMin:true,delay:true}
-    });
+    // Rules の .validate と完全に一致する形で、必須6項目を明示的に登録する。
+    const registrationData = {
+      token: fcmToken,
+      tokenHash: tokenHash,
+      updatedAt: firebase.database.ServerValue.TIMESTAMP,
+      permission: "granted",
+      favorites: Array.isArray(favorites) ? favorites : [],
+      notificationPrefs: {
+        tenMin: notificationPrefs?.tenMin !== false,
+        delay: notificationPrefs?.delay !== false
+      }
+    };
+
+    await firebase.database().ref("notificationTokens/"+tokenHash).set(registrationData);
 
     fcmMessaging.onMessage(payload=>{
       console.log("FCM foreground message:",payload);
@@ -1097,6 +1102,14 @@ async function initFCM(){
     });
 
     console.log("FCM登録完了（App Check + token hash）", tokenHash);
+    console.log("FCM登録データ確認", {
+      hasToken: !!registrationData.token,
+      hasTokenHash: !!registrationData.tokenHash,
+      hasUpdatedAt: !!registrationData.updatedAt,
+      hasPermission: !!registrationData.permission,
+      hasFavorites: Array.isArray(registrationData.favorites),
+      hasNotificationPrefs: !!registrationData.notificationPrefs
+    });
     return fcmToken;
   }catch(err){
     console.error("FCM initialization error:",err);
