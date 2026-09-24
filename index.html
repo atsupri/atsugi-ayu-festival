@@ -269,7 +269,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.4.16</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.4.17</span></div>
   </div>
  </div>
 </div>
@@ -446,6 +446,7 @@ let fcmInitialized = false;
 let notificationPrefs = JSON.parse(localStorage.getItem("ayu_notification_prefs") || "{\"tenMin\":true,\"delay\":true}");
 let unreadFavoriteDelay = JSON.parse(localStorage.getItem("ayu_unread_favorite_delay") || "{}");
 let dismissedFavoriteDelay = JSON.parse(localStorage.getItem("ayu_dismissed_favorite_delay") || "{}");
+let currentFavoriteDelayAlertKey = "";
 try{
   if(firebaseConfig.apiKey.startsWith("YOUR_")) throw new Error("Firebase placeholder");
   firebase.initializeApp(firebaseConfig);
@@ -531,19 +532,16 @@ function closeAlert(){
   const bar=document.getElementById("global-alert");
   if(!bar)return;
 
-  // 「×」で閉じたお気に入り遅延は、再読み込みしても同じ遅延状態では再表示しない。
-  const delayedFavorites=timeScheduleData.filter(e=>
-    isFavorite(e.id) && Number(scheduleDelayMap[e.id]||0)>0
-  );
-  const e=delayedFavorites[0];
-  if(e){
-    const d=Number(scheduleDelayMap[e.id]||0);
-    const key=getFavoriteDelayDismissKey(e.id,d);
+  // 現在表示しているお気に入り遅延だけを閉じる。
+  // 複数の遅延がある場合でも、別イベントを誤ってdismissしない。
+  const key=currentFavoriteDelayAlertKey || bar.dataset.delayDismissKey || "";
+  if(key){
     dismissedFavoriteDelay[key]=true;
     localStorage.setItem("ayu_dismissed_favorite_delay",JSON.stringify(dismissedFavoriteDelay));
   }
 
   bar.style.display="none";
+  bar.dataset.delayDismissed="1";
 }
 
 function updateFavoriteDelayAlert(){
@@ -556,12 +554,12 @@ function updateFavoriteDelayAlert(){
     isFavorite(e.id) && Number(scheduleDelayMap[e.id]||0)>0
   );
 
-  // 現在存在しない遅延の「閉じる済み」記録は整理する。
-  const activeKeys=new Set(delayedFavorites.map(e=>
-    getFavoriteDelayDismissKey(e.id,Number(scheduleDelayMap[e.id]||0))
-  ));
+  // 現在存在しないイベントのdismiss記録だけを整理する。
+  // 同じイベント・同じ遅延の記録は、再読み込み後も残す。
+  const activeEventIds=new Set(delayedFavorites.map(e=>String(e.id)));
   Object.keys(dismissedFavoriteDelay).forEach(key=>{
-    if(!activeKeys.has(key))delete dismissedFavoriteDelay[key];
+    const eventId=String(key).split("_")[0];
+    if(!activeEventIds.has(eventId)) delete dismissedFavoriteDelay[key];
   });
   localStorage.setItem("ayu_dismissed_favorite_delay",JSON.stringify(dismissedFavoriteDelay));
 
@@ -571,12 +569,18 @@ function updateFavoriteDelayAlert(){
   });
 
   if(!visibleFavorite){
+    currentFavoriteDelayAlertKey="";
+    bar.dataset.delayDismissKey="";
     bar.style.display="none";
     msg.textContent="";
     return;
   }
 
   const d=Number(scheduleDelayMap[visibleFavorite.id]||0);
+  const key=getFavoriteDelayDismissKey(visibleFavorite.id,d);
+  currentFavoriteDelayAlertKey=key;
+  bar.dataset.delayDismissKey=key;
+  bar.dataset.delayDismissed="0";
   msg.textContent=`【お気に入り遅延】${visibleFavorite.name} は約${d}分遅れています。変更後：${shiftRange(visibleFavorite.time,d)}`;
   bar.style.display="block";
 }
