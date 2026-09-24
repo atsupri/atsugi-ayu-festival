@@ -5,19 +5,29 @@ on:
     - cron: "*/5 * * * *"
   workflow_dispatch:
 
+# 自動実行と手動実行が重なって同じ通知を二重送信しないよう、
+# このWorkflowは同時に1本だけ実行する。
+concurrency:
+  group: ayu-notification-worker
+  cancel-in-progress: false
+
 jobs:
   notification:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+
     steps:
       - name: リポジトリを取得
         uses: actions/checkout@v5
+
       - name: Node.jsをセットアップ
         uses: actions/setup-node@v5
         with:
           node-version: 24
+
       - name: Firebase Admin SDKをインストール
         run: npm install firebase-admin
+
       - name: 通知処理を実行
         env:
           FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
