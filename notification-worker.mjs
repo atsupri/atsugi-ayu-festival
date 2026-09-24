@@ -58,25 +58,8 @@ async function main() {
   const tokens = Object.entries(tokenSnap.val() || {}).map(([tokenHash,v]) => ({...v,tokenHash}));
   const {dateKey,minutes:nowMin} = nowJstParts();
 
-  // ① 管理者が追加・更新・削除したスケジュールの一斉通知
-  const updateSnap = await db.ref("broadcast/scheduleUpdates").get();
-  const updates = updateSnap.val() || {};
-  const stateRef = db.ref("notificationWorkerState");
-  const processedSnap = await stateRef.child("processedScheduleUpdates").get();
-  const processed = processedSnap.val() || {};
-  for (const [updateId,u] of Object.entries(updates)) {
-    if (!u || processed[updateId]) continue;
-    const s = u.schedule || {};
-    const actionText = u.action === "added" ? "追加しました！" : u.action === "updated" ? "更新しました！" : "削除しました！";
-    const body = u.action === "deleted"
-      ? `「${s.name || "スケジュール"}」の予定を削除しました。`
-      : `「${s.name || "スケジュール"}」\n${s.dateLabel || s.dateKey || ""} ${s.time || ""}`;
-    await sendToTokens(tokens, `スケジュールを${actionText}`, body);
-    processed[updateId] = true;
-  }
-  // processed mapが肥大化しないよう直近300件だけ残す
-  const processedEntries = Object.entries(processed).slice(-300);
-  await stateRef.child("processedScheduleUpdates").set(Object.fromEntries(processedEntries));
+  // スケジュール追加・更新・削除の一斉通知は送信しない。
+  // 通知対象は「お気に入りの遅延」と「お気に入りの10分前」の2種類だけ。
 
   // ② 遅延変更：お気に入り登録しているイベントだけ通知
   const delaySnap = await db.ref("scheduleDelays").get();
