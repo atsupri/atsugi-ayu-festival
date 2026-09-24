@@ -423,7 +423,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyAJ6MMsgtmKb9opkguQ2BnwUm4MUG51Fxk",
+  apiKey: "AIzaSyAJ6MmsgtmKb9opkguQ2BnwUm4MUG21Fxk",
   authDomain: "atsugi-ayu-festival.firebaseapp.com",
   databaseURL: "https://atsugi-ayu-festival-default-rtdb.firebaseio.com",
   projectId: "atsugi-ayu-festival",
@@ -433,12 +433,7 @@ const firebaseConfig = {
   measurementId: "G-Y0W73T4552"
 };
 let firebaseReady = false;
-// 通知用の匿名認証は管理者ログイン用の認証状態と分離します。
-// これにより一般ユーザーが管理者ログインをしても通知用UIDを失わず、
-// また管理者ログインの状態を通知システムから切り離せます。
-let notificationFirebase = null;
-let notificationAuth = null;
-let notificationDatabase = null;
+// 通知登録はFCM tokenHash方式で行うため、一般ユーザーのFirebase Authは不要です。
 // FCM Web Push用のVAPID公開鍵をここに設定してください。
 // Firebaseコンソール → プロジェクトの設定 → Cloud Messaging → Web Push証明書
 const FCM_VAPID_PUBLIC_KEY = "BBXrn-R_yF_N7wAtd57t42omm8CusCC9PgGu6Y3KOYferTccOqMwUYFrB_9LUG7edrmKAWF2K81Nqd2pxvn00cY";
@@ -980,20 +975,32 @@ function renderSchedule(){
 function isFavorite(id){
   return favorites.some(favId=>String(favId)===String(id));
 }
+function syncNotificationRecord(){
+  if(!fcmToken || !firebaseReady)return Promise.resolve();
+  return (async()=>{
+    try{
+      const tokenHash=window.notificationTokenHash || await makeNotificationTokenKey(fcmToken);
+      window.notificationTokenHash=tokenHash;
+      await firebase.database().ref("notificationTokens/"+tokenHash).update({
+        token:fcmToken,
+        tokenHash,
+        updatedAt:firebase.database.ServerValue.TIMESTAMP,
+        userAgent:navigator.userAgent.slice(0,300),
+        permission:"granted",
+        favorites:Array.isArray(favorites) ? favorites.map(String) : [],
+        notificationPrefs:notificationPrefs || {tenMin:true,delay:true}
+      });
+    }catch(e){
+      console.warn("FCM notification record sync error:",e);
+    }
+  })();
+}
 function toggleFavorite(id){
   id=String(id);
   const i=favorites.findIndex(favId=>String(favId)===id);
   if(i>=0)favorites.splice(i,1);else favorites.push(id);
   localStorage.setItem("ayu_favorites",JSON.stringify(favorites));
-  if(fcmToken && firebaseReady){
-    (async()=>{
-      try{
-        const tokenHash=window.notificationTokenHash || await makeNotificationTokenKey(fcmToken);
-        window.notificationTokenHash=tokenHash;
-        await firebase.database().ref("notificationTokens/"+tokenHash+"/favorites").set(favorites);
-      }catch(e){console.warn("FCM favorites sync error:",e)}
-    })();
-  }
+  syncNotificationRecord();
   renderSchedule();
   updateFavoriteDelayAlert();
   const e=timeScheduleData.find(x=>String(x.id)===id);ga("toggle_favorite",{item_id:id,item_name:e?.name||"",action:i>=0?"remove":"add"});
@@ -1016,6 +1023,7 @@ function saveNotifyPrefs(){
     delay:document.getElementById("notify-delay")?.checked!==false
   };
   localStorage.setItem("ayu_notification_prefs",JSON.stringify(notificationPrefs));
+  syncNotificationRecord();
 }
 function loadNotifyPrefs(){
   const a=document.getElementById("notify-10min"),b=document.getElementById("notify-delay");
@@ -1098,6 +1106,7 @@ async function initFCM(){
       updatedAt:firebase.database.ServerValue.TIMESTAMP,
       userAgent:navigator.userAgent.slice(0,300),
       permission:"granted",
+      favorites:Array.isArray(favorites) ? favorites.map(String) : [],
       notificationPrefs:notificationPrefs || {tenMin:true,delay:true}
     });
     window.notificationTokenHash = tokenHash;
@@ -1166,25 +1175,6 @@ async function requestNotification(closeWelcome=false){
     alert("通知の許可画面を開けませんでした。ブラウザの遅延設定をご確認ください。");
   }
 }
-function startNotifier(){setInterval(checkNotifications,30000)}
-function checkNotifications(){
-  if(!("Notification" in window)||Notification.permission!=="granted")return;
-  const now=new Date(),cur=now.getHours()*60+now.getMinutes();
-  timeScheduleData.forEach(e=>{
-    if(!isFavorite(e.id))return;
-    if(notificationPrefs.tenMin===false)return;
-    const d=Number(scheduleDelayMap[e.id]||0);
-    const start=timeToMinutes(e.time.split("-")[0].trim());
-    if(start===null)return;
-    const diff=start+d-cur;
-    const k=`fav_${e.id}_${currentDay}`;
-    if(diff>0&&diff<=10&&!notified[k]){
-      new Notification("まもなく開始します！",{body:`⭐ ${e.name}\n開始予定: ${shiftRange(e.time,d).split(" - ")[0]}`});
-      notified[k]=true;localStorage.setItem("ayu_notified",JSON.stringify(notified));
-    }
-  })
-}
-
 async function initPlaceDataListener(){
   if(!firebaseReady)return;
   firebase.database().ref("places").on("value",snapshot=>{
@@ -1484,16 +1474,8 @@ function initFirebaseListeners(){
           newDelayDetected=true;
         }
 
-        // 遅延通知はお気に入り登録したイベントだけ。
-        if(e && isFavorite(e.id) && old!==now && now>0 && notificationPrefs.delay!==false){
-          if("Notification" in window && Notification.permission==="granted"){
-            new Notification("お気に入りのイベントが遅延しています",{
-              body:`⭐ ${e.name}\n約${now}分遅れています。`
-            });
-          }else if(document.visibilityState==="visible"){
-            showInAppToast("お気に入りのイベントが遅延しています",`${e.name} の開始時刻が約${now}分変更されました。`);
-          }
-        }
+        // 通知そのものはページの開閉に関係なくGitHub ActionsのFCM Workerから送信する。
+        // ここでは未読バッジと画面表示だけを更新し、ページ側から直接Notificationを発火しない。
       });
       if(newDelayDetected)markScheduleUnread();
     }
@@ -1610,7 +1592,7 @@ function initAuth(){
 }
 
 window.addEventListener("load",()=>{
-  initMap();renderDayTabs();renderSchedule();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAuth();startNotifier();initFCM();
+  initMap();renderDayTabs();renderSchedule();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAuth();initFCM();
   if(!localStorage.getItem("ayu_welcome_seen")){setTimeout(()=>{openDrawer();openModal("modal-welcome");localStorage.setItem("ayu_welcome_seen","1")},450)}
 });
 </script>
