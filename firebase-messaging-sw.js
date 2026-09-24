@@ -2,7 +2,7 @@ importScripts("https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js
 importScripts("https://www.gstatic.com/firebasejs/12.19.0/firebase-messaging-compat.js");
 
 firebase.initializeApp({
-  apiKey: "AIzaSyAJ6MmsgtmKb9opkgu2BnwUm4MUG21Fxk",
+  apiKey: "AIzaSyAJ6MmsgtmKb9opkgu2Q2BnwUm4MUG21Fxk",
   authDomain: "atsugi-ayu-festival.firebaseapp.com",
   projectId: "atsugi-ayu-festival",
   storageBucket: "atsugi-ayu-festival.firebasestorage.app",
@@ -13,34 +13,31 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// data-only FCMでも閉じたページで通知を表示できるようにする。
-messaging.onBackgroundMessage((payload) => {
-  console.log("FCM background message:", payload);
-
+messaging.onBackgroundMessage(payload => {
   const title = payload.notification?.title || payload.data?.title || "あつぎ鮎まつり案内";
   const body = payload.notification?.body || payload.data?.body || "新しいお知らせがあります。";
-  const icon = payload.notification?.icon || payload.data?.icon || "/ayu-festival/icon-192.png";
+  const url = payload.data?.url || "./";
 
-  self.registration.showNotification(title, {
+  return self.registration.showNotification(title, {
     body,
-    icon,
-    badge: icon,
-    data: { url: payload.data?.url || "/" }
+    icon: "./favicon.ico",
+    badge: "./favicon.ico",
+    data: { url }
   });
 });
 
-self.addEventListener("notificationclick", (event) => {
+self.addEventListener("notificationclick", event => {
   event.notification.close();
-  const url = event.notification.data?.url || "/";
+  const url = event.notification?.data?.url || "./";
   event.waitUntil(
-    clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
-      for (const client of clientList) {
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then(list => {
+      for (const client of list) {
         if ("focus" in client) {
-          if ("navigate" in client) client.navigate(url);
+          client.navigate(url);
           return client.focus();
         }
       }
-      if (clients.openWindow) return clients.openWindow(url);
+      return clients.openWindow(url);
     })
   );
 });

@@ -22,7 +22,6 @@ gtag('config', 'G-Y0W73T4552', {
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -84,7 +83,11 @@ button,input,select{font:inherit}
 .side-btn{width:100%;border:0;background:#fff;text-align:left;padding:12px 8px;border-radius:8px;font-size:13px;color:var(--text)}
 .side-btn:active{background:#ecfdf5}
 .side-btn i{width:23px;color:var(--primary);margin-right:5px;text-align:center}
-.side-footer-links{margin-top:auto;padding-top:18px;text-align:center;font-size:10px;color:#9ca3af;line-height:1.7}.quiet-admin-link{border:0;background:none;color:#b6bcc5;font-size:10px;padding:7px 8px;cursor:pointer}.quiet-admin-link:hover{color:#6b7280}
+.side-footer-links{margin-top:auto;padding-top:18px;text-align:center;font-size:10px;color:#9ca3af;line-height:1.7} .quiet-admin-link{border:0;background:none;color:#b6bcc5;font-size:10px;padding:7px 8px;cursor:pointer}.quiet-admin-link:hover{color:#6b7280}
+.manager-login-note{padding:10px;background:#f8fafc;border:1px solid var(--border);border-radius:10px;font-size:12px;line-height:1.6;color:#6b7280;margin-bottom:10px}
+.manager-login-btn{width:100%;padding:11px;border:1px solid #99f6e4;border-radius:9px;background:#ecfdf5;color:#065f46;font-weight:900;margin-top:4px}
+.manager-login-btn:active{transform:scale(.98)}
+
 .side-footer-note{font-size:11px;color:var(--sub);line-height:1.6;border-top:1px dashed var(--border);margin-top:18px;padding-top:12px}
 .modal{display:none;position:fixed;inset:0;background:#0007;z-index:3000;align-items:center;justify-content:center;padding:16px}.modal.show{display:flex}
 .modal-card{background:white;border-radius:16px;width:min(520px,100%);max-height:90vh;overflow:auto;padding:18px}
@@ -103,7 +106,8 @@ button,input,select{font:inherit}
 .admin-accordion-item.open .admin-accordion-arrow{transform:rotate(90deg)}
 .admin-accordion-panel{display:none;padding:0 12px 13px;border-top:1px solid #f0f1f3;background:#fff}
 .admin-accordion-item.open .admin-accordion-panel{display:block}
-.admin-section-title{font-size:14px;font-weight:900;margin:12px 0 8px}.admin-schedule-list{max-height:300px;overflow:auto;margin-top:9px}.admin-schedule-row{display:flex;gap:7px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-schedule-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-schedule-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-schedule-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-schedule-edit{background:#ecfdf5;color:#065f46}.admin-schedule-delete{background:#fef2f2;color:#b91c1c}.admin-schedule-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-schedule-form.show{display:block}.admin-schedule-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-schedule-form input,.admin-schedule-form textarea,.admin-schedule-form select{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-schedule-time-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-schedule-actions{display:flex;gap:7px;margin-top:9px}.admin-schedule-actions button{flex:1}.admin-place-tools{margin-top:12px;border-top:1px dashed var(--border);padding-top:14px}.admin-place-tools h4{margin-bottom:8px}.admin-place-list{max-height:260px;overflow:auto;margin-top:8px}.admin-place-row{display:flex;gap:8px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-place-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-place-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-place-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-place-edit{background:#ecfdf5;color:#065f46}.admin-place-delete{background:#fef2f2;color:#b91c1c}.admin-place-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-place-form.show{display:block}.admin-place-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-place-form input,.admin-place-form select,.admin-place-form textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-place-form textarea{min-height:70px;resize:vertical}.admin-place-map-picker{height:240px;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:7px;background:#fff}.admin-place-location{font-size:11px;color:#6b7280;margin-top:6px;line-height:1.5}.admin-place-actions{display:flex;gap:7px;margin-top:9px}.admin-place-actions button{flex:1}.admin-place-upload{font-size:11px;color:#6b7280;margin-top:5px}.admin-migrate-note{font-size:11px;color:#6b7280;line-height:1.5;margin:7px 0}
+.admin-section-title{font-size:14px;font-weight:900;margin:12px 0 8px}.admin-schedule-list{max-height:300px;overflow:auto;margin-top:9px}.admin-schedule-row{display:flex;gap:7px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-schedule-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-schedule-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-schedule-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-schedule-edit{background:#ecfdf5;color:#065f46}.admin-schedule-delete{background:#fef2f2;color:#b91c1c}.admin-schedule-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-schedule-form.show{display:block}.admin-schedule-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-schedule-form input,.admin-schedule-form textarea,.admin-schedule-form select{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-schedule-time-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-schedule-actions{display:flex;gap:7px;margin-top:9px}.admin-schedule-actions button{flex:1}.admin-place-tools{margin-top:12px;border-top:1px dashed var(--border);padding-top:14px}.admin-place-tools h4{margin-bottom:8px}.admin-place-list{max-height:260px;overflow:auto;margin-top:8px}.admin-place-row{display:flex;gap:8px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-place-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-place-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-place-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-place-edit{background:#ecfdf5;color:#065f46}.admin-place-delete{background:#fef2f2;color:#b91c1c}.admin-icon-palette{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}.admin-icon-option{border:1px solid var(--border);background:#fff;border-radius:9px;padding:7px 3px;display:flex;flex-direction:column;align-items:center;gap:4px;color:#374151;cursor:pointer}.admin-icon-option i{font-size:18px}.admin-icon-option span{font-size:9px;white-space:nowrap}.admin-icon-option.selected{border-color:#0f766e;background:#ecfdf5;color:#065f46;box-shadow:0 0 0 2px #99f6e4}.admin-pin-options{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-pin-choice{display:flex;align-items:center;gap:7px}.admin-pin-preview{width:24px;height:24px;display:grid;place-items:center;color:#fff;border:2px solid #fff;box-shadow:0 1px 4px #0004}.admin-pin-preview.circle{border-radius:50%}.admin-pin-preview.rect{border-radius:5px}
+.admin-place-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-place-form.show{display:block}.admin-place-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-place-form input,.admin-place-form select,.admin-place-form textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-place-form textarea{min-height:70px;resize:vertical}.admin-place-map-picker{height:240px;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:7px;background:#fff}.admin-place-location{font-size:11px;color:#6b7280;margin-top:6px;line-height:1.5}.admin-place-actions{display:flex;gap:7px;margin-top:9px}.admin-place-actions button{flex:1}.admin-place-upload{font-size:11px;color:#6b7280;margin-top:5px}.admin-migrate-note{font-size:11px;color:#6b7280;line-height:1.5;margin:7px 0}
 
 /* =========================================================
    v1.4.0：店舗選択・操作アニメーション
@@ -265,7 +269,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.4.4</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.4.5</span></div>
   </div>
  </div>
 </div>
@@ -320,18 +324,24 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
 <div id="modal-auth" class="modal" onclick="overlayClose(event,'modal-auth')">
  <div class="modal-card">
   <div class="modal-title"><h3>🛠️ 関係者ログイン</h3><button onclick="closeModal('modal-auth')">×</button></div>
-  <p style="font-size:11px;color:#6b7280;margin:-5px 0 8px">Firebase Authenticationで登録された関係者アカウント専用です。</p>
+  <p style="font-size:11px;color:#6b7280;margin:-5px 0 8px">この画面は管理者用です。通知用の一般アカウントは、この端末からログアウトしない仕組みになっています。</p>
   <div id="auth-login">
-   <input id="email" class="auth-input" type="email" placeholder="メールアドレス">
-   <input id="password" class="auth-input" type="password" placeholder="パスワード">
-   <button class="auth-btn" onclick="login()">ログイン</button>
-   <p id="auth-error" style="color:#b91c1c;font-size:12px;margin-top:8px"></p>
+   <div class="manager-login-note">
+    👤 通知用アカウントはこの端末で自動的に維持されます。<br>
+    管理者以外の方は、ここでログインする必要はありません。
+   </div>
+   <button id="manager-login-open" class="manager-login-btn" type="button" onclick="showManagerLogin()">🛡️ 管理者はこちら</button>
+   <div id="manager-login-fields" style="display:none;margin-top:10px">
+    <input id="email" class="auth-input" type="email" placeholder="管理者メールアドレス">
+    <input id="password" class="auth-input" type="password" placeholder="管理者パスワード">
+    <button class="auth-btn" onclick="login()">管理者としてログイン</button>
+    <p id="auth-error" style="color:#b91c1c;font-size:12px;margin-top:8px"></p>
+   </div>
   </div>
   <div id="auth-logged" style="display:none">
    <p id="user-name" style="font-weight:800"></p>
    <p id="admin-status" style="font-size:12px;color:#6b7280;margin:5px 0 10px"></p>
    <button id="admin-tool-open" class="auth-btn" style="display:none;background:#0f766e" onclick="openAdminTool()">🛠️ 管理者ツールを開く</button>
-   <button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="logout()">ログアウト</button>
    <div id="admin-controls" class="admin-box" style="display:none">
     <h4>🛠️ 管理者ツール</h4>
     <div class="admin-accordion" id="admin-accordion">
@@ -369,7 +379,13 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
             <label>検索キーワード</label><input id="place-search-keywords" placeholder="例：やきそば,ヤキソバ,ソース焼きそば">
             <div class="admin-place-upload">カンマ・読点・改行で区切れます。店舗名にない呼び方もここに追加できます。</div>
             <label>種類</label><select id="place-type"><option value="shop">店舗</option><option value="food">飲食</option><option value="stage">ステージ・会場</option><option value="info">案内・施設</option><option value="toilet">トイレ</option></select>
-            <label>アイコン</label><input id="place-icon" value="fa-store" placeholder="例：fa-store">
+            <label>アイコン</label>
+            <input id="place-icon" type="hidden" value="fa-store">
+            <div id="place-icon-palette" class="admin-icon-palette"></div>
+            <div class="admin-pin-options" style="margin-top:8px">
+              <div><label>形</label><select id="place-pin-shape" class="auth-input"><option value="rect">四角</option><option value="circle">丸</option></select></div>
+              <div><label>色</label><select id="place-pin-color" class="auth-input"><option value="#0f766e">緑</option><option value="#f59e0b">黄色</option><option value="#2563eb">青</option><option value="#dc2626">赤</option><option value="#7c3aed">紫</option><option value="#6b7280">グレー</option></select></div>
+            </div>
             <label>地図</label><select id="place-map" onchange="resetPlacePicker()"><option value="park">中央公園</option><option value="station">本厚木駅周辺</option></select>
             <div id="place-picker-map" class="admin-place-map-picker"></div>
             <div id="place-location-text" class="admin-place-location">地図をタップして位置を指定してください。</div>
@@ -417,36 +433,27 @@ const firebaseConfig = {
   measurementId: "G-Y0W73T4552"
 };
 let firebaseReady = false;
+// 通知用の匿名認証は管理者ログイン用の認証状態と分離します。
+// これにより一般ユーザーが管理者ログインをしても通知用UIDを失わず、
+// また管理者ログインの状態を通知システムから切り離せます。
+let notificationFirebase = null;
+let notificationAuth = null;
+let notificationDatabase = null;
 // FCM Web Push用のVAPID公開鍵をここに設定してください。
 // Firebaseコンソール → プロジェクトの設定 → Cloud Messaging → Web Push証明書
 const FCM_VAPID_PUBLIC_KEY = "BBXrn-R_yF_N7wAtd57t42omm8CusCC9PgGu6Y3KOYferTccOqMwUYFrB_9LUG7edrmKAWF2K81Nqd2pxvn00cY";
 let fcmMessaging = null;
 let fcmToken = "";
-let fcmTokenHash = "";
 let fcmInitialized = false;
 let notificationPrefs = JSON.parse(localStorage.getItem("ayu_notification_prefs") || "{\"tenMin\":true,\"delay\":true}");
 let unreadFavoriteDelay = JSON.parse(localStorage.getItem("ayu_unread_favorite_delay") || "{}");
 try{
   if(firebaseConfig.apiKey.startsWith("YOUR_")) throw new Error("Firebase placeholder");
   firebase.initializeApp(firebaseConfig);
-
-  // Firebase App Check（reCAPTCHA Enterprise）
-  // ※EnforcementはFirebase Console側で確認後に有効化します。
-  const APP_CHECK_SITE_KEY = "6LcNxMYtAAAAAM3AhpQJ963fl4VpjODMlMufoPft";
-  if(window.firebase?.appCheck && APP_CHECK_SITE_KEY){
-    try{
-      firebase.appCheck().activate(
-        new firebase.appCheck.ReCaptchaEnterpriseProvider(APP_CHECK_SITE_KEY),
-        true
-      );
-      console.log("Firebase App Check 初期化完了");
-    }catch(appCheckError){
-      console.warn("Firebase App Checkの初期化に失敗しました。", appCheckError);
-    }
-  }
-
+  // 管理者Authと一般ユーザーの通知登録を完全に分離します。
+  // 通知登録はFCM tokenHash方式のため、一般ユーザーのAuthは不要です。
   firebaseReady = true;
-}catch(e){ console.warn("Firebaseは未設定の仮状態です。"); }
+}catch(e){ console.warn("Firebaseは未設定の仮状態です。", e); }
 
 const MAPS = {
  park:{image:"map_central_park.png"},
@@ -499,8 +506,8 @@ let scheduleFirebaseLoaded=false;
 
 let currentMap="park", currentDay="2026-10-10";
 let map, imageLayer, tileLayer, markerLayer, myLocationMarker, myAccuracyCircle, locationWatchId=null;
-let favorites=JSON.parse(localStorage.getItem("ayu_favorites")||"[]");
-let scheduleDelayMap=firebaseReady ? {} : JSON.parse(localStorage.getItem("ayu_demo_delays")||"{}");
+let favorites=JSON.parse(localStorage.getItem("ayu_favorites")||"[]").map(String);
+let scheduleDelayMap=JSON.parse(localStorage.getItem("ayu_demo_delays")||"{}");
 let currentDelay=0, currentUser=null, currentUserIsAdmin=false;
 let scheduleDelayInitialized=false;
 let scheduleUnread=false;
@@ -527,7 +534,7 @@ function updateFavoriteDelayAlert(){
 
   // 上部の赤いバーはお気に入りイベントだけを対象にする。
   const delayedFavorites=timeScheduleData.filter(e=>
-    favorites.includes(e.id) && Number(scheduleDelayMap[e.id]||0)>0
+    isFavorite(e.id) && Number(scheduleDelayMap[e.id]||0)>0
   );
 
   if(!delayedFavorites.length){
@@ -750,7 +757,8 @@ function renderMapMarkers(){
   markerLayer.clearLayers();
 
   placeData.filter(p=>p.map===currentMap).forEach(p=>{
-    const style = PIN_TYPES[p.type] || PIN_TYPES.shop;
+    const baseStyle = PIN_TYPES[p.type] || PIN_TYPES.shop;
+    const style = {shape:p.pinShape||baseStyle.shape,bg:p.pinColor||baseStyle.bg};
     const isCircle = style.shape === "circle";
     const width = isCircle ? 34 : PIN_STYLE.width;
     const height = isCircle ? 34 : PIN_STYLE.height;
@@ -958,30 +966,37 @@ function renderSchedule(){
     .slice()
     .sort((a,b)=>timeToMinutes(a.time.split("-")[0].trim())-timeToMinutes(b.time.split("-")[0].trim()));
   el.innerHTML=items.map(x=>{
-    const d=Number(scheduleDelayMap[x.id]||0), delayed=d>0, fav=favorites.includes(x.id);
+    const d=Number(scheduleDelayMap[x.id]||0), delayed=d>0, fav=isFavorite(x.id);
     return `<article class="event ${delayed?"delayed":""}">
       <div class="event-main">
         <div class="time">${x.time}</div>
         <div class="event-name">${x.name}</div>
         ${delayed?`<div class="delay">⚠️ ${d}分遅れ → ${shiftRange(x.time,d)}</div>`:""}
       </div>
-      <button class="fav ${fav?"active":""}" onclick="toggleFavorite(${x.id})"><i class="fa-${fav?"solid":"regular"} fa-star"></i></button>
+      <button class="fav ${fav?"active":""}" onclick='toggleFavorite(${JSON.stringify(String(x.id))})'><i class="fa-${fav?"solid":"regular"} fa-star"></i></button>
     </article>`
   }).join("");
 }
+function isFavorite(id){
+  return favorites.some(favId=>String(favId)===String(id));
+}
 function toggleFavorite(id){
-  const i=favorites.indexOf(id);
+  id=String(id);
+  const i=favorites.findIndex(favId=>String(favId)===id);
   if(i>=0)favorites.splice(i,1);else favorites.push(id);
   localStorage.setItem("ayu_favorites",JSON.stringify(favorites));
-  if(fcmInitialized && fcmToken && firebaseReady){
-    makeNotificationTokenKey(fcmToken).then(tokenHash=>{
-      firebase.database().ref("notificationTokens/"+tokenHash+"/favorites").set(favorites)
-        .catch(e=>console.warn("FCM favorites sync error:",e));
-    }).catch(e=>console.warn("FCM token hash error:",e));
+  if(fcmToken && firebaseReady){
+    (async()=>{
+      try{
+        const tokenHash=window.notificationTokenHash || await makeNotificationTokenKey(fcmToken);
+        window.notificationTokenHash=tokenHash;
+        await firebase.database().ref("notificationTokens/"+tokenHash+"/favorites").set(favorites);
+      }catch(e){console.warn("FCM favorites sync error:",e)}
+    })();
   }
   renderSchedule();
   updateFavoriteDelayAlert();
-  const e=timeScheduleData.find(x=>x.id===id);ga("toggle_favorite",{item_id:String(id),item_name:e?.name||"",action:i>=0?"remove":"add"});
+  const e=timeScheduleData.find(x=>String(x.id)===id);ga("toggle_favorite",{item_id:id,item_name:e?.name||"",action:i>=0?"remove":"add"});
 }
 function showScheduleHint(){
   if("Notification" in window && Notification.permission!=="granted"){
@@ -1034,11 +1049,9 @@ function clearScheduleUnread(){
 }
 
 async function makeNotificationTokenKey(token){
-  const data = new TextEncoder().encode(token);
-  const digest = await crypto.subtle.digest("SHA-256", data);
-  return Array.from(new Uint8Array(digest))
-    .map(b=>b.toString(16).padStart(2,"0"))
-    .join("");
+  const data=new TextEncoder().encode(String(token));
+  const hash=await crypto.subtle.digest("SHA-256",data);
+  return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,"0")).join("");
 }
 
 async function initFCM(){
@@ -1076,20 +1089,18 @@ async function initFCM(){
 
     fcmInitialized=true;
 
-    // 一般ユーザーの通知登録はFirebase Authenticationを使わず、
-    // FCMトークンのSHA-256ハッシュをRealtime Databaseのキーとして使用する。
+    // 一般ユーザーの通知登録はFirebase Authenticationに依存しません。
+    // FCMトークンからSHA-256のtokenHashを作り、notificationTokens/{tokenHash}へ保存します。
     const tokenHash = await makeNotificationTokenKey(fcmToken);
-    fcmTokenHash = tokenHash;
-
     await firebase.database().ref("notificationTokens/"+tokenHash).set({
       token:fcmToken,
-      tokenHash:tokenHash,
+      tokenHash,
       updatedAt:firebase.database.ServerValue.TIMESTAMP,
       userAgent:navigator.userAgent.slice(0,300),
       permission:"granted",
-      favorites:favorites || [],
       notificationPrefs:notificationPrefs || {tenMin:true,delay:true}
     });
+    window.notificationTokenHash = tokenHash;
 
     fcmMessaging.onMessage(payload=>{
       console.log("FCM foreground message:",payload);
@@ -1098,7 +1109,7 @@ async function initFCM(){
       showInAppToast(title,body);
     });
 
-    console.log("FCM登録完了（App Check + token hash）", tokenHash);
+    console.log("FCM登録完了",fcmToken);
     return fcmToken;
   }catch(err){
     console.error("FCM initialization error:",err);
@@ -1160,7 +1171,7 @@ function checkNotifications(){
   if(!("Notification" in window)||Notification.permission!=="granted")return;
   const now=new Date(),cur=now.getHours()*60+now.getMinutes();
   timeScheduleData.forEach(e=>{
-    if(!favorites.includes(e.id))return;
+    if(!isFavorite(e.id))return;
     if(notificationPrefs.tenMin===false)return;
     const d=Number(scheduleDelayMap[e.id]||0);
     const start=timeToMinutes(e.time.split("-")[0].trim());
@@ -1188,6 +1199,26 @@ async function initPlaceDataListener(){
   },err=>console.error("places listener error:",err));
 }
 
+const PLACE_ICON_OPTIONS=[
+  ["fa-tree","木"],["fa-store","店舗"],["fa-utensils","飲食"],["fa-music","音楽"],["fa-person-running","ダンス"],
+  ["fa-circle-info","案内"],["fa-restroom","トイレ"],["fa-location-dot","会場"],["fa-camera","写真"],["fa-bus","バス"],
+  ["fa-train","駅"],["fa-car","駐車場"],["fa-ticket","受付"],["fa-heart","救護"],["fa-phone","電話"]
+];
+function renderPlaceIconPalette(selected="fa-store"){
+  const el=document.getElementById("place-icon-palette");if(!el)return;
+  el.innerHTML=PLACE_ICON_OPTIONS.map(([icon,label])=>`<button type="button" class="admin-icon-option ${icon===selected?"selected":""}" onclick="selectPlaceIcon('${icon}')"><i class="fa-solid ${icon}"></i><span>${label}</span></button>`).join("");
+}
+function selectPlaceIcon(icon){
+  const input=document.getElementById("place-icon");if(input)input.value=icon;
+  renderPlaceIconPalette(icon);
+}
+function setPlacePinChoices(p){
+  const type=p?.type||"shop";const style=PIN_TYPES[type]||PIN_TYPES.shop;
+  const shape=document.getElementById("place-pin-shape"),color=document.getElementById("place-pin-color");
+  if(shape)shape.value=p?.pinShape||style.shape;
+  if(color)color.value=p?.pinColor||style.bg;
+}
+
 function openPlaceEditor(id=null){
   if(!currentUserIsAdmin){alert("管理者権限が必要です。");return;}
   const form=document.getElementById("admin-place-form");
@@ -1201,7 +1232,9 @@ function openPlaceEditor(id=null){
   document.getElementById("place-search-keywords").value=Array.isArray(p?.searchKeywords)?p.searchKeywords.join(", "):(p?.searchKeywords||"");
   document.getElementById("place-type").value=p?.type||"shop";
   document.getElementById("place-icon").value=p?.icon||"fa-store";
+  renderPlaceIconPalette(p?.icon||"fa-store");
   document.getElementById("place-map").value=p?.map||"park";
+  setPlacePinChoices(p);
   document.getElementById("place-image-name").value=p?.image||"";
   placePickerPosition=p ? (p.map==="station" ? {lat:p.lat,lng:p.lng} : {x:p.x,y:p.y}) : null;
   resetPlacePicker();
@@ -1256,7 +1289,9 @@ async function savePlaceFromAdmin(){
   const image=document.getElementById("place-image-name").value.trim();
   try{
     const searchKeywords=String(document.getElementById("place-search-keywords").value||"").split(/[,、\n]/).map(v=>v.trim()).filter(Boolean);
-    const p={id,map:mapKey,name,detail:document.getElementById("place-detail").value.trim(),description:document.getElementById("place-description").value.trim(),searchKeywords,image,icon:document.getElementById("place-icon").value.trim()||"fa-store",type:document.getElementById("place-type").value};
+    const type=document.getElementById("place-type").value;
+    const typeStyle=PIN_TYPES[type]||PIN_TYPES.shop;
+    const p={id,map:mapKey,name,detail:document.getElementById("place-detail").value.trim(),description:document.getElementById("place-description").value.trim(),searchKeywords,image,icon:document.getElementById("place-icon").value.trim()||"fa-store",type,pinShape:document.getElementById("place-pin-shape")?.value||typeStyle.shape,pinColor:document.getElementById("place-pin-color")?.value||typeStyle.bg};
     if(mapKey==="station"){p.lat=placePickerPosition.lat;p.lng=placePickerPosition.lng;}else{p.x=Math.round(placePickerPosition.x);p.y=Math.round(placePickerPosition.y);}
     await firebase.database().ref("places/"+id).set(p);
     alert(editId?"店舗情報を更新しました。":"店舗・施設を追加しました。");
@@ -1321,6 +1356,7 @@ async function saveDelay(){
   try{
     await firebase.database().ref(`scheduleDelays/${id}`).set(value);
     scheduleDelayMap[id]=value;
+    localStorage.setItem("ayu_demo_delays",JSON.stringify(scheduleDelayMap));
     renderSchedule();
     updateFavoriteDelayAlert();
     updateScheduleBadge();
@@ -1374,9 +1410,19 @@ async function saveScheduleFromAdmin(){
   if(timeToMinutes(start)>=timeToMinutes(end)){alert("終了時刻は開始時刻より後にしてください。");return;}
   const id=editId||`event-${Date.now()}`;
   const d=new Date(`${dateKey}T00:00:00`);
-  const data={id,dateKey,dateLabel:dateLabelFromKey(dateKey),day:d.getDate(),start,end,time:`${start} - ${end}`,name,venue};
+  const existing=editId ? timeScheduleData.find(x=>String(x.id)===String(editId)) : null;
+  const data={
+    id,dateKey,dateLabel:dateLabelFromKey(dateKey),day:d.getDate(),start,end,
+    time:`${start} - ${end}`,name,venue:existing?.venue||""
+  };
   try{
     await firebase.database().ref(`schedule/${id}`).set(data);
+    await firebase.database().ref(`broadcast/scheduleUpdates/${id}-${Date.now()}`).set({
+      type:"schedule-update",
+      action:editId?"updated":"added",
+      timestamp:firebase.database.ServerValue.TIMESTAMP,
+      schedule:data
+    });
     closeScheduleEditor();
     alert(editId?"スケジュールを更新しました。":"スケジュールを追加しました。");
   }catch(e){console.error(e);alert("保存に失敗しました。Firebase Rulesと管理者権限を確認してください。");}
@@ -1385,7 +1431,15 @@ async function deleteScheduleFromAdmin(id){
   if(!currentUserIsAdmin)return;
   const e=timeScheduleData.find(x=>String(x.id)===String(id));if(!e)return;
   if(!confirm(`「${e.name}」を削除しますか？`))return;
-  try{await firebase.database().ref(`schedule/${id}`).remove();await firebase.database().ref(`scheduleDelays/${id}`).remove();alert("削除しました。");}catch(err){console.error(err);alert("削除に失敗しました。Firebase Rulesを確認してください。");}
+  try{
+    await firebase.database().ref(`schedule/${id}`).remove();
+    await firebase.database().ref(`scheduleDelays/${id}`).remove();
+    await firebase.database().ref(`broadcast/scheduleUpdates/${id}-${Date.now()}`).set({
+      type:"schedule-update",action:"deleted",timestamp:firebase.database.ServerValue.TIMESTAMP,
+      schedule:{id:e.id,dateKey:e.dateKey,dateLabel:e.dateLabel,start:e.start,end:e.end,time:e.time,name:e.name,venue:e.venue||""}
+    });
+    alert("削除しました。");
+  }catch(err){console.error(err);alert("削除に失敗しました。Firebase Rulesを確認してください。");}
 }
 function initFirebaseListeners(){
   if(!firebaseReady)return;
@@ -1412,9 +1466,13 @@ function initFirebaseListeners(){
 
   firebase.database().ref("scheduleDelays").on("value",snapshot=>{
     const next=snapshot.val()||{};
-    clearLocalDemoDelayCache();
+    // Firebaseから最新値を受け取ったらキャッシュも更新。
+    localStorage.setItem("ayu_demo_delays",JSON.stringify(next));
 
-    if(scheduleDelayInitialized){
+    if(!scheduleDelayInitialized){
+      // 初回受信は「現在の状態の読み込み」なので未読にはしない。
+      // 本当にこのページを開いている間に新しい遅延が発生した場合だけ「!」を出す。
+    }else{
       let newDelayDetected=false;
       Object.keys(next).forEach(id=>{
         const old=Number(scheduleDelayMap[id]||0);
@@ -1427,7 +1485,7 @@ function initFirebaseListeners(){
         }
 
         // 遅延通知はお気に入り登録したイベントだけ。
-        if(e && favorites.includes(e.id) && old!==now && now>0 && notificationPrefs.delay!==false){
+        if(e && isFavorite(e.id) && old!==now && now>0 && notificationPrefs.delay!==false){
           if("Notification" in window && Notification.permission==="granted"){
             new Notification("お気に入りのイベントが遅延しています",{
               body:`⭐ ${e.name}\n約${now}分遅れています。`
@@ -1458,6 +1516,15 @@ function initFirebaseListeners(){
     console.error("broadcast listener error:",err);
   });
 }
+function showManagerLogin(){
+  const fields=document.getElementById("manager-login-fields");
+  const btn=document.getElementById("manager-login-open");
+  if(!fields)return;
+  fields.style.display="block";
+  if(btn)btn.style.display="none";
+  setTimeout(()=>document.getElementById("email")?.focus(),50);
+}
+
 async function login(){
   const email=document.getElementById("email").value.trim();
   const password=document.getElementById("password").value;
@@ -1489,56 +1556,60 @@ async function login(){
     error.textContent=messages[e.code]||"ログインに失敗しました。";
   }
 }
-async function logout(){if(firebaseReady){await firebase.auth().signOut();closeModal("modal-auth");}}
+async function logout(){
+  // 通知用匿名アカウントも管理者アカウントも、この画面からはログアウトさせない。
+  // 一般ユーザーが誤って通知用UIDを失うことを防ぎ、管理者の操作も固定します。
+  alert("このアプリでは、通知機能を維持するためログアウトはできません。");
+}
+
 function initAuth(){
   if(!firebaseReady)return;
-
   firebase.auth().onAuthStateChanged(async user=>{
-    currentUser=user;
-    currentUserIsAdmin=false;
-
-    const loginEl=document.getElementById("auth-login");
-    const loggedEl=document.getElementById("auth-logged");
+    currentUser=null;currentUserIsAdmin=false;
+    const loginBox=document.getElementById("auth-login");
+    const loggedBox=document.getElementById("auth-logged");
     const controls=document.getElementById("admin-controls");
-    const toolBtn=document.getElementById("admin-tool-open");
-    const status=document.getElementById("admin-status");
-
-    if(loginEl)loginEl.style.display="block";
-    if(loggedEl)loggedEl.style.display="none";
+    const openBtn=document.getElementById("admin-tool-open");
     if(controls)controls.style.display="none";
-    if(toolBtn)toolBtn.style.display="none";
+    if(openBtn)openBtn.style.display="none";
 
-    if(!user)return;
+    if(!user){
+      if(loginBox)loginBox.style.display="block";
+      if(loggedBox)loggedBox.style.display="none";
+      return;
+    }
+
+    // 一般ユーザー用Authとして残っている匿名セッションは即時整理。
+    if(user.isAnonymous){
+      try{await firebase.auth().signOut();}catch(e){console.error("匿名Auth整理失敗",e)}
+      return;
+    }
 
     try{
       const snap=await firebase.database().ref("admins/"+user.uid+"/role").once("value");
       currentUserIsAdmin=snap.val()==="admin";
-    }catch(e){
-      console.error("admin role check error:",e);
-      currentUserIsAdmin=false;
-    }
+    }catch(e){console.error("admin role check error:",e)}
 
     if(!currentUserIsAdmin){
-      console.warn("管理者ロールが確認できないため、一般アカウントをログアウトします。");
-      try{await firebase.auth().signOut();}catch(e){console.error("non-admin signOut error:",e);}
+      // 管理者ではないアカウントはログイン状態を維持しない。
+      try{await firebase.auth().signOut();}catch(e){}
+      alert("このアカウントには管理者権限がありません。");
       return;
     }
 
-    if(loginEl)loginEl.style.display="none";
-    if(loggedEl)loggedEl.style.display="block";
-    document.getElementById("user-name").textContent=user.email||"関係者アカウント";
+    currentUser=user;
+    if(loginBox)loginBox.style.display="none";
+    if(loggedBox)loggedBox.style.display="block";
+    const name=document.getElementById("user-name"),status=document.getElementById("admin-status");
+    if(name)name.textContent=user.email||"管理者アカウント";
     if(status){status.textContent="🛡️ 管理者権限あり";status.style.color="#166534";}
-    if(toolBtn)toolBtn.style.display="block";
-
-    loadAdminDays();
-    renderAdminScheduleDates();
-    renderAdminScheduleList();
-    renderAdminPlaceList();
+    if(controls)controls.style.display="block";
+    if(openBtn)openBtn.style.display="block";
+    loadAdminDays();renderAdminScheduleDates();renderAdminScheduleList();renderAdminPlaceList();
   });
 }
 
 window.addEventListener("load",()=>{
-  if(firebaseReady)clearLocalDemoDelayCache();
   initMap();renderDayTabs();renderSchedule();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAuth();startNotifier();initFCM();
   if(!localStorage.getItem("ayu_welcome_seen")){setTimeout(()=>{openDrawer();openModal("modal-welcome");localStorage.setItem("ayu_welcome_seen","1")},450)}
 });

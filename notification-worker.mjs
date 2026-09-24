@@ -2,670 +2,131 @@ import { initializeApp, cert } from "firebase-admin/app";
 import { getDatabase } from "firebase-admin/database";
 import { getMessaging } from "firebase-admin/messaging";
 
-
-// =========================================================
-// Firebase Admin SDK 初期化
-// =========================================================
-
-const serviceAccount = JSON.parse(
-  process.env.FIREBASE_SERVICE_ACCOUNT_JSON
-);
-
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
 const app = initializeApp({
   credential: cert(serviceAccount),
   databaseURL: "https://atsugi-ayu-festival-default-rtdb.firebaseio.com"
 });
-
 const db = getDatabase(app);
 const messaging = getMessaging(app);
+const TZ = "Asia/Tokyo";
 
-
-// =========================================================
-// 日本時間
-// =========================================================
-
-const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
-
-function getJSTDate() {
-  return new Date(Date.now() + JST_OFFSET_MS);
+function nowJstParts() {
+  const parts = new Intl.DateTimeFormat("ja-JP", {
+    timeZone: TZ, year:"numeric", month:"2-digit", day:"2-digit",
+    hour:"2-digit", minute:"2-digit", hourCycle:"h23"
+  }).formatToParts(new Date());
+  const o = Object.fromEntries(parts.map(p => [p.type, p.value]));
+  return { dateKey:`${o.year}-${o.month}-${o.day}`, minutes:Number(o.hour)*60+Number(o.minute) };
 }
-
-function dateKeyJST(date) {
-  const y = date.getUTCFullYear();
-  const m = String(date.getUTCMonth() + 1).padStart(2, "0");
-  const d = String(date.getUTCDate()).padStart(2, "0");
-
-  return `${y}-${m}-${d}`;
+function timeToMinutes(s) {
+  const m = String(s||"").match(/^(\d{1,2}):(\d{2})$/);
+  return m ? Number(m[1])*60+Number(m[2]) : null;
 }
-
-
-// =========================================================
-// 時刻を「0時からの分」に変換
-// =========================================================
-
-function minutesFromTime(value) {
-  if (!value) return null;
-
-  const match = String(value).match(/(\d{1,2}):(\d{2})/);
-
-  if (!match) return null;
-
-  return Number(match[1]) * 60 + Number(match[2]);
+function scheduleTime(e) {
+  if (e?.start) return timeToMinutes(e.start);
+  const m = String(e?.time||"").split("-")[0].trim();
+  return timeToMinutes(m);
 }
-
-
-// =========================================================
-// お気に入りデータを安全に配列化
-// =========================================================
-
-function normalizeFavorites(value) {
-  if (!Array.isArray(value)) return [];
-
-  return value.map(String);
+function isGrantedToken(v) {
+  return v && v.token && v.permission === "granted";
 }
-
-
-// =========================================================
-// 通知の重複送信防止
-// =========================================================
-
-async function claimNotification(path) {
-  const ref = db.ref(path);
-
-  const result = await ref.transaction(current => {
-
-    // すでに取得済みなら何もしない
-    if (current) return;
-
-    return {
-      claimedAt: Date.now()
-    };
-  });
-
-  return result.committed;
-}
-
-
-// =========================================================
-// 通知送信失敗時にclaimを削除
-// =========================================================
-
-async function removeClaim(path) {
-  try {
-    await db.ref(path).remove();
-  } catch (error) {
-    console.error(
-      "通知claim削除エラー:",
-      error
-    );
-  }
-}
-
-
-// =========================================================
-// 複数ユーザーへFCM送信
-// =========================================================
-
-async function sendToUsers(users, title, body) {
-
-  const validUsers = users.filter(user =>
-    user &&
-    user.token &&
-    user.notificationPrefs &&
-    user.notificationPrefs.delay !== false
-  );
-
+async function sendToTokens(tokens, title, body) {
+  const usable = tokens.filter(isGrantedToken);
   let sent = 0;
-
-  for (let i = 0; i < validUsers.length; i += 500) {
-
-    const batch = validUsers.slice(i, i + 500);
-
-    const tokens = batch.map(user => user.token);
-
-    const response =
-      await messaging.sendEachForMulticast({
-
-        tokens,
-
-        notification: {
-          title,
-          body
-        },
-
-        data: {
-          title,
-          body,
-          type: "ayu-festival"
-        },
-
-        webpush: {
-          notification: {
-            title,
-            body
-          }
-        }
+  for (const row of usable) {
+    try {
+      await messaging.send({
+        token: row.token,
+        notification: { title, body },
+        data: { title, body, url: "./" },
+        webpush: { fcmOptions: { link: "./" } }
       });
-
-    sent += response.successCount;
-
-    console.log(
-      `FCM送信: 成功 ${response.successCount} / 失敗 ${response.failureCount}`
-    );
+      sent++;
+    } catch (e) {
+      const code = e?.code || "";
+      if (code.includes("registration-token-not-registered") || code.includes("invalid-registration-token")) {
+        await db.ref(`notificationTokens/${row.tokenHash}`).remove().catch(()=>{});
+      }
+      console.warn("FCM送信失敗", row.tokenHash, code);
+    }
   }
-
   return sent;
 }
-
-
-// =========================================================
-// メイン処理
-// =========================================================
-
 async function main() {
-
-  console.log("================================");
-  console.log("鮎まつり通知Worker開始");
-  console.log(new Date().toISOString());
-  console.log("================================");
-
-
-  // =======================================================
-  // 現在時刻
-  // =======================================================
-
-  const now = getJSTDate();
-
-  const todayKey = dateKeyJST(now);
-
-  const currentMinutes =
-    now.getUTCHours() * 60 +
-    now.getUTCMinutes();
-
-  console.log(
-    "JST日付:",
-    todayKey
-  );
-
-  console.log(
-    "現在時刻:",
-    currentMinutes
-  );
-
-
-  // =======================================================
-  // Firebaseから必要なデータを取得
-  // =======================================================
-
-  const [
-    scheduleSnapshot,
-    tokensSnapshot,
-    delaysSnapshot
-  ] = await Promise.all([
-
-    db
-      .ref("schedule")
-      .once("value"),
-
-    db
-      .ref("notificationTokens")
-      .once("value"),
-
-    db
-      .ref("scheduleDelays")
-      .once("value")
-
-  ]);
-
-
-  const scheduleData =
-    scheduleSnapshot.val() || {};
-
-  const tokenData =
-    tokensSnapshot.val() || {};
-
-  const delayData =
-    delaysSnapshot.val() || {};
-
-
-  // =======================================================
-  // 通知登録ユーザー
-  // =======================================================
-
-  const users =
-    Object.entries(tokenData)
-
-      .map(([uid, data]) => ({
-        uid,
-        ...(data || {})
-      }))
-
-      .filter(user =>
-        user.token
-      );
-
-
-  console.log(
-    "通知登録ユーザー:",
-    users.length
-  );
-
-
-  // =======================================================
-  // スケジュール
-  // =======================================================
-
-  const events =
-    Object.values(scheduleData)
-      .filter(Boolean);
-
-
-  // =========================================================
-  // ① 開始10分前通知
-  // =========================================================
-
-  console.log("10分前通知チェック開始");
-
-
-  for (const event of events) {
-
-    if (!event.id) continue;
-
-
-    const eventDate =
-      String(event.dateKey || "");
-
-
-    // 今日のイベントだけ
-    if (eventDate !== todayKey) {
-      continue;
-    }
-
-
-    // startがあればstart
-    // なければtime
-    const start =
-      minutesFromTime(event.start) ??
-      minutesFromTime(event.time);
-
-
-    if (start === null) {
-      continue;
-    }
-
-
-    // 現在の遅延時間
-    const delay =
-      Number(delayData[event.id] || 0);
-
-
-    // 遅延後の実際の開始予定時刻
-    const effectiveStart =
-      start + delay;
-
-
-    // 現在時刻との差
-    const diff =
-      effectiveStart - currentMinutes;
-
-
-    /*
-     * GitHub Actionsは5分間隔。
-     *
-     * そのため、
-     *
-     * 8～12分前
-     *
-     * を「10分前通知」の判定範囲にする。
-     */
-
-    if (diff < 8 || diff > 12) {
-      continue;
-    }
-
-
-    // =====================================================
-    // お気に入り登録ユーザーを確認
-    // =====================================================
-
-    for (const user of users) {
-
-      const favorites =
-        normalizeFavorites(
-          user.favorites
-        );
-
-
-      if (
-        !favorites.includes(
-          String(event.id)
-        )
-      ) {
-        continue;
-      }
-
-
-      // 10分前通知OFFならスキップ
-      if (
-        user.notificationPrefs &&
-        user.notificationPrefs.tenMin === false
-      ) {
-        continue;
-      }
-
-
-      // ===================================================
-      // 二重送信防止
-      // ===================================================
-
-      const dispatchPath =
-        `notificationDispatch/${todayKey}/${event.id}/tenMin/${user.uid}`;
-
-
-      const claimed =
-        await claimNotification(
-          dispatchPath
-        );
-
-
-      if (!claimed) {
-        continue;
-      }
-
-
-      // ===================================================
-      // 通知内容
-      // ===================================================
-
-      const eventName =
-        event.name ||
-        "お気に入りのイベント";
-
-
-      const title =
-        "まもなく開始します！";
-
-
-      const body =
-        `⭐ ${eventName}が約10分後に開始予定です。`;
-
-
-      // ===================================================
-      // FCM送信
-      // ===================================================
-
-      try {
-
-        await messaging.send({
-
-          token: user.token,
-
-          notification: {
-            title,
-            body
-          },
-
-          data: {
-            type: "ten-minute",
-            eventId: String(event.id),
-            title,
-            body
-          },
-
-          webpush: {
-            notification: {
-              title,
-              body
-            }
-          }
-
-        });
-
-
-        console.log(
-          `10分前通知送信: ${user.uid} / ${eventName}`
-        );
-
-
-      } catch (error) {
-
-        console.error(
-          `10分前通知失敗: ${user.uid}`,
-          error.message
-        );
-
-
-        // 送信失敗ならclaimを解除
-        await removeClaim(
-          dispatchPath
-        );
-      }
-    }
+  const tokenSnap = await db.ref("notificationTokens").get();
+  const tokens = Object.entries(tokenSnap.val() || {}).map(([tokenHash,v]) => ({...v,tokenHash}));
+  const {dateKey,minutes:nowMin} = nowJstParts();
+
+  // ① 管理者が追加・更新・削除したスケジュールの一斉通知
+  const updateSnap = await db.ref("broadcast/scheduleUpdates").get();
+  const updates = updateSnap.val() || {};
+  const stateRef = db.ref("notificationWorkerState");
+  const processedSnap = await stateRef.child("processedScheduleUpdates").get();
+  const processed = processedSnap.val() || {};
+  for (const [updateId,u] of Object.entries(updates)) {
+    if (!u || processed[updateId]) continue;
+    const s = u.schedule || {};
+    const actionText = u.action === "added" ? "追加しました！" : u.action === "updated" ? "更新しました！" : "削除しました！";
+    const body = u.action === "deleted"
+      ? `「${s.name || "スケジュール"}」の予定を削除しました。`
+      : `「${s.name || "スケジュール"}」\n${s.dateLabel || s.dateKey || ""} ${s.time || ""}`;
+    await sendToTokens(tokens, `スケジュールを${actionText}`, body);
+    processed[updateId] = true;
   }
+  // processed mapが肥大化しないよう直近300件だけ残す
+  const processedEntries = Object.entries(processed).slice(-300);
+  await stateRef.child("processedScheduleUpdates").set(Object.fromEntries(processedEntries));
 
-
-  // =========================================================
-  // ② 遅延通知
-  // =========================================================
-
-  console.log("遅延通知チェック開始");
-
-
-  // 前回保存した遅延状態
-  const previousDelaySnapshot =
-    await db
-      .ref("notificationState/delays")
-      .once("value");
-
-
-  const previousDelays =
-    previousDelaySnapshot.val() || {};
-
-
-  for (const event of events) {
-
-    if (!event.id) {
-      continue;
-    }
-
-
-    const id =
-      String(event.id);
-
-
-    const oldDelay =
-      Number(
-        previousDelays[id] || 0
-      );
-
-
-    const newDelay =
-      Number(
-        delayData[id] || 0
-      );
-
-
-    /*
-     * 初回実行時など、
-     * 前回と今回が同じなら通知しない。
-     */
-
-    if (oldDelay === newDelay) {
-      continue;
-    }
-
-
-    // 0分への変更は通知しない
-    if (newDelay <= 0) {
-      continue;
-    }
-
-
-    // =====================================================
-    // お気に入りユーザーだけ通知
-    // =====================================================
-
-    for (const user of users) {
-
-      const favorites =
-        normalizeFavorites(
-          user.favorites
-        );
-
-
-      if (
-        !favorites.includes(id)
-      ) {
-        continue;
-      }
-
-
-      // 遅延通知OFFならスキップ
-      if (
-        user.notificationPrefs &&
-        user.notificationPrefs.delay === false
-      ) {
-        continue;
-      }
-
-
-      // ===================================================
-      // 二重送信防止
-      // ===================================================
-
-      const dispatchPath =
-        `notificationDispatch/${todayKey}/${id}/delay/${user.uid}/${newDelay}`;
-
-
-      const claimed =
-        await claimNotification(
-          dispatchPath
-        );
-
-
-      if (!claimed) {
-        continue;
-      }
-
-
-      // ===================================================
-      // 通知内容
-      // ===================================================
-
-      const eventName =
-        event.name ||
-        "お気に入りのイベント";
-
-
-      const title =
-        "お気に入りのイベントが遅延しています";
-
-
-      const body =
-        `⭐ ${eventName}\n約${newDelay}分遅れています。`;
-
-
-      // ===================================================
-      // FCM送信
-      // ===================================================
-
-      try {
-
-        await messaging.send({
-
-          token: user.token,
-
-          notification: {
-            title,
-            body
-          },
-
-          data: {
-            type: "delay",
-            eventId: id,
-            delay: String(newDelay),
-            title,
-            body
-          },
-
-          webpush: {
-            notification: {
-              title,
-              body
-            }
-          }
-
-        });
-
-
-        console.log(
-          `遅延通知送信: ${user.uid} / ${eventName} / ${newDelay}分`
-        );
-
-
-      } catch (error) {
-
-        console.error(
-          `遅延通知失敗: ${user.uid}`,
-          error.message
-        );
-
-
-        // 送信失敗ならclaim解除
-        await removeClaim(
-          dispatchPath
-        );
-      }
-    }
+  // ② 遅延変更：お気に入り登録しているイベントだけ通知
+  const delaySnap = await db.ref("scheduleDelays").get();
+  const delays = delaySnap.val() || {};
+  const prevDelaySnap = await stateRef.child("lastScheduleDelays").get();
+  const prevDelays = prevDelaySnap.val() || {};
+  for (const [id,value] of Object.entries(delays)) {
+    const nowDelay = Number(value||0);
+    const oldDelay = Number(prevDelays[id]||0);
+    if (nowDelay === oldDelay) continue;
+    const scheduleSnap = await db.ref(`schedule/${id}`).get();
+    const e = scheduleSnap.val();
+    if (!e || nowDelay <= 0) continue;
+    const interested = tokens.filter(v => v.notificationPrefs?.delay !== false && Array.isArray(v.favorites) && v.favorites.map(String).includes(String(id)));
+    await sendToTokens(interested, "お気に入りのイベントが遅延しています", `⭐ ${e.name}\n約${nowDelay}分遅れています。`);
   }
+  await stateRef.child("lastScheduleDelays").set(delays);
 
+  // ③ 開始10分前：お気に入り登録イベントだけ通知
+  const scheduleSnap = await db.ref("schedule").get();
+  const schedule = Object.values(scheduleSnap.val() || {}).filter(Boolean);
+  const notifiedSnap = await stateRef.child("tenMinuteSent").get();
+  const tenMinuteSent = notifiedSnap.val() || {};
+  for (const e of schedule) {
+    if (String(e.dateKey||"") !== dateKey) continue;
+    if (e.start == null && e.time == null) continue;
+    const base = scheduleTime(e);
+    if (base == null) continue;
+    const delay = Number(delays[e.id]||0);
+    const adjusted = base + delay;
+    const diff = adjusted - nowMin;
+    if (diff < 0 || diff > 10) continue;
+    const key = `${dateKey}_${e.id}_${adjusted}`;
+    if (tenMinuteSent[key]) continue;
+    const interested = tokens.filter(v => v.notificationPrefs?.tenMin !== false && Array.isArray(v.favorites) && v.favorites.map(String).includes(String(e.id)));
+    await sendToTokens(interested, "まもなく開始します！", `⭐ ${e.name}\n開始予定：${e.time || e.start}`);
+    tenMinuteSent[key] = true;
+  }
+  const tenEntries = Object.entries(tenMinuteSent).slice(-500);
+  await stateRef.child("tenMinuteSent").set(Object.fromEntries(tenEntries));
 
-  // =========================================================
-  // 今回確認した遅延状態を保存
-  // =========================================================
-
-  await db
-    .ref("notificationState/delays")
-    .set(delayData);
-
-
+  console.log(`JST日付: ${dateKey}`);
+  console.log(`現在時刻: ${nowMin}`);
+  console.log(`通知登録ユーザー: ${tokens.length}`);
   console.log("通知Worker完了");
+  await app.delete();
 }
 
-
-// =========================================================
-// Worker実行
-// =========================================================
-
-try {
-
-  await main();
-
-} catch (error) {
-
-  console.error(
-    "通知Worker全体エラー:",
-    error
-  );
-
+main().catch(async e => {
+  console.error(e);
+  await app.delete().catch(()=>{});
   process.exitCode = 1;
-
-} finally {
-
-  // Firebase Admin SDKを終了
-  try {
-
-    await app.delete();
-
-    console.log(
-      "Firebase接続を終了しました。"
-    );
-
-  } catch (error) {
-
-    console.error(
-      "Firebase終了処理エラー:",
-      error
-    );
-  }
-}
+});
