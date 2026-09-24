@@ -58,8 +58,8 @@ async function main() {
   const tokens = Object.entries(tokenSnap.val() || {}).map(([tokenHash,v]) => ({...v,tokenHash}));
   const {dateKey,minutes:nowMin} = nowJstParts();
 
-  // スケジュール追加・更新・削除の一斉通知は送信しない。
-  // 通知対象は「お気に入りの遅延」と「お気に入りの10分前」の2種類だけ。
+  // スケジュール追加・更新・削除の一斉通知は行わない。
+  const stateRef = db.ref("notificationWorkerState");
 
   // ② 遅延変更：お気に入り登録しているイベントだけ通知
   const delaySnap = await db.ref("scheduleDelays").get();
