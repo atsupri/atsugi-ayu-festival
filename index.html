@@ -422,6 +422,7 @@ let firebaseReady = false;
 const FCM_VAPID_PUBLIC_KEY = "BBXrn-R_yF_N7wAtd57t42omm8CusCC9PgGu6Y3KOYferTccOqMwUYFrB_9LUG7edrmKAWF2K81Nqd2pxvn00cY";
 let fcmMessaging = null;
 let fcmToken = "";
+let fcmTokenHash = "";
 let fcmInitialized = false;
 let notificationPrefs = JSON.parse(localStorage.getItem("ayu_notification_prefs") || "{\"tenMin\":true,\"delay\":true}");
 let unreadFavoriteDelay = JSON.parse(localStorage.getItem("ayu_unread_favorite_delay") || "{}");
@@ -1078,21 +1079,17 @@ async function initFCM(){
     // 一般ユーザーの通知登録はFirebase Authenticationを使わず、
     // FCMトークンのSHA-256ハッシュをRealtime Databaseのキーとして使用する。
     const tokenHash = await makeNotificationTokenKey(fcmToken);
+    fcmTokenHash = tokenHash;
 
-    // Rules の .validate と完全に一致する形で、必須6項目を明示的に登録する。
-    const registrationData = {
-      token: fcmToken,
-      tokenHash: tokenHash,
-      updatedAt: firebase.database.ServerValue.TIMESTAMP,
-      permission: "granted",
-      favorites: Array.isArray(favorites) ? favorites : [],
-      notificationPrefs: {
-        tenMin: notificationPrefs?.tenMin !== false,
-        delay: notificationPrefs?.delay !== false
-      }
-    };
-
-    await firebase.database().ref("notificationTokens/"+tokenHash).set(registrationData);
+    await firebase.database().ref("notificationTokens/"+tokenHash).set({
+      token:fcmToken,
+      tokenHash:tokenHash,
+      updatedAt:firebase.database.ServerValue.TIMESTAMP,
+      userAgent:navigator.userAgent.slice(0,300),
+      permission:"granted",
+      favorites:favorites || [],
+      notificationPrefs:notificationPrefs || {tenMin:true,delay:true}
+    });
 
     fcmMessaging.onMessage(payload=>{
       console.log("FCM foreground message:",payload);
@@ -1102,14 +1099,6 @@ async function initFCM(){
     });
 
     console.log("FCM登録完了（App Check + token hash）", tokenHash);
-    console.log("FCM登録データ確認", {
-      hasToken: !!registrationData.token,
-      hasTokenHash: !!registrationData.tokenHash,
-      hasUpdatedAt: !!registrationData.updatedAt,
-      hasPermission: !!registrationData.permission,
-      hasFavorites: Array.isArray(registrationData.favorites),
-      hasNotificationPrefs: !!registrationData.notificationPrefs
-    });
     return fcmToken;
   }catch(err){
     console.error("FCM initialization error:",err);
@@ -1507,26 +1496,44 @@ function initAuth(){
   firebase.auth().onAuthStateChanged(async user=>{
     currentUser=user;
     currentUserIsAdmin=false;
-    document.getElementById("auth-login").style.display=user?"none":"block";
-    document.getElementById("auth-logged").style.display=user?"block":"none";
-    document.getElementById("admin-controls").style.display="none";
-    document.getElementById("admin-tool-open").style.display="none";
+
+    const loginEl=document.getElementById("auth-login");
+    const loggedEl=document.getElementById("auth-logged");
+    const controls=document.getElementById("admin-controls");
+    const toolBtn=document.getElementById("admin-tool-open");
+    const status=document.getElementById("admin-status");
+
+    if(loginEl)loginEl.style.display="block";
+    if(loggedEl)loggedEl.style.display="none";
+    if(controls)controls.style.display="none";
+    if(toolBtn)toolBtn.style.display="none";
 
     if(!user)return;
 
-    document.getElementById("user-name").textContent=user.email||"ログイン中";
     try{
       const snap=await firebase.database().ref("admins/"+user.uid+"/role").once("value");
       currentUserIsAdmin=snap.val()==="admin";
     }catch(e){
       console.error("admin role check error:",e);
+      currentUserIsAdmin=false;
     }
 
-    const status=document.getElementById("admin-status");
-    status.textContent=currentUserIsAdmin?"🛡️ 管理者権限あり":"👤 一般アカウント";
-    status.style.color=currentUserIsAdmin?"#166534":"#6b7280";
-    document.getElementById("admin-controls").style.display=currentUserIsAdmin?"block":"none";
-    if(currentUserIsAdmin){loadAdminDays();renderAdminScheduleDates();renderAdminScheduleList();renderAdminPlaceList();}
+    if(!currentUserIsAdmin){
+      console.warn("管理者ロールが確認できないため、一般アカウントをログアウトします。");
+      try{await firebase.auth().signOut();}catch(e){console.error("non-admin signOut error:",e);}
+      return;
+    }
+
+    if(loginEl)loginEl.style.display="none";
+    if(loggedEl)loggedEl.style.display="block";
+    document.getElementById("user-name").textContent=user.email||"関係者アカウント";
+    if(status){status.textContent="🛡️ 管理者権限あり";status.style.color="#166534";}
+    if(toolBtn)toolBtn.style.display="block";
+
+    loadAdminDays();
+    renderAdminScheduleDates();
+    renderAdminScheduleList();
+    renderAdminPlaceList();
   });
 }
 
