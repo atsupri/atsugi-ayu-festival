@@ -1,28 +1,21 @@
-name: 鮎まつり通知システム
+name: GitHub Pages
 
 on:
-  schedule:
-    - cron: "*/5 * * * *"
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  notification:
+  deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
 
     steps:
       - name: リポジトリを取得
         uses: actions/checkout@v5
 
-      - name: Node.jsをセットアップ
-        uses: actions/setup-node@v5
-        with:
-          node-version: 24
-
-      - name: Firebase Admin SDKをインストール
-        run: npm install firebase-admin
-
-      - name: 通知処理を実行
-        env:
-          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
-        run: node notification-worker.mjs
+      # ↓ここに現在使っているPages公開処理
