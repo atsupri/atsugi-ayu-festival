@@ -433,6 +433,9 @@ const firebaseConfig = {
   measurementId: "G-Y0W73T4552"
 };
 let firebaseReady = false;
+// 旧バージョンの匿名Authが残っている端末では、管理者ログインと匿名セッションの
+// signOutが競合しないよう、匿名セッション整理の完了を待ってからログインします。
+let authCleanupPromise = Promise.resolve();
 // 通知登録はFCM tokenHash方式で行うため、一般ユーザーのFirebase Authは不要です。
 // FCM Web Push用のVAPID公開鍵をここに設定してください。
 // Firebaseコンソール → プロジェクトの設定 → Cloud Messaging → Web Push証明書
@@ -1523,19 +1526,23 @@ async function login(){
   }
 
   try{
+    // 過去バージョンの匿名Auth整理と管理者ログインが競合しないようにする。
+    await authCleanupPromise;
     await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     await firebase.auth().signInWithEmailAndPassword(email,password);
     error.textContent="";
   }catch(e){
-    console.error(e);
+    console.error("管理者ログインエラー:",e);
     const messages={
       "auth/invalid-email":"メールアドレスの形式を確認してください。",
       "auth/user-not-found":"このメールアドレスのアカウントが見つかりません。",
       "auth/wrong-password":"パスワードが正しくありません。",
       "auth/invalid-credential":"メールアドレスまたはパスワードが正しくありません。",
-      "auth/too-many-requests":"試行回数が多すぎます。時間を置いてから再試行してください。"
+      "auth/too-many-requests":"試行回数が多すぎます。時間を置いてから再試行してください。",
+      "auth/network-request-failed":"ネットワーク接続を確認してください。",
+      "auth/operation-not-allowed":"Firebase Authenticationのメール/パスワード方式が無効です。"
     };
-    error.textContent=messages[e.code]||"ログインに失敗しました。";
+    error.textContent=messages[e.code]||`ログインに失敗しました（${e.code||"unknown"}）。`;
   }
 }
 async function logout(){
@@ -1547,7 +1554,8 @@ async function logout(){
 function initAuth(){
   if(!firebaseReady)return;
   firebase.auth().onAuthStateChanged(async user=>{
-    currentUser=null;currentUserIsAdmin=false;
+    currentUser=null;
+    currentUserIsAdmin=false;
     const loginBox=document.getElementById("auth-login");
     const loggedBox=document.getElementById("auth-logged");
     const controls=document.getElementById("admin-controls");
@@ -1558,24 +1566,44 @@ function initAuth(){
     if(!user){
       if(loginBox)loginBox.style.display="block";
       if(loggedBox)loggedBox.style.display="none";
+      const fields=document.getElementById("manager-login-fields");
+      const btn=document.getElementById("manager-login-open");
+      if(fields)fields.style.display="none";
+      if(btn)btn.style.display="block";
       return;
     }
 
-    // 一般ユーザー用Authとして残っている匿名セッションは即時整理。
+    // 過去バージョンで作られた匿名Authだけを整理する。
+    // login()側はこのPromiseを待つため、管理者ログインとの競合を防げます。
     if(user.isAnonymous){
-      try{await firebase.auth().signOut();}catch(e){console.error("匿名Auth整理失敗",e)}
+      const anonymousUid=user.uid;
+      authCleanupPromise=(async()=>{
+        try{
+          // すでに別ユーザーへ切り替わっている場合は、そのユーザーを触らない。
+          if(firebase.auth().currentUser?.uid===anonymousUid){
+            await firebase.auth().signOut();
+          }
+        }catch(e){
+          console.error("旧匿名Auth整理失敗:",e);
+        }
+      })();
+      await authCleanupPromise;
       return;
     }
 
     try{
       const snap=await firebase.database().ref("admins/"+user.uid+"/role").once("value");
       currentUserIsAdmin=snap.val()==="admin";
-    }catch(e){console.error("admin role check error:",e)}
+    }catch(e){
+      console.error("admin role check error:",e);
+      currentUserIsAdmin=false;
+    }
 
     if(!currentUserIsAdmin){
-      // 管理者ではないアカウントはログイン状態を維持しない。
-      try{await firebase.auth().signOut();}catch(e){}
-      alert("このアカウントには管理者権限がありません。");
+      if(loggedBox)loggedBox.style.display="block";
+      const status=document.getElementById("admin-status");
+      if(status){status.textContent="このアカウントには管理者権限がありません。";status.style.color="#b91c1c";}
+      try{await firebase.auth().signOut();}catch(e){console.error("非管理者Auth整理失敗:",e)}
       return;
     }
 
@@ -1589,8 +1617,15 @@ function initAuth(){
     if(openBtn)openBtn.style.display="block";
     loadAdminDays();renderAdminScheduleDates();renderAdminScheduleList();renderAdminPlaceList();
   });
-}
 
+  // Enterキーでも管理者ログインできるようにする。
+  [document.getElementById("email"),document.getElementById("password")].forEach(input=>{
+    if(input && !input.dataset.authEnterBound){
+      input.dataset.authEnterBound="1";
+      input.addEventListener("keydown",e=>{if(e.key==="Enter")login();});
+    }
+  });
+}
 window.addEventListener("load",()=>{
   initMap();renderDayTabs();renderSchedule();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAuth();initFCM();
   if(!localStorage.getItem("ayu_welcome_seen")){setTimeout(()=>{openDrawer();openModal("modal-welcome");localStorage.setItem("ayu_welcome_seen","1")},450)}
