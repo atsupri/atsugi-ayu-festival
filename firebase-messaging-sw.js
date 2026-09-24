@@ -2,7 +2,7 @@ importScripts("https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js
 importScripts("https://www.gstatic.com/firebasejs/12.19.0/firebase-messaging-compat.js");
 
 firebase.initializeApp({
-  apiKey: "AIzaSyAJ6MmsgtmKb9opkgu2Q2BnwUm4MUG21Fxk",
+  apiKey: "AIzaSyAJ6MMsgtmKb9opkgu2Q2BnwUm4MUG21Fxk",
   authDomain: "atsugi-ayu-festival.firebaseapp.com",
   projectId: "atsugi-ayu-festival",
   storageBucket: "atsugi-ayu-festival.firebasestorage.app",
@@ -14,8 +14,13 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage(payload => {
-  const title = payload.notification?.title || payload.data?.title || "あつぎ鮎まつり案内";
-  const body = payload.notification?.body || payload.data?.body || "新しいお知らせがあります。";
+  // notificationペイロードはFCM/ブラウザ側が自動表示します。
+  // ここでshowNotificationすると同じ通知が2重表示されるため、手動表示しません。
+  if (payload.notification) return;
+
+  // data-only通知が来た場合だけService Worker側で表示します。
+  const title = payload.data?.title || "あつぎ鮎まつり案内";
+  const body = payload.data?.body || "新しいお知らせがあります。";
   const url = payload.data?.url || "./";
 
   return self.registration.showNotification(title, {
