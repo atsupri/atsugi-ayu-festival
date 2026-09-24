@@ -518,7 +518,6 @@ function closeModal(id){document.getElementById(id).classList.remove("show")}
 function overlayClose(e,id){if(e.target.id===id)closeModal(id)}
 function openDrawer(){
   document.getElementById("drawer").classList.add("show");
-  setTimeout(()=>document.getElementById("menu-search")?.focus(),260);
 }
 function closeDrawer(){
   document.getElementById("drawer").classList.remove("show");
