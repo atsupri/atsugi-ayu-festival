@@ -1,4 +1,4 @@
-name: 鮎まつり通知システム
+name: 鮎まつり通知手動更新
 
 on:
   schedule:
