@@ -43,9 +43,9 @@ async function sendToTokens(tokens, title, body) {
     try {
       await messaging.send({
         token: row.token,
-        // data-only通知に統一。Service Workerだけがシステム通知を表示するため、
-        // FCM自動表示との二重通知を防ぐ。
-        data: { title, body, url: "./" }
+        notification: { title, body },
+        data: { title, body, url: "./" },
+        webpush: { fcmOptions: { link: "./" } }
       });
       sent++;
     } catch (e) {
