@@ -269,7 +269,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.4.18</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.4.19</span></div>
   </div>
  </div>
 </div>
@@ -642,7 +642,7 @@ function searchMenu(){
   el.innerHTML=out || '<div style="font-size:12px;color:#6b7280;padding:9px 3px">該当する会場・イベントがありません</div>';
 }
 
-const STATION_MAP_BOUNDS=[[35.4350,139.3590],[35.4455,139.3705]];
+const STATION_MAP_BOUNDS=[[35.4315,139.3510],[35.4490,139.3770]];
 
 function initMap(){
   switchMap("station");
@@ -691,7 +691,7 @@ function switchMap(key){
   if(key==="station"){
     tileLayer=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{
       maxZoom:19,
-      minZoom:16,
+      minZoom:14,
       attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>',
       crossOrigin:true
     }).addTo(map);
@@ -772,7 +772,7 @@ function getPinScale(){
 
   // 本厚木駅周辺も、中央公園と同じく「縮小するとピンも縮む」方式にする。
   // OSMはズーム16〜19なので、16で最小、19で通常サイズ。
-  const stationMinZoom = 14.5;
+  const stationMinZoom = 14;
   const stationMaxZoom = 19;
   const t = Math.max(0, Math.min(1, (z - stationMinZoom) / (stationMaxZoom - stationMinZoom)));
   return PIN_STYLE.minScale + ((1 - PIN_STYLE.minScale) * t);
@@ -1281,7 +1281,7 @@ function resetPlacePicker(){
     const p=document.getElementById("place-edit-id").value && placeData.find(x=>x.id===document.getElementById("place-edit-id").value);
     if(p?.map==="park" && Number.isFinite(p.x)&&Number.isFinite(p.y)){placePickerPosition={x:p.x,y:p.y};updatePlacePickerMarker(L.latLng(760-p.y,p.x));placePickerMap.setView([760-p.y,p.x],0);}
   }else{
-    placePickerMap=L.map(el,{zoomControl:true,attributionControl:true,minZoom:14.5,maxZoom:19});
+    placePickerMap=L.map(el,{zoomControl:true,attributionControl:true,minZoom:14,maxZoom:19});
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,minZoom:16,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>'}).addTo(placePickerMap);
     placePickerMap.setMaxBounds(STATION_MAP_BOUNDS);placePickerMap.options.maxBoundsViscosity=1.0;placePickerMap.setView([35.4402,139.3643],15.5);
     placePickerMap.on("click",e=>{placePickerPosition={lat:e.latlng.lat,lng:e.latlng.lng};updatePlacePickerMarker(e.latlng);});
