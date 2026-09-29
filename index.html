@@ -32,7 +32,7 @@ gtag('config', 'G-Y0W73T4552', {
  --text:#1f2937;--sub:#6b7280;--bg:#f6f8f9;--card:#fff;--border:#e5e7eb;
 }
 *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--text);padding-top:56px;padding-bottom:64px;height:100vh;overflow:hidden}
+body{background:var(--bg);color:var(--text);padding-top:56px;padding-bottom:56px;height:100vh;overflow:hidden}
 button,input,select{font:inherit}
 .header{height:56px;position:fixed;top:0;left:0;right:0;background:var(--card);border-bottom:1px solid var(--border);z-index:1000;display:flex;align-items:center;padding:0 12px}
 .header h1{font-size:17px;flex:1;text-align:center;color:var(--primary)}
@@ -41,12 +41,12 @@ button,input,select{font:inherit}
 .map-tools{background:white;padding:8px;border-bottom:1px solid var(--border)}
 .map-tabs{display:flex;gap:7px}.map-tab{flex:1;border:1px solid var(--border);background:#f3f4f6;border-radius:10px;padding:10px 6px;font-weight:700;color:#4b5563}
 .map-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-#map{height:34vh;min-height:215px;flex:0 0 34vh;background:#fff;position:relative;z-index:1}
+#map{height:38vh;min-height:240px;flex:0 0 38vh;background:#fff;position:relative;z-index:1}
 .location-btn{position:absolute;right:12px;bottom:12px;z-index:650;border:1px solid #d1d5db;background:#fff;color:#374151;border-radius:11px;padding:9px 11px;font-weight:800;box-shadow:0 2px 8px #0003}.location-btn:active{transform:scale(.97)}.location-btn.active{background:#eff6ff;color:#2563eb;border-color:#93c5fd}.location-note{font-size:11px;color:#6b7280;padding:6px 2px 0;line-height:1.5}.leaflet-control-attribution{font-size:10px}
 
-.place-detail-panel{display:block;position:absolute;left:10px;right:10px;bottom:10px;z-index:700;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 8px 28px #0003;max-height:min(58vh,460px);overflow:auto;transform:translateY(calc(100% + 30px));opacity:0;pointer-events:none;transition:transform .28s ease,opacity .22s ease}.place-detail-panel.show{transform:translateY(0);opacity:1;pointer-events:auto}.place-detail-inner{padding:14px 14px 16px}.place-detail-top{display:flex;gap:11px;align-items:flex-start}.place-detail-icon{width:46px;height:46px;flex:0 0 46px;border-radius:12px;background:#ecfdf5;color:var(--primary);display:grid;place-items:center;font-size:19px}.place-detail-title{flex:1}.place-detail-title h3{font-size:17px;line-height:1.35}.place-detail-title small{display:block;color:var(--sub);margin-top:4px;line-height:1.5}.place-detail-close{border:0;background:#f3f4f6;color:#6b7280;width:34px;height:34px;border-radius:50%;font-size:19px}.place-detail-image{width:100%;max-height:220px;object-fit:contain;border-radius:11px;margin-top:12px;background:#f8fafc;border:1px solid var(--border)}.place-detail-body{font-size:13px;line-height:1.7;margin-top:12px;white-space:pre-wrap}.place-detail-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.place-detail-tag{font-size:11px;padding:5px 8px;border-radius:999px;background:#f3f4f6;color:#4b5563}
-.map-list{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;padding:10px 10px 36px}
-.place-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:9px;display:flex;gap:10px;align-items:flex-start;cursor:pointer}.place-card.expanded{display:block;padding:12px}.place-card-row{display:flex;gap:10px;align-items:center}.place-card-content{flex:1;min-width:0}.place-card-detail{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);position:relative}.place-card-detail-content{display:flex;align-items:flex-start;gap:12px}.place-card-detail.has-image .place-card-detail-image{width:76px;height:76px;flex:0 0 76px;object-fit:cover;border-radius:9px;background:#f8fafc;border:1px solid var(--border)}.place-card-detail.no-image .place-card-detail-text{width:100%}.place-card-detail-text{flex:1;min-width:0}.place-card-detail p{font-size:13px;line-height:1.7;white-space:pre-wrap;margin:0}.place-card-detail .detail-meta{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 7px}.place-card-detail .detail-tag{font-size:11px;padding:5px 8px;border-radius:999px;background:#f3f4f6;color:#4b5563}.place-card-detail .detail-close{float:right;border:0;background:#f3f4f6;color:#6b7280;width:32px;height:32px;border-radius:50%;font-size:18px;margin-left:8px;position:relative;z-index:2}.place-card:last-child{margin-bottom:24px}
+.place-detail-panel{display:block;position:absolute;left:10px;right:10px;bottom:62px;z-index:700;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 8px 28px #0003;max-height:min(54vh,420px);overflow:auto;transform:translateY(calc(100% + 30px));opacity:0;pointer-events:none;transition:transform .28s ease,opacity .22s ease}.place-detail-panel.show{transform:translateY(0);opacity:1;pointer-events:auto}.place-detail-inner{padding:14px 14px 16px}.place-detail-top{display:flex;gap:11px;align-items:flex-start}.place-detail-icon{width:46px;height:46px;flex:0 0 46px;border-radius:12px;background:#ecfdf5;color:var(--primary);display:grid;place-items:center;font-size:19px}.place-detail-title{flex:1}.place-detail-title h3{font-size:17px;line-height:1.35}.place-detail-title small{display:block;color:var(--sub);margin-top:4px;line-height:1.5}.place-detail-close{border:0;background:#f3f4f6;color:#6b7280;width:34px;height:34px;border-radius:50%;font-size:19px}.place-detail-image{height:180px;width:auto;max-width:100%;object-fit:contain;border-radius:11px;margin-top:12px;background:#f8fafc;border:1px solid var(--border)}.place-detail-body{font-size:13px;line-height:1.7;margin-top:12px;white-space:pre-wrap}.place-detail-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.place-detail-tag{font-size:11px;padding:5px 8px;border-radius:999px;background:#f3f4f6;color:#4b5563}
+.map-list{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;padding:10px 10px 72px;scroll-padding-bottom:72px}
+.place-card{scroll-margin-bottom:76px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:9px;display:flex;gap:10px;align-items:flex-start;cursor:pointer}.place-card.expanded{display:block;padding:12px}.place-card-row{display:flex;gap:10px;align-items:center}.place-card-content{flex:1;min-width:0}.place-card-detail{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);position:relative}.place-card-detail-content{display:flex;align-items:flex-start;gap:12px}.place-card-detail.has-image .place-card-detail-image{height:76px;width:auto;max-width:180px;flex:0 0 auto;object-fit:contain;border-radius:9px;background:#f8fafc;border:1px solid var(--border)}.place-card-detail.no-image .place-card-detail-text{width:100%}.place-card-detail-text{flex:1;min-width:0}.place-card-detail p{font-size:13px;line-height:1.7;white-space:pre-wrap;margin:0}.place-card-detail .detail-meta{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 7px}.place-card-detail .detail-tag{font-size:11px;padding:5px 8px;border-radius:999px;background:#f3f4f6;color:#4b5563}.place-card-detail .detail-close{float:right;border:0;background:#f3f4f6;color:#6b7280;width:32px;height:32px;border-radius:50%;font-size:18px;margin-left:8px;position:relative;z-index:2}.place-card:last-child{margin-bottom:24px}
 .place-icon{width:40px;height:40px;border-radius:11px;background:#ecfdf5;color:var(--primary);display:grid;place-items:center}
 .place-card b{font-size:14px}.place-card small{display:block;color:var(--sub);margin-top:3px}
 .alert{display:none;position:fixed;top:56px;left:0;right:0;z-index:900;background:#b91c1c;color:#fff;padding:10px 42px 10px 12px;font-size:13px;font-weight:700}
@@ -56,13 +56,13 @@ button,input,select{font:inherit}
 .day-tabs{display:flex;gap:8px}.day-tab{flex:1;border:1px solid var(--border);background:#f3f4f6;border-radius:10px;padding:11px;font-weight:800;color:#4b5563}
 .day-tab.active{background:var(--primary);color:white;border-color:var(--primary)}
 .schedule-note{font-size:12px;color:var(--sub);padding:8px 2px 0}
-#timeline{flex:1;overflow:auto;padding:10px 10px 74px}
+#timeline{flex:1;overflow:auto;padding:10px 10px 64px}
 .event{background:white;border:1px solid var(--border);border-radius:13px;padding:13px;margin-bottom:9px;display:flex;gap:10px;box-shadow:0 1px 2px #00000008}
 .event.delayed{border-color:#fca5a5;background:#fff7f7}
 .event-main{flex:1}.time{font-size:13px;color:var(--primary);font-weight:900}.event-name{font-size:15px;font-weight:800;margin-top:3px}.venue{font-size:12px;color:var(--sub);margin-top:5px}
 .delay{margin-top:7px;color:#b91c1c;font-size:12px;font-weight:700}
 .fav{width:42px;height:42px;border:0;background:#f3f4f6;border-radius:50%;font-size:19px;color:#9ca3af}.fav.active{color:#f59e0b;background:#fff7ed}
-.bottom{height:64px;position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--border);display:flex;z-index:1000}
+.bottom{height:56px;position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--border);display:flex;z-index:1000}
 .bottom button{flex:1;border:0;background:none;color:#9ca3af;font-size:11px;display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center}
 .nav-icon-wrap{position:relative;display:inline-grid;place-items:center}.bottom button i{font-size:19px}.schedule-badge{position:absolute;right:-12px;top:-8px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:#dc2626;color:#fff;font-size:10px;font-weight:900;display:grid;place-items:center;border:2px solid #fff}.schedule-badge[hidden]{display:none !important}.bottom button.active{color:var(--primary);font-weight:800}
 /* 🍀 V1風サイドメニュー */
@@ -97,19 +97,46 @@ button,input,select{font:inherit}
 .stepper-vertical{width:150px;margin:14px auto;display:flex;flex-direction:column;align-items:center;gap:5px}.stepper-vertical strong{display:flex;align-items:center;justify-content:center;width:150px;min-height:58px;border:1px solid var(--border);border-radius:12px;background:#fff;font-size:27px}.delay-arrow{width:150px;height:38px;border:1px solid var(--border);border-radius:10px;background:#f3f4f6;color:#374151;font-size:19px;font-weight:900;line-height:1}.delay-arrow:active{transform:scale(.97);background:#e5e7eb}
 .notice{padding:10px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:10px;font-size:12px;margin-bottom:10px}
 
-/* 管理者ツール：メニューから専用ページへ移動 */
+/* 管理者ツール：3項目を常時表示し、タップで下に展開 */
 .admin-accordion{margin-top:10px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff}
 .admin-accordion-item + .admin-accordion-item{border-top:1px solid var(--border)}
-.admin-accordion-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;border:0;background:#fff;color:var(--text);padding:17px 13px;font-size:13px;font-weight:900;text-align:left;cursor:pointer}
+.admin-accordion-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;border:0;background:#fff;color:var(--text);padding:14px 13px;font-size:13px;font-weight:900;text-align:left;cursor:pointer}
 .admin-accordion-trigger:active{background:#f8fafc}
-.admin-accordion-arrow{font-size:15px;color:#6b7280}
-.admin-accordion-panel{display:none;padding:16px 14px 28px;background:#fff}
-.admin-accordion-panel.admin-page-open{display:block;position:fixed;inset:0;z-index:4100;overflow:auto;padding:58px 16px 30px}
-.admin-page-header{position:fixed;top:0;left:0;right:0;height:50px;z-index:4101;display:flex;align-items:center;gap:10px;padding:0 12px;background:#fff;border-bottom:1px solid var(--border);box-shadow:0 2px 8px #0001}
-.admin-page-back{border:0;background:#f3f4f6;color:#374151;border-radius:8px;padding:7px 10px;font-weight:800}
-.admin-page-title{font-size:15px;font-weight:900}
+.admin-accordion-arrow{font-size:15px;color:#6b7280;transition:transform .22s ease}
+.admin-accordion-item.open .admin-accordion-arrow{transform:rotate(90deg)}
+.admin-accordion-panel{display:none;padding:0 12px 13px;border-top:1px solid #f0f1f3;background:#fff}
+.admin-accordion-item.open .admin-accordion-panel{display:block}
 .admin-section-title{font-size:14px;font-weight:900;margin:12px 0 8px}.admin-schedule-list{max-height:300px;overflow:auto;margin-top:9px}.admin-schedule-row{display:flex;gap:7px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-schedule-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-schedule-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-schedule-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-schedule-edit{background:#ecfdf5;color:#065f46}.admin-schedule-delete{background:#fef2f2;color:#b91c1c}.admin-schedule-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-schedule-form.show{display:block}.admin-schedule-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-schedule-form input,.admin-schedule-form textarea,.admin-schedule-form select{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-schedule-time-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-schedule-actions{display:flex;gap:7px;margin-top:9px}.admin-schedule-actions button{flex:1}.admin-place-tools{margin-top:12px;border-top:1px dashed var(--border);padding-top:14px}.admin-place-tools h4{margin-bottom:8px}.admin-place-list{max-height:260px;overflow:auto;margin-top:8px}.admin-place-row{display:flex;gap:8px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-place-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-place-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-place-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-place-edit{background:#ecfdf5;color:#065f46}.admin-place-delete{background:#fef2f2;color:#b91c1c}.admin-icon-palette{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}.admin-icon-option{border:1px solid var(--border);background:#fff;border-radius:9px;padding:7px 3px;display:flex;flex-direction:column;align-items:center;gap:4px;color:#374151;cursor:pointer}.admin-icon-option i{font-size:18px}.admin-icon-option span{font-size:9px;white-space:nowrap}.admin-icon-option.selected{border-color:#0f766e;background:#ecfdf5;color:#065f46;box-shadow:0 0 0 2px #99f6e4}.admin-pin-options{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-pin-choice{display:flex;align-items:center;gap:7px}.admin-pin-preview{width:24px;height:24px;display:grid;place-items:center;color:#fff;border:2px solid #fff;box-shadow:0 1px 4px #0004}.admin-pin-preview.circle{border-radius:50%}.admin-pin-preview.rect{border-radius:5px}
-.admin-label-choice{display:flex;align-items:center;gap:7px;font-size:12px}.admin-coordinate-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-coordinate-note{font-size:10px;color:#6b7280;margin-top:5px;line-height:1.5}.admin-place-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-place-form.show{display:block}.admin-place-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-place-form input,.admin-place-form select,.admin-place-form textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-place-form textarea{min-height:70px;resize:vertical}.admin-place-map-picker{height:240px;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:7px;background:#fff}.admin-place-location{font-size:11px;color:#6b7280;margin-top:6px;line-height:1.5}.admin-place-actions{display:flex;gap:7px;margin-top:9px}.admin-place-actions button{flex:1}.admin-place-upload{font-size:11px;color:#6b7280;margin-top:5px}.admin-migrate-note{font-size:11px;color:#6b7280;line-height:1.5;margin:7px 0}
+.admin-label-options{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}.admin-label-choice{border:1px solid var(--border);border-radius:9px;background:#fff;padding:9px;display:flex;align-items:center;gap:7px;font-size:12px}.admin-coordinate-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-coordinate-note{font-size:10px;color:#6b7280;margin-top:5px;line-height:1.5}.ayu-place-name-label{white-space:pre-line;text-align:center;max-width:110px;pointer-events:none;background:#fff;border:1px solid #cbd5e1;border-radius:7px;box-shadow:0 2px 7px #0002;color:#172033;padding:3px 7px;font-size:11px;font-weight:900;line-height:1.2}.ayu-place-name-label:before{display:none}
+.admin-place-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-place-form.show{display:block}.admin-place-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-place-form input,.admin-place-form select,.admin-place-form textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-place-form textarea{min-height:70px;resize:vertical}.admin-place-map-picker{height:240px;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:7px;background:#fff}.admin-place-location{font-size:11px;color:#6b7280;margin-top:6px;line-height:1.5}.admin-place-actions{display:flex;gap:7px;margin-top:9px}.admin-place-actions button{flex:1}.admin-place-upload{font-size:11px;color:#6b7280;margin-top:5px}.admin-migrate-note{font-size:11px;color:#6b7280;line-height:1.5;margin:7px 0}
+
+
+/* v1.4.25：店舗一覧ページ */
+.place-directory-head{background:#fff;padding:10px;border-bottom:1px solid var(--border)}
+.place-directory-search{position:relative;margin-bottom:8px}
+.place-directory-search input{width:100%;padding:11px 12px 11px 36px;border:1px solid var(--border);border-radius:10px;background:#f8fafc;outline:none}
+.place-directory-search i{position:absolute;left:12px;top:12px;color:var(--sub)}
+.place-filter-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.place-filter-btn{flex:0 0 auto;border:1px solid var(--border);background:#f3f4f6;color:#4b5563;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:800}
+.place-filter-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+#directory-place-list{flex:1;min-height:0;overflow:auto;padding:10px 10px 68px}
+#directory-place-list .place-card{margin-bottom:9px}
+.directory-empty{padding:24px 10px;text-align:center;color:var(--sub);font-size:12px}
+.place-directory-group-title{font-size:12px;font-weight:900;color:#374151;margin:8px 2px 7px}
+/* v1.4.25：管理者ツールは折りたたみではなく、項目ごとにページ表示 */
+.admin-accordion{margin-top:10px;border:0;background:transparent;overflow:visible}
+.admin-accordion-item{margin-bottom:9px}
+.admin-accordion-item + .admin-accordion-item{border-top:0}
+.admin-accordion-trigger{border:1px solid var(--border);border-radius:13px;box-shadow:0 1px 2px #00000008;padding:15px 13px;background:#fff}
+.admin-accordion-trigger:hover{background:#fff}
+.admin-accordion-arrow{font-size:15px;color:#6b7280}
+.admin-accordion-panel{display:none}
+.admin-accordion-panel.admin-page-open{display:block;position:fixed;inset:0;z-index:4500;background:#f6f8f9;padding:0 12px 20px;overflow:auto}
+.admin-page-head{position:sticky;top:0;z-index:3;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;margin:0 -12px 12px;padding:10px 12px}
+.admin-page-head button{border:1px solid var(--border);background:#f3f4f6;border-radius:9px;padding:8px 10px;font-weight:900;color:#374151}
+.admin-page-head strong{font-size:15px}
+.admin-place-groups{margin-top:8px}
+.admin-place-group-title{font-size:12px;font-weight:900;color:#374151;background:#f3f4f6;border:1px solid var(--border);border-radius:9px;padding:8px 10px;margin:10px 0 7px}
 
 /* =========================================================
    v1.4.0：店舗選択・操作アニメーション
@@ -225,6 +252,17 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   <div id="place-list" class="map-list"></div>
 </section>
 
+<section id="directory-page" class="page">
+  <div class="place-directory-head">
+    <div class="place-directory-search">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input id="directory-search" type="search" placeholder="店舗・会場を検索" oninput="renderDirectoryPlaces()">
+    </div>
+    <div id="directory-filters" class="place-filter-row"></div>
+  </div>
+  <div id="directory-place-list"></div>
+</section>
+
 <section id="schedule-page" class="page">
   <div class="schedule-head">
     <div class="dance-legend-fixed-notice">🎵 ダンスレジェンドは厚木中央公園で行われています！</div>
@@ -237,6 +275,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
 
 <nav class="bottom">
 <button id="nav-map" class="active" onclick="switchPage('map-page')"><i class="fa-solid fa-map-location-dot"></i>マップ</button>
+<button id="nav-directory" onclick="switchPage('directory-page')"><i class="fa-solid fa-store"></i>店舗一覧</button>
 <button id="nav-schedule" onclick="switchPage('schedule-page')"><span class="nav-icon-wrap"><i class="fa-solid fa-clock"></i><span id="schedule-badge" class="schedule-badge" hidden style="display:none">!</span></span>スケジュール</button>
 </nav>
 
@@ -271,7 +310,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.4.23</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.4.25</span></div>
   </div>
  </div>
 </div>
@@ -350,7 +389,8 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
         <button type="button" class="admin-accordion-trigger" onclick="openAdminSectionPage('notification')">
           <span>🔔 遅延設定</span><span class="admin-accordion-arrow">➤</span>
         </button>
-        <div id="admin-section-notification" class="admin-accordion-panel"><div class="admin-page-header"><button type="button" class="admin-page-back" onclick="closeAdminSectionPage()">← 戻る</button><div class="admin-page-title">🔔 遅延設定</div></div>
+        <div id="admin-section-notification" class="admin-accordion-panel">
+          <div class="admin-page-head"><button type="button" onclick="closeAdminSectionPage('notification')">← 戻る</button><strong>🔔 遅延設定</strong></div>
           <select id="admin-day" class="auth-input" onchange="loadAdminEvents()"></select>
           <select id="admin-event" class="auth-input" onchange="loadDelay()"></select>
           <div class="stepper-vertical" aria-label="遅延時間を上下ボタンで選択">
@@ -368,13 +408,16 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
         <button type="button" class="admin-accordion-trigger" onclick="openAdminSectionPage('places')">
           <span>🏪 店舗・施設設定</span><span class="admin-accordion-arrow">➤</span>
         </button>
-        <div id="admin-section-places" class="admin-accordion-panel"><div class="admin-page-header"><button type="button" class="admin-page-back" onclick="closeAdminSectionPage()">← 戻る</button><div class="admin-page-title">🏪 店舗・施設設定</div></div>
+        <div id="admin-section-places" class="admin-accordion-panel">
+          <div class="admin-page-head"><button type="button" onclick="closeAdminSectionPage('places')">← 戻る</button><strong>🏪 店舗・施設設定</strong></div>
           <p class="admin-migrate-note">店舗情報はFirebaseから読み込みます。ここから追加・編集・削除できます。</p>
           <button class="auth-btn" style="margin-top:7px" onclick="openPlaceEditor()">＋ 新しい店舗・施設を追加</button>
           <div id="admin-place-list" class="admin-place-list"></div>
           <div id="admin-place-form" class="admin-place-form">
             <input type="hidden" id="place-edit-id">
             <label>名称</label><input id="place-name" placeholder="店舗名・施設名">
+            <label>店舗名の改行位置</label><input id="place-label-breaks" placeholder="例：厚木、鮎まつり、出店">
+            <div class="admin-coordinate-note">店舗名を表示するとき、改行したい場所に「、」を入力してください。例：厚木、鮎まつり → 2行表示。</div>
             <label>短い説明</label><input id="place-detail" placeholder="例：10:00〜17:00">
             <label>詳細説明</label><textarea id="place-description" placeholder="店舗・施設の詳しい説明"></textarea>
             <label>検索キーワード</label><input id="place-search-keywords" placeholder="例：やきそば,ヤキソバ,ソース焼きそば">
@@ -387,6 +430,12 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
               <div><label>形</label><select id="place-pin-shape" class="auth-input"><option value="rect">四角</option><option value="circle">丸</option></select></div>
               <div><label>色</label><select id="place-pin-color" class="auth-input"><option value="#0f766e">緑</option><option value="#f59e0b">黄色</option><option value="#2563eb">青</option><option value="#dc2626">赤</option><option value="#7c3aed">紫</option><option value="#6b7280">グレー</option></select></div>
             </div>
+            <label>マップ上の表示</label>
+            <div class="admin-label-options">
+              <label class="admin-label-choice"><input type="radio" name="place-label-mode" value="icon" checked> 📍 アイコン</label>
+              <label class="admin-label-choice"><input type="radio" name="place-label-mode" value="name"> 🏪 店舗名</label>
+            </div>
+            <div class="admin-coordinate-note">「店舗名」を選ぶと、縮小時はアイコンのまま、地図を一定まで拡大すると店舗名に切り替わります。</div>
             <label>地図</label><select id="place-map" onchange="resetPlacePicker()"><option value="park">中央公園</option><option value="station">本厚木駅周辺</option></select>
             <div id="place-coordinate-inputs" class="admin-coordinate-grid">
               <div><label id="coord-a-label">X座標</label><input id="place-coord-a" inputmode="decimal" placeholder="例：600"></div>
@@ -408,7 +457,8 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
         <button type="button" class="admin-accordion-trigger" onclick="openAdminSectionPage('schedule')">
           <span>📅 ダンスレジェンドスケジュール</span><span class="admin-accordion-arrow">➤</span>
         </button>
-        <div id="admin-section-schedule" class="admin-accordion-panel"><div class="admin-page-header"><button type="button" class="admin-page-back" onclick="closeAdminSectionPage()">← 戻る</button><div class="admin-page-title">📅 ダンスレジェンドスケジュール</div></div>
+        <div id="admin-section-schedule" class="admin-accordion-panel">
+          <div class="admin-page-head"><button type="button" onclick="closeAdminSectionPage('schedule')">← 戻る</button><strong>📅 ダンスレジェンドスケジュール</strong></div>
           <p class="admin-migrate-note">スケジュールはFirebaseを正本として管理します。ここから追加・編集・削除できます。</p>
           <select id="admin-schedule-date" class="auth-input" onchange="renderAdminScheduleList()"></select>
           <button class="auth-btn" style="margin-top:7px" onclick="openScheduleEditor()">＋ 新しい予定を追加</button>
@@ -766,6 +816,15 @@ function toggleMyLocation(){
   },{enableHighAccuracy:true,maximumAge:10000,timeout:10000});
 }
 
+const PLACE_NAME_ZOOM = { park:0.35, station:17 };
+
+function getPlaceLabelMode(p){
+  return p?.labelMode === "name" ? "name" : "icon";
+}
+function isPlaceNameVisible(p){
+  if(getPlaceLabelMode(p)!=="name" || !map) return false;
+  return map.getZoom() >= PLACE_NAME_ZOOM[currentMap];
+}
 function getPlaceCoordinateInputs(){
   return {
     a:document.getElementById("place-coord-a"),
@@ -784,6 +843,10 @@ function updateCoordinateInputLabels(){
     if(ia)ia.placeholder="例：600"; if(ib)ib.placeholder="例：380";
   }
 }
+function setPlaceLabelMode(mode){
+  document.querySelectorAll('input[name="place-label-mode"]').forEach(r=>r.checked=r.value===mode);
+}
+
 function getPinScale(){
   if(!map) return 1;
   const z = map.getZoom();
@@ -810,6 +873,18 @@ function applyPinScale(){
   document.querySelectorAll(".ayu-pin").forEach(el=>{
     el.style.transform = `scale(${scale})`;
   });
+  document.querySelectorAll(".ayu-place-name-label").forEach(el=>{
+    const id=el.dataset.placeId;
+    const p=placeData.find(x=>String(x.id)===String(id));
+    el.style.display=isPlaceNameVisible(p)?"block":"none";
+  });
+}
+
+function formatPlaceLabel(name, breaks="") {
+  const raw=String(name||"");
+  const marker=String(breaks||"").trim();
+  const source=marker ? marker : raw;
+  return escapeHtml(source).replace(/、/g,"<br>");
 }
 
 function renderMapMarkers(){
@@ -824,13 +899,15 @@ function renderMapMarkers(){
     const radius = isCircle ? "50%" : `${PIN_STYLE.radius}px`;
 
     const markerPosition = currentMap === "station" ? [p.lat,p.lng] : [760-p.y,p.x];
+    const showName = isPlaceNameVisible(p);
     const marker = L.marker(markerPosition,{
       icon:L.divIcon({
         className:"",
         html:`<div class="ayu-marker-wrap" style="position:relative;width:${Math.max(width,120)}px;height:${Math.max(height,40)}px;display:grid;place-items:center;">
-          <div class="ayu-pin" style="width:${width}px;height:${height}px;border-radius:${radius};background:${style.bg};color:white;border:${PIN_STYLE.borderWidth}px solid white;box-shadow:0 2px 7px #0005;display:grid;place-items:center;transform:scale(${getPinScale()});transition:transform .15s ease;transform-origin:center center;">
+          <div class="ayu-pin" style="width:${width}px;height:${height}px;border-radius:${radius};background:${style.bg};color:white;border:${PIN_STYLE.borderWidth}px solid white;box-shadow:0 2px 7px #0005;display:grid;place-items:center;transform:scale(${getPinScale()});transition:transform .15s ease;transform-origin:center center;${getPlaceLabelMode(p)==="name"&&showName?"display:none;":""}">
             <i class="fa-solid ${p.icon}" style="font-size:13px"></i>
           </div>
+          <div class="ayu-place-name-label" data-place-id="${escapeHtml(p.id)}" style="display:${showName?"block":"none"};position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);">${formatPlaceLabel(p.name,p.labelBreaks)}</div>
         </div>`,
         iconSize:[Math.max(width,120),Math.max(height,40)],
         iconAnchor:[Math.max(width,120)/2,Math.max(height,40)/2]
@@ -858,31 +935,78 @@ function renderMapMarkers(){
   });
 }
 
-function renderPlaceList(){
-  const el=document.getElementById("place-list");
-  const list=placeData.filter(p=>p.map===currentMap);
-  el.innerHTML=list.map(p=>{
-    const expanded=expandedPlaceId===p.id;
-    const imageSrc=resolvePlaceImage(p.image);
-    const imageHtml=imageSrc ? `<img class="place-card-detail-image" src="${imageSrc}" alt="${escapeHtml(p.name)}の画像" onerror="this.style.display='none'">` : "";
-    const typeLabel=(PIN_TYPES[p.type]||PIN_TYPES.shop).shape==="circle" ? "施設・案内" : "会場・店舗";
-    const detailClass=imageSrc ? "has-image" : "no-image";
-    const detailHtml=expanded ? `<div class="place-card-detail ${detailClass}">
-      <button class="detail-close" aria-label="詳細を閉じる" onclick="event.stopPropagation();closePlaceDetail()">×</button>
+function getPlaceTypeLabel(type){
+  return ({shop:"物販・店舗",food:"飲食",stage:"会場・ステージ",info:"案内・施設",toilet:"トイレ"}[type]) || "その他";
+}
+function getDirectoryFilterOptions(){
+  return [
+    ["all","すべて"],
+    ["food","飲食"],
+    ["shop","物販・店舗"],
+    ["stage","会場・ステージ"],
+    ["info","案内・施設"],
+    ["toilet","トイレ"]
+  ];
+}
+let directoryFilter="all";
+function renderDirectoryFilters(){
+  const el=document.getElementById("directory-filters");if(!el)return;
+  el.innerHTML=getDirectoryFilterOptions().map(([key,label])=>`<button type="button" class="place-filter-btn ${directoryFilter===key?"active":""}" onclick="directoryFilter='${key}';renderDirectoryFilters();renderDirectoryPlaces();">${label}</button>`).join("");
+}
+function renderDirectoryPlaces(){
+  const el=document.getElementById("directory-place-list");if(!el)return;
+  const q=(document.getElementById("directory-search")?.value||"").trim();
+  let list=placeData.filter(p=>directoryFilter==="all"||p.type===directoryFilter);
+  if(q){list=list.filter(p=>matchesSearch([p.name,p.detail,p.description,...(Array.isArray(p.searchKeywords)?p.searchKeywords:[])],q));}
+  list=list.slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),"ja",{numeric:true,sensitivity:"base"}));
+  if(!list.length){el.innerHTML='<div class="directory-empty">該当する店舗・会場がありません。</div>';return;}
+  const groups={park:[],station:[]};
+  list.forEach(p=>(groups[p.map]||groups.park).push(p));
+  let html="";
+  [["park","🌳 中央公園"],["station","🚉 本厚木駅周辺"]].forEach(([key,label])=>{
+    if(!groups[key].length)return;
+    html+=`<div class="place-directory-group-title">${label}</div>`;
+    html+=groups[key].map(p=>renderPlaceCardHtml(p,false,"directory")).join("");
+  });
+  el.innerHTML=html;
+}
+function renderPlaceCardHtml(p,expanded=false,context="map"){
+  const imageSrc=resolvePlaceImage(p.image);
+  const imageHtml=imageSrc ? `<img class="place-card-detail-image" src="${imageSrc}" alt="${escapeHtml(p.name)}の画像" onerror="this.style.display='none'">` : "";
+  const detailClass=imageSrc ? "has-image" : "no-image";
+  const description=String(p.description||"").trim();
+  const detailHtml=expanded ? `<div class="place-card-detail ${detailClass}">
+      <button class="detail-close" aria-label="詳細を閉じる" onclick="event.stopPropagation();closeDirectoryPlaceDetail()">×</button>
       <div class="place-card-detail-content">
         ${imageHtml}
         <div class="place-card-detail-text">
-          <div class="detail-meta"><span class="detail-tag">${typeLabel}</span></div>
-          <p>${escapeHtml(p.description||"詳細情報は準備中です。")}</p>
+          <div class="detail-meta"><span class="detail-tag">${getPlaceTypeLabel(p.type)}</span></div>
+          ${description?`<p>${escapeHtml(description)}</p>`:""}
         </div>
       </div>
     </div>` : "";
-    return `<div class="place-card ${expanded?"expanded":""}" onclick="focusPlace('${p.id}',true)">
-      <div class="place-card-row"><div class="place-icon"><i class="fa-solid ${p.icon}"></i></div><div class="place-card-content"><b>${p.name}</b><small>${p.detail||""}</small></div></div>
+  const click=context==="directory" ? `onclick="openDirectoryPlace('${escapeHtml(p.id)}')"` : `onclick="focusPlace('${escapeHtml(p.id)}',true)"`;
+  return `<div class="place-card ${expanded?"expanded":""}" ${click}>
+      <div class="place-card-row"><div class="place-icon"><i class="fa-solid ${escapeHtml(p.icon||"fa-store")}"></i></div><div class="place-card-content"><b>${escapeHtml(p.name)}</b><small>${escapeHtml(p.detail||"")}</small></div></div>
       ${detailHtml}
     </div>`;
-  }).join("");
 }
+let directoryExpandedPlaceId=null;
+function openDirectoryPlace(id){
+  directoryExpandedPlaceId=directoryExpandedPlaceId===id?null:id;
+  renderDirectoryPlaces();
+  if(directoryExpandedPlaceId){
+    requestAnimationFrame(()=>document.querySelector('#directory-place-list .place-card.expanded')?.scrollIntoView({behavior:'smooth',block:'center'}));
+  }
+}
+function closeDirectoryPlaceDetail(){directoryExpandedPlaceId=null;renderDirectoryPlaces();}
+
+function renderPlaceList(){
+  const el=document.getElementById("place-list");
+  const list=placeData.filter(p=>p.map===currentMap);
+  el.innerHTML=list.map(p=>renderPlaceCardHtml(p,expandedPlaceId===p.id,"map")).join("");
+}
+
 function showPlaceDetail(id,scrollToDetail=false){
   const p=placeData.find(x=>x.id===id);if(!p)return;
   expandedPlaceId = expandedPlaceId===id ? null : id;
@@ -891,7 +1015,7 @@ function showPlaceDetail(id,scrollToDetail=false){
     requestAnimationFrame(()=>{
       const cards=[...document.querySelectorAll("#place-list .place-card")];
       const index=listIndexForPlace(p.id);
-      cards[index]?.scrollIntoView({behavior:"smooth",block:"nearest"});
+      cards[index]?.scrollIntoView({behavior:"smooth",block:"center"});
     });
   }
 }
@@ -979,7 +1103,9 @@ function switchPage(id){
   document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
   document.getElementById(id).classList.add("active");
   document.getElementById("nav-map").classList.toggle("active",id==="map-page");
+  document.getElementById("nav-directory").classList.toggle("active",id==="directory-page");
   document.getElementById("nav-schedule").classList.toggle("active",id==="schedule-page");
+  if(id==="directory-page"){renderDirectoryFilters();renderDirectoryPlaces();}
 
   // スケジュールを開いた瞬間に「!」を確実に未表示へ戻す。
   // 遅延データの再受信が直後に起きても、表示中はバッジを出さない。
@@ -1252,6 +1378,8 @@ async function initPlaceDataListener(){
     renderMapMarkers();
     renderPlaceList();
     if(document.getElementById("admin-controls")?.style.display!="none") renderAdminPlaceList();
+    renderDirectoryFilters();
+    if(document.getElementById("directory-page")?.classList.contains("active")) renderDirectoryPlaces();
   },err=>console.error("places listener error:",err));
 }
 
@@ -1283,6 +1411,7 @@ function openPlaceEditor(id=null){
   const p=id ? placeData.find(x=>x.id===id) : null;
   document.getElementById("place-edit-id").value=p?.id||"";
   document.getElementById("place-name").value=p?.name||"";
+  document.getElementById("place-label-breaks").value=p?.labelBreaks||"";
   document.getElementById("place-detail").value=p?.detail||"";
   document.getElementById("place-description").value=p?.description||"";
   document.getElementById("place-search-keywords").value=Array.isArray(p?.searchKeywords)?p.searchKeywords.join(", "):(p?.searchKeywords||"");
@@ -1291,6 +1420,7 @@ function openPlaceEditor(id=null){
   renderPlaceIconPalette(p?.icon||"fa-store");
   document.getElementById("place-map").value=p?.map||"park";
   setPlacePinChoices(p);
+  setPlaceLabelMode(getPlaceLabelMode(p));
   updateCoordinateInputLabels();
   const ci=getPlaceCoordinateInputs();
   if(document.getElementById("place-map").value==="station") {
@@ -1324,16 +1454,37 @@ function renderPlacePickerExistingPins(){
     const width=isCircle?26:36;
     const height=isCircle?26:26;
     const radius=isCircle?"50%":"5px";
+    const zoom=placePickerMap.getZoom();
+    const showName=getPlaceLabelMode(p)==="name" && zoom >= (mapKey==="station"?PLACE_NAME_ZOOM.station:PLACE_NAME_ZOOM.park);
     const markerPosition=mapKey==="station"?[p.lat,p.lng]:[760-p.y,p.x];
     const marker=L.marker(markerPosition,{interactive:false,icon:L.divIcon({
       className:"",
       html:`<div class="ayu-picker-existing-wrap" style="position:relative;width:120px;height:40px;display:grid;place-items:center;opacity:.72;">\
-        <div style="width:${width}px;height:${height}px;border-radius:${radius};background:${style.bg};color:white;border:2px solid white;box-shadow:0 1px 5px #0005;display:grid;place-items:center;">\
+        <div style="width:${width}px;height:${height}px;border-radius:${radius};background:${style.bg};color:white;border:2px solid white;box-shadow:0 1px 5px #0005;display:${showName?"none":"grid"};place-items:center;">\
           <i class="fa-solid ${escapeHtml(p.icon||"fa-store")}" style="font-size:11px"></i>\
         </div>\
+        <div class="ayu-place-name-label" style="display:${showName?"block":"none"};position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:10px;">${formatPlaceLabel(p.name,p.labelBreaks)}</div>\
       </div>`,
       iconSize:[120,40],iconAnchor:[60,20]
     })}).addTo(placePickerExistingLayer);
+  });
+}
+function updatePlacePickerExistingPinLabels(){
+  if(!placePickerExistingLayer || !placePickerMap)return;
+  const mapKey=document.getElementById("place-map")?.value||"park";
+  const threshold=mapKey==="station"?PLACE_NAME_ZOOM.station:PLACE_NAME_ZOOM.park;
+  const zoom=placePickerMap.getZoom();
+  const showByZoom=zoom>=threshold;
+  placePickerExistingLayer.eachLayer(marker=>{
+    const root=marker.getElement()?.querySelector(".ayu-picker-existing-wrap");
+    if(!root)return;
+    const label=root.querySelector(".ayu-place-name-label");
+    const pin=root.children[0];
+    const idText=label?.textContent||"";
+    const p=placeData.find(x=>x.map===mapKey && x.name===idText);
+    const shouldShow=showByZoom && p && getPlaceLabelMode(p)==="name";
+    if(label)label.style.display=shouldShow?"block":"none";
+    if(pin)pin.style.display=shouldShow?"none":"grid";
   });
 }
 
@@ -1372,7 +1523,8 @@ function resetPlacePicker(){
   }
   placePickerExistingLayer=null;
   renderPlacePickerExistingPins();
-  setTimeout(()=>{placePickerMap?.invalidateSize();},50);
+  placePickerMap?.on("zoomend",updatePlacePickerExistingPinLabels);
+  setTimeout(()=>{placePickerMap?.invalidateSize();updatePlacePickerExistingPinLabels();},50);
   updatePlacePickerText();
 }
 function updatePlacePickerMarker(ll){
@@ -1415,7 +1567,8 @@ async function savePlaceFromAdmin(){
     const searchKeywords=String(document.getElementById("place-search-keywords").value||"").split(/[,、\n]/).map(v=>v.trim()).filter(Boolean);
     const type=document.getElementById("place-type").value;
     const typeStyle=PIN_TYPES[type]||PIN_TYPES.shop;
-    const p={id,map:mapKey,name,detail:document.getElementById("place-detail").value.trim(),description:document.getElementById("place-description").value.trim(),searchKeywords,image,icon:document.getElementById("place-icon").value.trim()||"fa-store",type,pinShape:document.getElementById("place-pin-shape")?.value||typeStyle.shape,pinColor:document.getElementById("place-pin-color")?.value||typeStyle.bg};
+    const labelMode=document.querySelector('input[name="place-label-mode"]:checked')?.value||"icon";
+    const p={id,map:mapKey,name,labelBreaks:document.getElementById("place-label-breaks")?.value.trim()||"",detail:document.getElementById("place-detail").value.trim(),description:document.getElementById("place-description").value.trim(),searchKeywords,image,icon:document.getElementById("place-icon").value.trim()||"fa-store",type,labelMode,pinShape:document.getElementById("place-pin-shape")?.value||typeStyle.shape,pinColor:document.getElementById("place-pin-color")?.value||typeStyle.bg};
     if(mapKey==="station"){p.lat=placePickerPosition.lat;p.lng=placePickerPosition.lng;}else{p.x=Math.round(placePickerPosition.x);p.y=Math.round(placePickerPosition.y);}
     await firebase.database().ref("places/"+id).set(p);
     alert(editId?"店舗情報を更新しました。":"店舗・施設を追加しました。");
@@ -1430,25 +1583,41 @@ async function deletePlaceFromAdmin(id){
 }
 function renderAdminPlaceList(){
   const el=document.getElementById("admin-place-list");if(!el)return;
-  const list=[...placeData].sort((a,b)=>String(a.name).localeCompare(String(b.name),"ja"));
-  el.innerHTML=list.map(p=>`<div class="admin-place-row"><div class="name">${escapeHtml(p.name)}<small>${p.map==="station"?"🚉 本厚木駅周辺":"🌳 中央公園"}</small></div><button class="admin-place-edit" onclick="openPlaceEditor('${p.id}')">編集</button><button class="admin-place-delete" onclick="deletePlaceFromAdmin('${p.id}')">削除</button></div>`).join("") || '<div style="font-size:11px;color:#6b7280;padding:8px">店舗情報がありません。</div>';
+  const groups={park:[],station:[]};
+  placeData.forEach(p=>(groups[p.map]||groups.park).push(p));
+  const sortFn=(a,b)=>String(a.name).localeCompare(String(b.name),"ja",{numeric:true,sensitivity:"base"});
+  Object.values(groups).forEach(list=>list.sort(sortFn));
+  const renderGroup=(key,title)=>{
+    const list=groups[key];
+    if(!list.length)return `<div class="admin-place-group-title">${title}</div><div style="font-size:11px;color:#6b7280;padding:4px 2px 8px">登録なし</div>`;
+    return `<div class="admin-place-group-title">${title}</div><div>${list.map(p=>`<div class="admin-place-row"><div class="name">${escapeHtml(p.name)}<small>${getPlaceTypeLabel(p.type)}</small></div><button class="admin-place-edit" onclick="openPlaceEditor('${escapeHtml(p.id)}')">編集</button><button class="admin-place-delete" onclick="deletePlaceFromAdmin('${escapeHtml(p.id)}')">削除</button></div>`).join("")}</div>`;
+  };
+  el.innerHTML=`<div class="admin-place-groups">${renderGroup("park","🌳 中央公園")}${renderGroup("station","🚉 本厚木駅周辺")}</div>`;
 }
 function escapeHtml(v){return String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));}
 
-function closeAdminSectionPage(){
+function closeAllAdminSections(){
   document.querySelectorAll("#admin-accordion .admin-accordion-panel").forEach(panel=>panel.classList.remove("admin-page-open"));
-  if(document.getElementById("admin-section-notification")?.contains(document.activeElement)) document.activeElement.blur();
+  document.querySelectorAll("#admin-accordion .admin-accordion-item").forEach(item=>item.classList.remove("open"));
 }
 function openAdminSectionPage(section){
   if(!currentUserIsAdmin){alert("管理者権限がありません。");return;}
-  document.querySelectorAll("#admin-accordion .admin-accordion-panel").forEach(panel=>panel.classList.remove("admin-page-open"));
+  closeAllAdminSections();
   const panel=document.getElementById(`admin-section-${section}`);
   if(!panel)return;
   panel.classList.add("admin-page-open");
-  if(section==="notification"){loadAdminDays();}
+  if(section==="notification")loadAdminDays();
   if(section==="schedule"){renderAdminScheduleDates();renderAdminScheduleList();}
-  if(section==="places"){renderAdminPlaceList();}
-  requestAnimationFrame(()=>panel.scrollTop=0);
+  if(section==="places")renderAdminPlaceList();
+}
+function closeAdminSectionPage(section){
+  document.getElementById(`admin-section-${section}`)?.classList.remove("admin-page-open");
+}
+function toggleAdminSection(section){openAdminSectionPage(section);}
+function openAdminTool(){
+  if(!currentUserIsAdmin){alert("管理者権限がありません。");return;}
+  const controls=document.getElementById("admin-controls");
+  if(controls)controls.style.display="block";
 }
 function loadAdminDays(){
   const s=document.getElementById("admin-day");
@@ -1756,7 +1925,7 @@ function initAuth(){
   });
 }
 window.addEventListener("load",()=>{
-  initMap();renderDayTabs();renderSchedule();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAuth();initFCM();
+  initMap();renderDayTabs();renderSchedule();renderDirectoryFilters();renderDirectoryPlaces();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAuth();initFCM();
   if(!localStorage.getItem("ayu_welcome_seen")){setTimeout(()=>{openDrawer();openModal("modal-welcome");localStorage.setItem("ayu_welcome_seen","1")},450)}
 });
 </script>
