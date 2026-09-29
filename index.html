@@ -107,6 +107,7 @@ button,input,select{font:inherit}
 .admin-accordion-panel{display:none;padding:0 12px 13px;border-top:1px solid #f0f1f3;background:#fff}
 .admin-accordion-item.open .admin-accordion-panel{display:block}
 .admin-section-title{font-size:14px;font-weight:900;margin:12px 0 8px}.admin-schedule-list{max-height:300px;overflow:auto;margin-top:9px}.admin-schedule-row{display:flex;gap:7px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-schedule-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-schedule-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-schedule-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-schedule-edit{background:#ecfdf5;color:#065f46}.admin-schedule-delete{background:#fef2f2;color:#b91c1c}.admin-schedule-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-schedule-form.show{display:block}.admin-schedule-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-schedule-form input,.admin-schedule-form textarea,.admin-schedule-form select{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-schedule-time-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-schedule-actions{display:flex;gap:7px;margin-top:9px}.admin-schedule-actions button{flex:1}.admin-place-tools{margin-top:12px;border-top:1px dashed var(--border);padding-top:14px}.admin-place-tools h4{margin-bottom:8px}.admin-place-list{max-height:260px;overflow:auto;margin-top:8px}.admin-place-row{display:flex;gap:8px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-place-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-place-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-place-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-place-edit{background:#ecfdf5;color:#065f46}.admin-place-delete{background:#fef2f2;color:#b91c1c}.admin-icon-palette{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}.admin-icon-option{border:1px solid var(--border);background:#fff;border-radius:9px;padding:7px 3px;display:flex;flex-direction:column;align-items:center;gap:4px;color:#374151;cursor:pointer}.admin-icon-option i{font-size:18px}.admin-icon-option span{font-size:9px;white-space:nowrap}.admin-icon-option.selected{border-color:#0f766e;background:#ecfdf5;color:#065f46;box-shadow:0 0 0 2px #99f6e4}.admin-pin-options{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-pin-choice{display:flex;align-items:center;gap:7px}.admin-pin-preview{width:24px;height:24px;display:grid;place-items:center;color:#fff;border:2px solid #fff;box-shadow:0 1px 4px #0004}.admin-pin-preview.circle{border-radius:50%}.admin-pin-preview.rect{border-radius:5px}
+.admin-label-options{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}.admin-label-choice{border:1px solid var(--border);border-radius:9px;background:#fff;padding:9px;display:flex;align-items:center;gap:7px;font-size:12px}.admin-coordinate-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-coordinate-note{font-size:10px;color:#6b7280;margin-top:5px;line-height:1.5}.ayu-place-name-label{white-space:nowrap;pointer-events:none;background:#fff;border:1px solid #cbd5e1;border-radius:7px;box-shadow:0 2px 7px #0002;color:#172033;padding:3px 7px;font-size:11px;font-weight:900;line-height:1.2}.ayu-place-name-label:before{display:none}
 .admin-place-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-place-form.show{display:block}.admin-place-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-place-form input,.admin-place-form select,.admin-place-form textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-place-form textarea{min-height:70px;resize:vertical}.admin-place-map-picker{height:240px;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:7px;background:#fff}.admin-place-location{font-size:11px;color:#6b7280;margin-top:6px;line-height:1.5}.admin-place-actions{display:flex;gap:7px;margin-top:9px}.admin-place-actions button{flex:1}.admin-place-upload{font-size:11px;color:#6b7280;margin-top:5px}.admin-migrate-note{font-size:11px;color:#6b7280;line-height:1.5;margin:7px 0}
 
 /* =========================================================
@@ -269,7 +270,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.4.19</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.4.20</span></div>
   </div>
  </div>
 </div>
@@ -386,7 +387,18 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
               <div><label>形</label><select id="place-pin-shape" class="auth-input"><option value="rect">四角</option><option value="circle">丸</option></select></div>
               <div><label>色</label><select id="place-pin-color" class="auth-input"><option value="#0f766e">緑</option><option value="#f59e0b">黄色</option><option value="#2563eb">青</option><option value="#dc2626">赤</option><option value="#7c3aed">紫</option><option value="#6b7280">グレー</option></select></div>
             </div>
+            <label>マップ上の表示</label>
+            <div class="admin-label-options">
+              <label class="admin-label-choice"><input type="radio" name="place-label-mode" value="icon" checked> 📍 アイコン</label>
+              <label class="admin-label-choice"><input type="radio" name="place-label-mode" value="name"> 🏪 店舗名</label>
+            </div>
+            <div class="admin-coordinate-note">「店舗名」を選ぶと、縮小時はアイコンのまま、地図を一定まで拡大すると店舗名に切り替わります。</div>
             <label>地図</label><select id="place-map" onchange="resetPlacePicker()"><option value="park">中央公園</option><option value="station">本厚木駅周辺</option></select>
+            <div id="place-coordinate-inputs" class="admin-coordinate-grid">
+              <div><label id="coord-a-label">X座標</label><input id="place-coord-a" inputmode="decimal" placeholder="例：600"></div>
+              <div><label id="coord-b-label">Y座標</label><input id="place-coord-b" inputmode="decimal" placeholder="例：380"></div>
+            </div>
+            <div class="admin-coordinate-note">座標は手入力できます。地図をタップすると、その座標が入力欄にも反映されます。</div>
             <div id="place-picker-map" class="admin-place-map-picker"></div>
             <div id="place-location-text" class="admin-place-location">地図をタップして位置を指定してください。</div>
             <label>画像ファイル名</label><input id="place-image-name" placeholder="例：yakisoba.jpg">
@@ -423,7 +435,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyAJ6MMsgtmKb9opkguQ2BnwUm4MUG51Fxk",
+  apiKey: "AIzaSyAJ6MMsgtmKb9opkguQ2BnwUm4MUG21Fxk",
   authDomain: "atsugi-ayu-festival.firebaseapp.com",
   databaseURL: "https://atsugi-ayu-festival-default-rtdb.firebaseio.com",
   projectId: "atsugi-ayu-festival",
@@ -757,6 +769,37 @@ function toggleMyLocation(){
   },{enableHighAccuracy:true,maximumAge:10000,timeout:10000});
 }
 
+const PLACE_NAME_ZOOM = { park:0.35, station:17 };
+
+function getPlaceLabelMode(p){
+  return p?.labelMode === "name" ? "name" : "icon";
+}
+function isPlaceNameVisible(p){
+  if(getPlaceLabelMode(p)!=="name" || !map) return false;
+  return map.getZoom() >= PLACE_NAME_ZOOM[currentMap];
+}
+function getPlaceCoordinateInputs(){
+  return {
+    a:document.getElementById("place-coord-a"),
+    b:document.getElementById("place-coord-b")
+  };
+}
+function updateCoordinateInputLabels(){
+  const key=document.getElementById("place-map")?.value || "park";
+  const a=document.getElementById("coord-a-label"),b=document.getElementById("coord-b-label");
+  const ia=document.getElementById("place-coord-a"),ib=document.getElementById("place-coord-b");
+  if(key==="station") {
+    if(a)a.textContent="緯度"; if(b)b.textContent="経度";
+    if(ia)ia.placeholder="例：35.440200"; if(ib)ib.placeholder="例：139.364300";
+  } else {
+    if(a)a.textContent="X座標"; if(b)b.textContent="Y座標";
+    if(ia)ia.placeholder="例：600"; if(ib)ib.placeholder="例：380";
+  }
+}
+function setPlaceLabelMode(mode){
+  document.querySelectorAll('input[name="place-label-mode"]').forEach(r=>r.checked=r.value===mode);
+}
+
 function getPinScale(){
   if(!map) return 1;
   const z = map.getZoom();
@@ -783,6 +826,11 @@ function applyPinScale(){
   document.querySelectorAll(".ayu-pin").forEach(el=>{
     el.style.transform = `scale(${scale})`;
   });
+  document.querySelectorAll(".ayu-place-name-label").forEach(el=>{
+    const id=el.dataset.placeId;
+    const p=placeData.find(x=>String(x.id)===String(id));
+    el.style.display=isPlaceNameVisible(p)?"block":"none";
+  });
 }
 
 function renderMapMarkers(){
@@ -797,14 +845,18 @@ function renderMapMarkers(){
     const radius = isCircle ? "50%" : `${PIN_STYLE.radius}px`;
 
     const markerPosition = currentMap === "station" ? [p.lat,p.lng] : [760-p.y,p.x];
+    const showName = isPlaceNameVisible(p);
     const marker = L.marker(markerPosition,{
       icon:L.divIcon({
         className:"",
-        html:`<div class="ayu-pin" style="width:${width}px;height:${height}px;border-radius:${radius};background:${style.bg};color:white;border:${PIN_STYLE.borderWidth}px solid white;box-shadow:0 2px 7px #0005;display:grid;place-items:center;transform:scale(${getPinScale()});transition:transform .15s ease;transform-origin:center center">
-          <i class="fa-solid ${p.icon}" style="font-size:13px"></i>
+        html:`<div class="ayu-marker-wrap" style="position:relative;width:${Math.max(width,120)}px;height:${Math.max(height,40)}px;display:grid;place-items:center;">
+          <div class="ayu-pin" style="width:${width}px;height:${height}px;border-radius:${radius};background:${style.bg};color:white;border:${PIN_STYLE.borderWidth}px solid white;box-shadow:0 2px 7px #0005;display:grid;place-items:center;transform:scale(${getPinScale()});transition:transform .15s ease;transform-origin:center center;${getPlaceLabelMode(p)==="name"&&showName?"display:none;":""}">
+            <i class="fa-solid ${p.icon}" style="font-size:13px"></i>
+          </div>
+          <div class="ayu-place-name-label" data-place-id="${escapeHtml(p.id)}" style="display:${showName?"block":"none"};position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);">${escapeHtml(p.name)}</div>
         </div>`,
-        iconSize:[width,height],
-        iconAnchor:[width/2,height/2]
+        iconSize:[Math.max(width,120),Math.max(height,40)],
+        iconAnchor:[Math.max(width,120)/2,Math.max(height,40)/2]
       })
     }).addTo(markerLayer);
 
@@ -1262,6 +1314,16 @@ function openPlaceEditor(id=null){
   renderPlaceIconPalette(p?.icon||"fa-store");
   document.getElementById("place-map").value=p?.map||"park";
   setPlacePinChoices(p);
+  setPlaceLabelMode(getPlaceLabelMode(p));
+  updateCoordinateInputLabels();
+  const ci=getPlaceCoordinateInputs();
+  if(document.getElementById("place-map").value==="station") {
+    if(ci.a)ci.a.value=Number.isFinite(p?.lat)?p.lat:"";
+    if(ci.b)ci.b.value=Number.isFinite(p?.lng)?p.lng:"";
+  } else {
+    if(ci.a)ci.a.value=Number.isFinite(p?.x)?p.x:"";
+    if(ci.b)ci.b.value=Number.isFinite(p?.y)?p.y:"";
+  }
   document.getElementById("place-image-name").value=p?.image||"";
   placePickerPosition=p ? (p.map==="station" ? {lat:p.lat,lng:p.lng} : {x:p.x,y:p.y}) : null;
   resetPlacePicker();
@@ -1269,8 +1331,16 @@ function openPlaceEditor(id=null){
 function closePlaceEditor(){document.getElementById("admin-place-form")?.classList.remove("show");if(placePickerMap){placePickerMap.remove();placePickerMap=null;placePickerMarker=null;}}
 function resetPlacePicker(){
   const key=document.getElementById("place-map").value;
+  updateCoordinateInputLabels();
   if(placePickerMap){placePickerMap.remove();placePickerMap=null;placePickerMarker=null;}
   placePickerPosition=null;
+  const editId=document.getElementById("place-edit-id")?.value;
+  const editingPlace=editId ? placeData.find(x=>String(x.id)===String(editId)) : null;
+  const ci=getPlaceCoordinateInputs();
+  if(editingPlace?.map!==key){
+    if(ci.a)ci.a.value="";
+    if(ci.b)ci.b.value="";
+  }
   const el=document.getElementById("place-picker-map");
   if(key==="park"){
     placePickerMap=L.map(el,{crs:L.CRS.Simple,zoomControl:true,attributionControl:false,minZoom:-1.25,maxZoom:2});
@@ -1279,14 +1349,18 @@ function resetPlacePicker(){
     placePickerMap.fitBounds(bounds,{padding:[4,4]});
     placePickerMap.on("click",e=>{placePickerPosition={x:e.latlng.lng,y:760-e.latlng.lat};updatePlacePickerMarker(e.latlng);});
     const p=document.getElementById("place-edit-id").value && placeData.find(x=>x.id===document.getElementById("place-edit-id").value);
-    if(p?.map==="park" && Number.isFinite(p.x)&&Number.isFinite(p.y)){placePickerPosition={x:p.x,y:p.y};updatePlacePickerMarker(L.latLng(760-p.y,p.x));placePickerMap.setView([760-p.y,p.x],0);}
+    const ci=getPlaceCoordinateInputs();
+    const x=Number(ci.a?.value), y=Number(ci.b?.value);
+    if(Number.isFinite(x)&&Number.isFinite(y)){placePickerPosition={x,y};updatePlacePickerMarker(L.latLng(760-y,x));placePickerMap.setView([760-y,x],0);}
   }else{
     placePickerMap=L.map(el,{zoomControl:true,attributionControl:true,minZoom:14,maxZoom:19});
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,minZoom:16,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>'}).addTo(placePickerMap);
     placePickerMap.setMaxBounds(STATION_MAP_BOUNDS);placePickerMap.options.maxBoundsViscosity=1.0;placePickerMap.setView([35.4402,139.3643],15.5);
     placePickerMap.on("click",e=>{placePickerPosition={lat:e.latlng.lat,lng:e.latlng.lng};updatePlacePickerMarker(e.latlng);});
     const p=document.getElementById("place-edit-id").value && placeData.find(x=>x.id===document.getElementById("place-edit-id").value);
-    if(p?.map==="station" && Number.isFinite(p.lat)&&Number.isFinite(p.lng)){placePickerPosition={lat:p.lat,lng:p.lng};updatePlacePickerMarker(L.latLng(p.lat,p.lng));placePickerMap.setView([p.lat,p.lng],16);}
+    const ci=getPlaceCoordinateInputs();
+    const lat=Number(ci.a?.value), lng=Number(ci.b?.value);
+    if(Number.isFinite(lat)&&Number.isFinite(lng)){placePickerPosition={lat,lng};updatePlacePickerMarker(L.latLng(lat,lng));placePickerMap.setView([lat,lng],16);}
   }
   setTimeout(()=>placePickerMap?.invalidateSize(),50);
   updatePlacePickerText();
@@ -1301,15 +1375,28 @@ function updatePlacePickerText(){
   const el=document.getElementById("place-location-text");
   if(!el)return;
   if(!placePickerPosition){el.textContent="地図をタップして位置を指定してください。";return;}
-  if(document.getElementById("place-map").value==="station") el.textContent=`指定位置：緯度 ${placePickerPosition.lat.toFixed(6)} / 経度 ${placePickerPosition.lng.toFixed(6)}`;
-  else el.textContent=`指定位置：X ${Math.round(placePickerPosition.x)} / Y ${Math.round(placePickerPosition.y)}`;
+  const key=document.getElementById("place-map").value;
+  const ci=getPlaceCoordinateInputs();
+  if(key==="station") {
+    if(ci.a)ci.a.value=placePickerPosition.lat.toFixed(6);
+    if(ci.b)ci.b.value=placePickerPosition.lng.toFixed(6);
+    el.textContent=`指定位置：緯度 ${placePickerPosition.lat.toFixed(6)} / 経度 ${placePickerPosition.lng.toFixed(6)}`;
+  } else {
+    if(ci.a)ci.a.value=Math.round(placePickerPosition.x);
+    if(ci.b)ci.b.value=Math.round(placePickerPosition.y);
+    el.textContent=`指定位置：X ${Math.round(placePickerPosition.x)} / Y ${Math.round(placePickerPosition.y)}`;
+  }
 }
 async function savePlaceFromAdmin(){
   if(!currentUserIsAdmin){alert("管理者権限が必要です。");return;}
   const name=document.getElementById("place-name").value.trim();
   const mapKey=document.getElementById("place-map").value;
   if(!name){alert("名称を入力してください。");return;}
-  if(!placePickerPosition){alert("地図をタップして位置を指定してください。");return;}
+  const ci=getPlaceCoordinateInputs();
+  const a=Number(ci.a?.value), b=Number(ci.b?.value);
+  if(mapKey==="station" && Number.isFinite(a)&&Number.isFinite(b)) placePickerPosition={lat:a,lng:b};
+  if(mapKey!=="station" && Number.isFinite(a)&&Number.isFinite(b)) placePickerPosition={x:a,y:b};
+  if(!placePickerPosition){alert("座標を入力するか、地図をタップして位置を指定してください。");return;}
   const editId=document.getElementById("place-edit-id").value;
   const id=editId || `place-${Date.now()}`;
   const old=placeData.find(p=>p.id===id);
@@ -1318,7 +1405,8 @@ async function savePlaceFromAdmin(){
     const searchKeywords=String(document.getElementById("place-search-keywords").value||"").split(/[,、\n]/).map(v=>v.trim()).filter(Boolean);
     const type=document.getElementById("place-type").value;
     const typeStyle=PIN_TYPES[type]||PIN_TYPES.shop;
-    const p={id,map:mapKey,name,detail:document.getElementById("place-detail").value.trim(),description:document.getElementById("place-description").value.trim(),searchKeywords,image,icon:document.getElementById("place-icon").value.trim()||"fa-store",type,pinShape:document.getElementById("place-pin-shape")?.value||typeStyle.shape,pinColor:document.getElementById("place-pin-color")?.value||typeStyle.bg};
+    const labelMode=document.querySelector('input[name="place-label-mode"]:checked')?.value||"icon";
+    const p={id,map:mapKey,name,detail:document.getElementById("place-detail").value.trim(),description:document.getElementById("place-description").value.trim(),searchKeywords,image,icon:document.getElementById("place-icon").value.trim()||"fa-store",type,labelMode,pinShape:document.getElementById("place-pin-shape")?.value||typeStyle.shape,pinColor:document.getElementById("place-pin-color")?.value||typeStyle.bg};
     if(mapKey==="station"){p.lat=placePickerPosition.lat;p.lng=placePickerPosition.lng;}else{p.x=Math.round(placePickerPosition.x);p.y=Math.round(placePickerPosition.y);}
     await firebase.database().ref("places/"+id).set(p);
     alert(editId?"店舗情報を更新しました。":"店舗・施設を追加しました。");
