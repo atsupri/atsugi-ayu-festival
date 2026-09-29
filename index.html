@@ -270,7 +270,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.4.20</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.4.21</span></div>
   </div>
  </div>
 </div>
@@ -399,6 +399,8 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
               <div><label id="coord-b-label">Y座標</label><input id="place-coord-b" inputmode="decimal" placeholder="例：380"></div>
             </div>
             <div class="admin-coordinate-note">座標は手入力できます。地図をタップすると、その座標が入力欄にも反映されます。</div>
+            <label class="admin-label-choice" style="margin-top:8px"><input id="place-picker-show-existing" type="checkbox" onchange="togglePlacePickerExistingPins()"> 📍 すでに登録されているピンを表示</label>
+            <div class="admin-coordinate-note">ONにすると、現在選んでいるマップの登録済み店舗・施設を座標決め用の地図に表示します。編集中のピンは除外します。</div>
             <div id="place-picker-map" class="admin-place-map-picker"></div>
             <div id="place-location-text" class="admin-place-location">地図をタップして位置を指定してください。</div>
             <label>画像ファイル名</label><input id="place-image-name" placeholder="例：yakisoba.jpg">
@@ -508,6 +510,7 @@ let placeData = [];
 let placeFirebaseLoaded=false;
 let placePickerMap=null;
 let placePickerMarker=null;
+let placePickerExistingLayer=null;
 let placePickerPosition=null;
 let placeImagePreviewData="";
 
@@ -1328,11 +1331,64 @@ function openPlaceEditor(id=null){
   placePickerPosition=p ? (p.map==="station" ? {lat:p.lat,lng:p.lng} : {x:p.x,y:p.y}) : null;
   resetPlacePicker();
 }
-function closePlaceEditor(){document.getElementById("admin-place-form")?.classList.remove("show");if(placePickerMap){placePickerMap.remove();placePickerMap=null;placePickerMarker=null;}}
+function closePlaceEditor(){document.getElementById("admin-place-form")?.classList.remove("show");if(placePickerMap){placePickerMap.remove();placePickerMap=null;placePickerMarker=null;placePickerExistingLayer=null;}}
+function togglePlacePickerExistingPins(){
+  if(!placePickerMap)return;
+  renderPlacePickerExistingPins();
+}
+function renderPlacePickerExistingPins(){
+  if(!placePickerMap)return;
+  if(placePickerExistingLayer){placePickerExistingLayer.remove();placePickerExistingLayer=null;}
+  const checkbox=document.getElementById("place-picker-show-existing");
+  if(!checkbox?.checked)return;
+  const mapKey=document.getElementById("place-map")?.value||"park";
+  const editId=String(document.getElementById("place-edit-id")?.value||"");
+  placePickerExistingLayer=L.layerGroup().addTo(placePickerMap);
+  placeData.filter(p=>p.map===mapKey && String(p.id)!==editId).forEach(p=>{
+    const baseStyle=PIN_TYPES[p.type]||PIN_TYPES.shop;
+    const style={shape:p.pinShape||baseStyle.shape,bg:p.pinColor||baseStyle.bg};
+    const isCircle=style.shape==="circle";
+    const width=isCircle?26:36;
+    const height=isCircle?26:26;
+    const radius=isCircle?"50%":"5px";
+    const zoom=placePickerMap.getZoom();
+    const showName=getPlaceLabelMode(p)==="name" && zoom >= (mapKey==="station"?PLACE_NAME_ZOOM.station:PLACE_NAME_ZOOM.park);
+    const markerPosition=mapKey==="station"?[p.lat,p.lng]:[760-p.y,p.x];
+    const marker=L.marker(markerPosition,{interactive:false,icon:L.divIcon({
+      className:"",
+      html:`<div class="ayu-picker-existing-wrap" style="position:relative;width:120px;height:40px;display:grid;place-items:center;opacity:.72;">\
+        <div style="width:${width}px;height:${height}px;border-radius:${radius};background:${style.bg};color:white;border:2px solid white;box-shadow:0 1px 5px #0005;display:${showName?"none":"grid"};place-items:center;">\
+          <i class="fa-solid ${escapeHtml(p.icon||"fa-store")}" style="font-size:11px"></i>\
+        </div>\
+        <div class="ayu-place-name-label" style="display:${showName?"block":"none"};position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:10px;">${escapeHtml(p.name)}</div>\
+      </div>`,
+      iconSize:[120,40],iconAnchor:[60,20]
+    })}).addTo(placePickerExistingLayer);
+  });
+}
+function updatePlacePickerExistingPinLabels(){
+  if(!placePickerExistingLayer || !placePickerMap)return;
+  const mapKey=document.getElementById("place-map")?.value||"park";
+  const threshold=mapKey==="station"?PLACE_NAME_ZOOM.station:PLACE_NAME_ZOOM.park;
+  const zoom=placePickerMap.getZoom();
+  const showByZoom=zoom>=threshold;
+  placePickerExistingLayer.eachLayer(marker=>{
+    const root=marker.getElement()?.querySelector(".ayu-picker-existing-wrap");
+    if(!root)return;
+    const label=root.querySelector(".ayu-place-name-label");
+    const pin=root.children[0];
+    const idText=label?.textContent||"";
+    const p=placeData.find(x=>x.map===mapKey && x.name===idText);
+    const shouldShow=showByZoom && p && getPlaceLabelMode(p)==="name";
+    if(label)label.style.display=shouldShow?"block":"none";
+    if(pin)pin.style.display=shouldShow?"none":"grid";
+  });
+}
+
 function resetPlacePicker(){
   const key=document.getElementById("place-map").value;
   updateCoordinateInputLabels();
-  if(placePickerMap){placePickerMap.remove();placePickerMap=null;placePickerMarker=null;}
+  if(placePickerMap){placePickerMap.remove();placePickerMap=null;placePickerMarker=null;placePickerExistingLayer=null;}
   placePickerPosition=null;
   const editId=document.getElementById("place-edit-id")?.value;
   const editingPlace=editId ? placeData.find(x=>String(x.id)===String(editId)) : null;
@@ -1362,7 +1418,10 @@ function resetPlacePicker(){
     const lat=Number(ci.a?.value), lng=Number(ci.b?.value);
     if(Number.isFinite(lat)&&Number.isFinite(lng)){placePickerPosition={lat,lng};updatePlacePickerMarker(L.latLng(lat,lng));placePickerMap.setView([lat,lng],16);}
   }
-  setTimeout(()=>placePickerMap?.invalidateSize(),50);
+  placePickerExistingLayer=null;
+  renderPlacePickerExistingPins();
+  placePickerMap?.on("zoomend",updatePlacePickerExistingPinLabels);
+  setTimeout(()=>{placePickerMap?.invalidateSize();updatePlacePickerExistingPinLabels();},50);
   updatePlacePickerText();
 }
 function updatePlacePickerMarker(ll){
