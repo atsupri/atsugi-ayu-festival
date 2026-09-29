@@ -270,7 +270,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.4.21</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.4.22</span></div>
   </div>
  </div>
 </div>
@@ -449,7 +449,7 @@ const firebaseConfig = {
 let firebaseReady = false;
 // 旧バージョンの匿名Authが残っている端末では、管理者ログインと匿名セッションの
 // signOutが競合しないよう、匿名セッション整理の完了を待ってからログインします。
-let authCleanupPromise = Promise.resolve();
+// 現行版では一般ユーザーのFirebase Authを使わないため、匿名Auth整理はinitAuth内だけで行います。
 // 通知登録はFCM tokenHash方式で行うため、一般ユーザーのFirebase Authは不要です。
 // FCM Web Push用のVAPID公開鍵をここに設定してください。
 // Firebaseコンソール → プロジェクトの設定 → Cloud Messaging → Web Push証明書
@@ -1692,26 +1692,36 @@ function showManagerLogin(){
 }
 
 async function login(){
-  const email=document.getElementById("email").value.trim();
-  const password=document.getElementById("password").value;
+  const email=document.getElementById("email")?.value.trim();
+  const password=document.getElementById("password")?.value;
   const error=document.getElementById("auth-error");
-  error.textContent="";
+  if(error)error.textContent="";
 
   if(!firebaseReady){
-    error.textContent="Firebaseの初期化に失敗しています。firebaseConfigを確認してください。";
+    if(error)error.textContent="Firebaseの初期化に失敗しています。firebaseConfigを確認してください。";
     return;
   }
   if(!email||!password){
-    error.textContent="メールアドレスとパスワードを入力してください。";
+    if(error)error.textContent="メールアドレスとパスワードを入力してください。";
     return;
   }
 
+  const auth=firebase.auth();
   try{
-    // 過去バージョンの匿名Auth整理と管理者ログインが競合しないようにする。
-    await authCleanupPromise;
-    await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-    await firebase.auth().signInWithEmailAndPassword(email,password);
-    error.textContent="";
+    // v1.4.20以前の端末に残っている匿名Authや途中状態が、
+    // 管理者ログインと競合しないように、ログイン開始時点で一度だけ整理する。
+    if(auth.currentUser){
+      await auth.signOut();
+    }
+    await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    const credential=await auth.signInWithEmailAndPassword(email,password);
+
+    // signInWithEmailAndPassword成功後、onAuthStateChanged側でadmins/{uid}/roleを確認する。
+    // ここでは成功メッセージを先に出さず、管理者判定が完了するのを待つ。
+    if(!credential?.user){
+      throw new Error("auth/no-user-after-signin");
+    }
+    if(error)error.textContent="";
   }catch(e){
     console.error("管理者ログインエラー:",e);
     const messages={
@@ -1721,9 +1731,10 @@ async function login(){
       "auth/invalid-credential":"メールアドレスまたはパスワードが正しくありません。",
       "auth/too-many-requests":"試行回数が多すぎます。時間を置いてから再試行してください。",
       "auth/network-request-failed":"ネットワーク接続を確認してください。",
-      "auth/operation-not-allowed":"Firebase Authenticationのメール/パスワード方式が無効です。"
+      "auth/operation-not-allowed":"Firebase Authenticationのメール/パスワード方式が無効です。",
+      "auth/no-user-after-signin":"ログイン状態の確認に失敗しました。もう一度お試しください。"
     };
-    error.textContent=messages[e.code]||`ログインに失敗しました（${e.code||"unknown"}）。`;
+    if(error)error.textContent=messages[e.code]||`ログインに失敗しました（${e.code||"unknown"}）。`;
   }
 }
 async function logout(){
@@ -1757,18 +1768,15 @@ function initAuth(){
     // 過去バージョンで作られた匿名Authだけを整理する。
     // login()側はこのPromiseを待つため、管理者ログインとの競合を防げます。
     if(user.isAnonymous){
-      const anonymousUid=user.uid;
-      authCleanupPromise=(async()=>{
-        try{
-          // すでに別ユーザーへ切り替わっている場合は、そのユーザーを触らない。
-          if(firebase.auth().currentUser?.uid===anonymousUid){
-            await firebase.auth().signOut();
-          }
-        }catch(e){
-          console.error("旧匿名Auth整理失敗:",e);
+      // 現行版では匿名Authを使用しないため、古い端末に残っている匿名セッションだけ整理する。
+      // 管理者ログイン処理とは独立して行い、ログイン用signInを取り消さない。
+      try{
+        if(firebase.auth().currentUser?.uid===user.uid){
+          await firebase.auth().signOut();
         }
-      })();
-      await authCleanupPromise;
+      }catch(e){
+        console.error("旧匿名Auth整理失敗:",e);
+      }
       return;
     }
 
