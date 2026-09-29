@@ -41,7 +41,7 @@ button,input,select{font:inherit}
 .map-tools{background:white;padding:8px;border-bottom:1px solid var(--border)}
 .map-tabs{display:flex;gap:7px}.map-tab{flex:1;border:1px solid var(--border);background:#f3f4f6;border-radius:10px;padding:10px 6px;font-weight:700;color:#4b5563}
 .map-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-#map{height:38vh;min-height:240px;flex:0 0 38vh;background:#fff;position:relative;z-index:1}
+#map{height:34vh;min-height:215px;flex:0 0 34vh;background:#fff;position:relative;z-index:1}
 .location-btn{position:absolute;right:12px;bottom:12px;z-index:650;border:1px solid #d1d5db;background:#fff;color:#374151;border-radius:11px;padding:9px 11px;font-weight:800;box-shadow:0 2px 8px #0003}.location-btn:active{transform:scale(.97)}.location-btn.active{background:#eff6ff;color:#2563eb;border-color:#93c5fd}.location-note{font-size:11px;color:#6b7280;padding:6px 2px 0;line-height:1.5}.leaflet-control-attribution{font-size:10px}
 
 .place-detail-panel{display:block;position:absolute;left:10px;right:10px;bottom:10px;z-index:700;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 8px 28px #0003;max-height:min(58vh,460px);overflow:auto;transform:translateY(calc(100% + 30px));opacity:0;pointer-events:none;transition:transform .28s ease,opacity .22s ease}.place-detail-panel.show{transform:translateY(0);opacity:1;pointer-events:auto}.place-detail-inner{padding:14px 14px 16px}.place-detail-top{display:flex;gap:11px;align-items:flex-start}.place-detail-icon{width:46px;height:46px;flex:0 0 46px;border-radius:12px;background:#ecfdf5;color:var(--primary);display:grid;place-items:center;font-size:19px}.place-detail-title{flex:1}.place-detail-title h3{font-size:17px;line-height:1.35}.place-detail-title small{display:block;color:var(--sub);margin-top:4px;line-height:1.5}.place-detail-close{border:0;background:#f3f4f6;color:#6b7280;width:34px;height:34px;border-radius:50%;font-size:19px}.place-detail-image{width:100%;max-height:220px;object-fit:contain;border-radius:11px;margin-top:12px;background:#f8fafc;border:1px solid var(--border)}.place-detail-body{font-size:13px;line-height:1.7;margin-top:12px;white-space:pre-wrap}.place-detail-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.place-detail-tag{font-size:11px;padding:5px 8px;border-radius:999px;background:#f3f4f6;color:#4b5563}
@@ -97,24 +97,19 @@ button,input,select{font:inherit}
 .stepper-vertical{width:150px;margin:14px auto;display:flex;flex-direction:column;align-items:center;gap:5px}.stepper-vertical strong{display:flex;align-items:center;justify-content:center;width:150px;min-height:58px;border:1px solid var(--border);border-radius:12px;background:#fff;font-size:27px}.delay-arrow{width:150px;height:38px;border:1px solid var(--border);border-radius:10px;background:#f3f4f6;color:#374151;font-size:19px;font-weight:900;line-height:1}.delay-arrow:active{transform:scale(.97);background:#e5e7eb}
 .notice{padding:10px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:10px;font-size:12px;margin-bottom:10px}
 
-/* 管理者ツール：3項目を常時表示し、タップで下に展開 */
-.admin-accordion{margin-top:10px;border:0;border-radius:0;overflow:visible;background:transparent}
-.admin-accordion-item{display:block;border:1px solid var(--border);border-radius:12px;background:#fff;margin-bottom:8px;overflow:hidden}
+/* 管理者ツール：メニューから専用ページへ移動 */
+.admin-accordion{margin-top:10px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff}
 .admin-accordion-item + .admin-accordion-item{border-top:1px solid var(--border)}
-.admin-accordion-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;border:0;background:#fff;color:var(--text);padding:15px 13px;font-size:13px;font-weight:900;text-align:left;cursor:pointer}
+.admin-accordion-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;border:0;background:#fff;color:var(--text);padding:17px 13px;font-size:13px;font-weight:900;text-align:left;cursor:pointer}
 .admin-accordion-trigger:active{background:#f8fafc}
-.admin-accordion-arrow{font-size:15px;color:#6b7280;transition:transform .16s ease}
-.admin-accordion-panel{display:none;padding:0 12px 13px;border-top:1px solid #f0f1f3;background:#fff}
-.admin-accordion.show-section .admin-accordion-item{display:none}
-.admin-accordion.show-section .admin-accordion-item.active-page{display:block;border-radius:12px;margin-bottom:0}
-.admin-accordion.show-section .admin-accordion-item.active-page .admin-accordion-trigger{background:#f8fafc;cursor:default}
-.admin-accordion.show-section .admin-accordion-item.active-page .admin-accordion-arrow{transform:rotate(90deg)}
-.admin-accordion.show-section .admin-accordion-item.active-page .admin-accordion-panel{display:block}
-.admin-section-back{display:none;width:100%;border:0;background:#f8fafc;color:#475569;padding:9px 4px;margin:0 0 8px;text-align:left;font-size:12px;font-weight:800;cursor:pointer}
-.admin-section-back.show{display:block}
+.admin-accordion-arrow{font-size:15px;color:#6b7280}
+.admin-accordion-panel{display:none;padding:16px 14px 28px;background:#fff}
+.admin-accordion-panel.admin-page-open{display:block;position:fixed;inset:0;z-index:4100;overflow:auto;padding:58px 16px 30px}
+.admin-page-header{position:fixed;top:0;left:0;right:0;height:50px;z-index:4101;display:flex;align-items:center;gap:10px;padding:0 12px;background:#fff;border-bottom:1px solid var(--border);box-shadow:0 2px 8px #0001}
+.admin-page-back{border:0;background:#f3f4f6;color:#374151;border-radius:8px;padding:7px 10px;font-weight:800}
+.admin-page-title{font-size:15px;font-weight:900}
 .admin-section-title{font-size:14px;font-weight:900;margin:12px 0 8px}.admin-schedule-list{max-height:300px;overflow:auto;margin-top:9px}.admin-schedule-row{display:flex;gap:7px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-schedule-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-schedule-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-schedule-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-schedule-edit{background:#ecfdf5;color:#065f46}.admin-schedule-delete{background:#fef2f2;color:#b91c1c}.admin-schedule-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-schedule-form.show{display:block}.admin-schedule-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-schedule-form input,.admin-schedule-form textarea,.admin-schedule-form select{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-schedule-time-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-schedule-actions{display:flex;gap:7px;margin-top:9px}.admin-schedule-actions button{flex:1}.admin-place-tools{margin-top:12px;border-top:1px dashed var(--border);padding-top:14px}.admin-place-tools h4{margin-bottom:8px}.admin-place-list{max-height:260px;overflow:auto;margin-top:8px}.admin-place-row{display:flex;gap:8px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;margin-bottom:6px}.admin-place-row .name{flex:1;min-width:0;font-size:12px;font-weight:800}.admin-place-row small{display:block;color:var(--sub);font-weight:400;margin-top:2px}.admin-place-row button{border:0;border-radius:8px;padding:6px 8px;font-size:11px}.admin-place-edit{background:#ecfdf5;color:#065f46}.admin-place-delete{background:#fef2f2;color:#b91c1c}.admin-icon-palette{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}.admin-icon-option{border:1px solid var(--border);background:#fff;border-radius:9px;padding:7px 3px;display:flex;flex-direction:column;align-items:center;gap:4px;color:#374151;cursor:pointer}.admin-icon-option i{font-size:18px}.admin-icon-option span{font-size:9px;white-space:nowrap}.admin-icon-option.selected{border-color:#0f766e;background:#ecfdf5;color:#065f46;box-shadow:0 0 0 2px #99f6e4}.admin-pin-options{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-pin-choice{display:flex;align-items:center;gap:7px}.admin-pin-preview{width:24px;height:24px;display:grid;place-items:center;color:#fff;border:2px solid #fff;box-shadow:0 1px 4px #0004}.admin-pin-preview.circle{border-radius:50%}.admin-pin-preview.rect{border-radius:5px}
-.admin-label-options{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}.admin-label-choice{border:1px solid var(--border);border-radius:9px;background:#fff;padding:9px;display:flex;align-items:center;gap:7px;font-size:12px}.admin-coordinate-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-coordinate-note{font-size:10px;color:#6b7280;margin-top:5px;line-height:1.5}.ayu-place-name-label{white-space:normal;pointer-events:none;background:#fff;border:1px solid #cbd5e1;border-radius:7px;box-shadow:0 2px 7px #0002;color:#172033;padding:3px 7px;font-size:11px;font-weight:900;line-height:1.15;text-align:center;width:110px;max-width:110px;overflow-wrap:anywhere}.ayu-place-name-label:before{display:none}
-.admin-place-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-place-form.show{display:block}.admin-place-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-place-form input,.admin-place-form select,.admin-place-form textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-place-form textarea{min-height:70px;resize:vertical}.admin-place-map-picker{height:240px;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:7px;background:#fff}.admin-place-location{font-size:11px;color:#6b7280;margin-top:6px;line-height:1.5}.admin-place-actions{display:flex;gap:7px;margin-top:9px}.admin-place-actions button{flex:1}.admin-place-upload{font-size:11px;color:#6b7280;margin-top:5px}.admin-migrate-note{font-size:11px;color:#6b7280;line-height:1.5;margin:7px 0}
+.admin-label-choice{display:flex;align-items:center;gap:7px;font-size:12px}.admin-coordinate-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-coordinate-note{font-size:10px;color:#6b7280;margin-top:5px;line-height:1.5}.admin-place-form{display:none;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.admin-place-form.show{display:block}.admin-place-form label{display:block;font-size:11px;font-weight:800;color:#4b5563;margin:7px 0 4px}.admin-place-form input,.admin-place-form select,.admin-place-form textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px;background:#fff;outline:none}.admin-place-form textarea{min-height:70px;resize:vertical}.admin-place-map-picker{height:240px;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:7px;background:#fff}.admin-place-location{font-size:11px;color:#6b7280;margin-top:6px;line-height:1.5}.admin-place-actions{display:flex;gap:7px;margin-top:9px}.admin-place-actions button{flex:1}.admin-place-upload{font-size:11px;color:#6b7280;margin-top:5px}.admin-migrate-note{font-size:11px;color:#6b7280;line-height:1.5;margin:7px 0}
 
 /* =========================================================
    v1.4.0：店舗選択・操作アニメーション
@@ -276,7 +271,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.4.25</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.4.23</span></div>
   </div>
  </div>
 </div>
@@ -350,13 +345,12 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
    <p id="admin-status" style="font-size:12px;color:#6b7280;margin:5px 0 10px"></p>
    <div id="admin-controls" class="admin-box" style="display:none">
     <h4>🛠️ 管理者ツール</h4>
-    <button id="admin-section-back" class="admin-section-back" type="button" onclick="showAdminHome()">‹ 管理者ツールに戻る</button>
     <div class="admin-accordion" id="admin-accordion">
       <div class="admin-accordion-item" data-admin-section="notification">
         <button type="button" class="admin-accordion-trigger" onclick="openAdminSectionPage('notification')">
           <span>🔔 遅延設定</span><span class="admin-accordion-arrow">➤</span>
         </button>
-        <div id="admin-section-notification" class="admin-accordion-panel">
+        <div id="admin-section-notification" class="admin-accordion-panel"><div class="admin-page-header"><button type="button" class="admin-page-back" onclick="closeAdminSectionPage()">← 戻る</button><div class="admin-page-title">🔔 遅延設定</div></div>
           <select id="admin-day" class="auth-input" onchange="loadAdminEvents()"></select>
           <select id="admin-event" class="auth-input" onchange="loadDelay()"></select>
           <div class="stepper-vertical" aria-label="遅延時間を上下ボタンで選択">
@@ -374,15 +368,13 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
         <button type="button" class="admin-accordion-trigger" onclick="openAdminSectionPage('places')">
           <span>🏪 店舗・施設設定</span><span class="admin-accordion-arrow">➤</span>
         </button>
-        <div id="admin-section-places" class="admin-accordion-panel">
+        <div id="admin-section-places" class="admin-accordion-panel"><div class="admin-page-header"><button type="button" class="admin-page-back" onclick="closeAdminSectionPage()">← 戻る</button><div class="admin-page-title">🏪 店舗・施設設定</div></div>
           <p class="admin-migrate-note">店舗情報はFirebaseから読み込みます。ここから追加・編集・削除できます。</p>
           <button class="auth-btn" style="margin-top:7px" onclick="openPlaceEditor()">＋ 新しい店舗・施設を追加</button>
           <div id="admin-place-list" class="admin-place-list"></div>
           <div id="admin-place-form" class="admin-place-form">
             <input type="hidden" id="place-edit-id">
             <label>名称</label><input id="place-name" placeholder="店舗名・施設名">
-            <label>地図上の店舗名（改行位置を「、」で指定）</label><input id="place-label-text" placeholder="例：博多幸竜、厚木店">
-            <div class="admin-coordinate-note">「、」の位置で改行して中央ぞろえで表示します。空欄なら「名称」をそのまま表示します。</div>
             <label>短い説明</label><input id="place-detail" placeholder="例：10:00〜17:00">
             <label>詳細説明</label><textarea id="place-description" placeholder="店舗・施設の詳しい説明"></textarea>
             <label>検索キーワード</label><input id="place-search-keywords" placeholder="例：やきそば,ヤキソバ,ソース焼きそば">
@@ -395,12 +387,6 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
               <div><label>形</label><select id="place-pin-shape" class="auth-input"><option value="rect">四角</option><option value="circle">丸</option></select></div>
               <div><label>色</label><select id="place-pin-color" class="auth-input"><option value="#0f766e">緑</option><option value="#f59e0b">黄色</option><option value="#2563eb">青</option><option value="#dc2626">赤</option><option value="#7c3aed">紫</option><option value="#6b7280">グレー</option></select></div>
             </div>
-            <label>マップ上の表示</label>
-            <div class="admin-label-options">
-              <label class="admin-label-choice"><input type="radio" name="place-label-mode" value="icon" checked> 📍 アイコン</label>
-              <label class="admin-label-choice"><input type="radio" name="place-label-mode" value="name"> 🏪 店舗名</label>
-            </div>
-            <div class="admin-coordinate-note">「店舗名」を選ぶと、縮小時はアイコンのまま、地図を一定まで拡大すると店舗名に切り替わります。</div>
             <label>地図</label><select id="place-map" onchange="resetPlacePicker()"><option value="park">中央公園</option><option value="station">本厚木駅周辺</option></select>
             <div id="place-coordinate-inputs" class="admin-coordinate-grid">
               <div><label id="coord-a-label">X座標</label><input id="place-coord-a" inputmode="decimal" placeholder="例：600"></div>
@@ -422,7 +408,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
         <button type="button" class="admin-accordion-trigger" onclick="openAdminSectionPage('schedule')">
           <span>📅 ダンスレジェンドスケジュール</span><span class="admin-accordion-arrow">➤</span>
         </button>
-        <div id="admin-section-schedule" class="admin-accordion-panel">
+        <div id="admin-section-schedule" class="admin-accordion-panel"><div class="admin-page-header"><button type="button" class="admin-page-back" onclick="closeAdminSectionPage()">← 戻る</button><div class="admin-page-title">📅 ダンスレジェンドスケジュール</div></div>
           <p class="admin-migrate-note">スケジュールはFirebaseを正本として管理します。ここから追加・編集・削除できます。</p>
           <select id="admin-schedule-date" class="auth-input" onchange="renderAdminScheduleList()"></select>
           <button class="auth-btn" style="margin-top:7px" onclick="openScheduleEditor()">＋ 新しい予定を追加</button>
@@ -780,15 +766,6 @@ function toggleMyLocation(){
   },{enableHighAccuracy:true,maximumAge:10000,timeout:10000});
 }
 
-const PLACE_NAME_ZOOM = { park:0.35, station:17 };
-
-function getPlaceLabelMode(p){
-  return p?.labelMode === "name" ? "name" : "icon";
-}
-function isPlaceNameVisible(p){
-  if(getPlaceLabelMode(p)!=="name" || !map) return false;
-  return map.getZoom() >= PLACE_NAME_ZOOM[currentMap];
-}
 function getPlaceCoordinateInputs(){
   return {
     a:document.getElementById("place-coord-a"),
@@ -807,10 +784,6 @@ function updateCoordinateInputLabels(){
     if(ia)ia.placeholder="例：600"; if(ib)ib.placeholder="例：380";
   }
 }
-function setPlaceLabelMode(mode){
-  document.querySelectorAll('input[name="place-label-mode"]').forEach(r=>r.checked=r.value===mode);
-}
-
 function getPinScale(){
   if(!map) return 1;
   const z = map.getZoom();
@@ -837,17 +810,6 @@ function applyPinScale(){
   document.querySelectorAll(".ayu-pin").forEach(el=>{
     el.style.transform = `scale(${scale})`;
   });
-  document.querySelectorAll(".ayu-place-name-label").forEach(el=>{
-    const id=el.dataset.placeId;
-    const p=placeData.find(x=>String(x.id)===String(id));
-    el.style.display=isPlaceNameVisible(p)?"block":"none";
-  });
-}
-
-function formatPlaceLabel(p){
-  const raw=String(p?.labelText||p?.name||"").trim();
-  // 「、」を入力した位置で改行する。画面上では必ず中央ぞろえ。
-  return escapeHtml(raw).replace(/、/g,"<br>");
 }
 
 function renderMapMarkers(){
@@ -862,15 +824,13 @@ function renderMapMarkers(){
     const radius = isCircle ? "50%" : `${PIN_STYLE.radius}px`;
 
     const markerPosition = currentMap === "station" ? [p.lat,p.lng] : [760-p.y,p.x];
-    const showName = isPlaceNameVisible(p);
     const marker = L.marker(markerPosition,{
       icon:L.divIcon({
         className:"",
         html:`<div class="ayu-marker-wrap" style="position:relative;width:${Math.max(width,120)}px;height:${Math.max(height,40)}px;display:grid;place-items:center;">
-          <div class="ayu-pin" style="width:${width}px;height:${height}px;border-radius:${radius};background:${style.bg};color:white;border:${PIN_STYLE.borderWidth}px solid white;box-shadow:0 2px 7px #0005;display:grid;place-items:center;transform:scale(${getPinScale()});transition:transform .15s ease;transform-origin:center center;${getPlaceLabelMode(p)==="name"&&showName?"display:none;":""}">
+          <div class="ayu-pin" style="width:${width}px;height:${height}px;border-radius:${radius};background:${style.bg};color:white;border:${PIN_STYLE.borderWidth}px solid white;box-shadow:0 2px 7px #0005;display:grid;place-items:center;transform:scale(${getPinScale()});transition:transform .15s ease;transform-origin:center center;">
             <i class="fa-solid ${p.icon}" style="font-size:13px"></i>
           </div>
-          <div class="ayu-place-name-label" data-place-id="${escapeHtml(p.id)}" style="display:${showName?"block":"none"};position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);">${formatPlaceLabel(p)}</div>
         </div>`,
         iconSize:[Math.max(width,120),Math.max(height,40)],
         iconAnchor:[Math.max(width,120)/2,Math.max(height,40)/2]
@@ -1323,7 +1283,6 @@ function openPlaceEditor(id=null){
   const p=id ? placeData.find(x=>x.id===id) : null;
   document.getElementById("place-edit-id").value=p?.id||"";
   document.getElementById("place-name").value=p?.name||"";
-  document.getElementById("place-label-text").value=p?.labelText||"";
   document.getElementById("place-detail").value=p?.detail||"";
   document.getElementById("place-description").value=p?.description||"";
   document.getElementById("place-search-keywords").value=Array.isArray(p?.searchKeywords)?p.searchKeywords.join(", "):(p?.searchKeywords||"");
@@ -1332,7 +1291,6 @@ function openPlaceEditor(id=null){
   renderPlaceIconPalette(p?.icon||"fa-store");
   document.getElementById("place-map").value=p?.map||"park";
   setPlacePinChoices(p);
-  setPlaceLabelMode(getPlaceLabelMode(p));
   updateCoordinateInputLabels();
   const ci=getPlaceCoordinateInputs();
   if(document.getElementById("place-map").value==="station") {
@@ -1366,37 +1324,16 @@ function renderPlacePickerExistingPins(){
     const width=isCircle?26:36;
     const height=isCircle?26:26;
     const radius=isCircle?"50%":"5px";
-    const zoom=placePickerMap.getZoom();
-    const showName=getPlaceLabelMode(p)==="name" && zoom >= (mapKey==="station"?PLACE_NAME_ZOOM.station:PLACE_NAME_ZOOM.park);
     const markerPosition=mapKey==="station"?[p.lat,p.lng]:[760-p.y,p.x];
     const marker=L.marker(markerPosition,{interactive:false,icon:L.divIcon({
       className:"",
       html:`<div class="ayu-picker-existing-wrap" style="position:relative;width:120px;height:40px;display:grid;place-items:center;opacity:.72;">\
-        <div style="width:${width}px;height:${height}px;border-radius:${radius};background:${style.bg};color:white;border:2px solid white;box-shadow:0 1px 5px #0005;display:${showName?"none":"grid"};place-items:center;">\
+        <div style="width:${width}px;height:${height}px;border-radius:${radius};background:${style.bg};color:white;border:2px solid white;box-shadow:0 1px 5px #0005;display:grid;place-items:center;">\
           <i class="fa-solid ${escapeHtml(p.icon||"fa-store")}" style="font-size:11px"></i>\
         </div>\
-        <div class="ayu-place-name-label" style="display:${showName?"block":"none"};position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:10px;">${formatPlaceLabel(p)}</div>\
       </div>`,
       iconSize:[120,40],iconAnchor:[60,20]
     })}).addTo(placePickerExistingLayer);
-  });
-}
-function updatePlacePickerExistingPinLabels(){
-  if(!placePickerExistingLayer || !placePickerMap)return;
-  const mapKey=document.getElementById("place-map")?.value||"park";
-  const threshold=mapKey==="station"?PLACE_NAME_ZOOM.station:PLACE_NAME_ZOOM.park;
-  const zoom=placePickerMap.getZoom();
-  const showByZoom=zoom>=threshold;
-  placePickerExistingLayer.eachLayer(marker=>{
-    const root=marker.getElement()?.querySelector(".ayu-picker-existing-wrap");
-    if(!root)return;
-    const label=root.querySelector(".ayu-place-name-label");
-    const pin=root.children[0];
-    const idText=label?.textContent||"";
-    const p=placeData.find(x=>x.map===mapKey && x.name===idText);
-    const shouldShow=showByZoom && p && getPlaceLabelMode(p)==="name";
-    if(label)label.style.display=shouldShow?"block":"none";
-    if(pin)pin.style.display=shouldShow?"none":"grid";
   });
 }
 
@@ -1435,8 +1372,7 @@ function resetPlacePicker(){
   }
   placePickerExistingLayer=null;
   renderPlacePickerExistingPins();
-  placePickerMap?.on("zoomend",updatePlacePickerExistingPinLabels);
-  setTimeout(()=>{placePickerMap?.invalidateSize();updatePlacePickerExistingPinLabels();},50);
+  setTimeout(()=>{placePickerMap?.invalidateSize();},50);
   updatePlacePickerText();
 }
 function updatePlacePickerMarker(ll){
@@ -1479,9 +1415,7 @@ async function savePlaceFromAdmin(){
     const searchKeywords=String(document.getElementById("place-search-keywords").value||"").split(/[,、\n]/).map(v=>v.trim()).filter(Boolean);
     const type=document.getElementById("place-type").value;
     const typeStyle=PIN_TYPES[type]||PIN_TYPES.shop;
-    const labelMode=document.querySelector('input[name="place-label-mode"]:checked')?.value||"icon";
-    const labelText=document.getElementById("place-label-text")?.value.trim()||"";
-    const p={id,map:mapKey,name,labelText,detail:document.getElementById("place-detail").value.trim(),description:document.getElementById("place-description").value.trim(),searchKeywords,image,icon:document.getElementById("place-icon").value.trim()||"fa-store",type,labelMode,pinShape:document.getElementById("place-pin-shape")?.value||typeStyle.shape,pinColor:document.getElementById("place-pin-color")?.value||typeStyle.bg};
+    const p={id,map:mapKey,name,detail:document.getElementById("place-detail").value.trim(),description:document.getElementById("place-description").value.trim(),searchKeywords,image,icon:document.getElementById("place-icon").value.trim()||"fa-store",type,pinShape:document.getElementById("place-pin-shape")?.value||typeStyle.shape,pinColor:document.getElementById("place-pin-color")?.value||typeStyle.bg};
     if(mapKey==="station"){p.lat=placePickerPosition.lat;p.lng=placePickerPosition.lng;}else{p.x=Math.round(placePickerPosition.x);p.y=Math.round(placePickerPosition.y);}
     await firebase.database().ref("places/"+id).set(p);
     alert(editId?"店舗情報を更新しました。":"店舗・施設を追加しました。");
@@ -1501,41 +1435,20 @@ function renderAdminPlaceList(){
 }
 function escapeHtml(v){return String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));}
 
-function closeAllAdminSections(){
-  document.querySelectorAll("#admin-accordion .admin-accordion-item").forEach(item=>{
-    item.classList.remove("open","active-page");
-  });
-}
-function showAdminHome(){
-  const accordion=document.getElementById("admin-accordion");
-  const back=document.getElementById("admin-section-back");
-  if(!accordion)return;
-  closeAllAdminSections();
-  accordion.classList.remove("show-section");
-  if(back)back.classList.remove("show");
-  accordion.scrollIntoView({behavior:"smooth",block:"start"});
+function closeAdminSectionPage(){
+  document.querySelectorAll("#admin-accordion .admin-accordion-panel").forEach(panel=>panel.classList.remove("admin-page-open"));
+  if(document.getElementById("admin-section-notification")?.contains(document.activeElement)) document.activeElement.blur();
 }
 function openAdminSectionPage(section){
-  const accordion=document.getElementById("admin-accordion");
-  const back=document.getElementById("admin-section-back");
-  const item=document.querySelector(`#admin-accordion .admin-accordion-item[data-admin-section="${section}"]`);
-  if(!accordion||!item)return;
-  closeAllAdminSections();
-  item.classList.add("active-page");
-  accordion.classList.add("show-section");
-  if(back)back.classList.add("show");
+  if(!currentUserIsAdmin){alert("管理者権限がありません。");return;}
+  document.querySelectorAll("#admin-accordion .admin-accordion-panel").forEach(panel=>panel.classList.remove("admin-page-open"));
+  const panel=document.getElementById(`admin-section-${section}`);
+  if(!panel)return;
+  panel.classList.add("admin-page-open");
   if(section==="notification"){loadAdminDays();}
   if(section==="schedule"){renderAdminScheduleDates();renderAdminScheduleList();}
   if(section==="places"){renderAdminPlaceList();}
-  item.scrollIntoView({behavior:"smooth",block:"start"});
-}
-function toggleAdminSection(section){
-  // 旧関数名を残し、既存の呼び出しからでも新しいページ式UIを開く。
-  openAdminSectionPage(section);
-}
-function openAdminTool(){
-  // 旧バージョン互換用。現在はログイン後に管理者ツールを直接表示する。
-  showAdminHome();
+  requestAnimationFrame(()=>panel.scrollTop=0);
 }
 function loadAdminDays(){
   const s=document.getElementById("admin-day");
@@ -1831,7 +1744,6 @@ function initAuth(){
     if(name)name.textContent=user.email||"管理者アカウント";
     if(status){status.textContent="🛡️ 管理者権限あり";status.style.color="#166534";}
     if(controls)controls.style.display="block";
-    showAdminHome();
     loadAdminDays();renderAdminScheduleDates();renderAdminScheduleList();renderAdminPlaceList();
   });
 
