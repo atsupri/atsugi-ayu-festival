@@ -1411,12 +1411,27 @@ function closeNotificationPrompt(){
 function showNotificationPrompt(){
   const el=document.getElementById("notification-permission-pop");
   if(!el || !window.isSecureContext || !("Notification" in window))return;
-  if(Notification.permission!=="default")return;
-  if(sessionStorage.getItem("ayu_notification_prompt_dismissed"))return;
+  if(Notification.permission==="granted")return;
+  // 未設定・拒否済みのどちらでも、左上の通知案内を表示する。
+  // 拒否済みの場合でも「通知を許可する」ボタンは表示するが、ブラウザ仕様上、
+  // 一度拒否された権限をWebページから再度ネイティブ許可ダイアログへ戻すことはできない。
+  if(Notification.permission==="default" && sessionStorage.getItem("ayu_notification_prompt_dismissed"))return;
   const welcome=document.getElementById("modal-welcome");
   if(welcome?.classList.contains("show")){
     setTimeout(showNotificationPrompt,900);
     return;
+  }
+  const title=document.getElementById("notify-pop-title");
+  const text=document.getElementById("notify-pop-text");
+  const btn=el.querySelector(".notify-pop-btn");
+  if(Notification.permission==="denied"){
+    if(title)title.textContent="🔔 通知を許可してください";
+    if(text)text.textContent="このサイトの通知が現在ブロックされています。下のボタンから再度確認できますが、ブラウザで一度拒否した場合はサイト設定で許可し直す必要があります。";
+    if(btn)btn.textContent="通知を許可する";
+  }else{
+    if(title)title.textContent="🔔 通知を許可しますか？";
+    if(text)text.textContent="通知を許可すると、お気に入り登録したイベントの開始前や遅延情報をお知らせします。";
+    if(btn)btn.textContent="通知を許可する";
   }
   el.classList.add("show");
 }
@@ -1565,8 +1580,12 @@ async function requestNotification(closeWelcome=false){
   }
   if(Notification.permission==="denied"){
     updateNotifyUI();
-    closeNotificationPrompt();
-    alert("通知がブロックされています。ブラウザのサイト設定から通知を許可してください。");
+    const el=document.getElementById("notification-permission-pop");
+    const text=document.getElementById("notify-pop-text");
+    const title=document.getElementById("notify-pop-title");
+    if(title)title.textContent="🔔 通知を許可してください";
+    if(text)text.textContent="このサイトは通知がブロックされています。ブラウザのサイト設定でこのサイトの通知を「許可」に変更してから、もう一度このボタンを押してください。";
+    if(el)el.classList.add("show");
     return;
   }
   try{
@@ -1582,8 +1601,12 @@ async function requestNotification(closeWelcome=false){
       // 許可直後のテスト通知は無理に生成しない。
       showInAppToast("通知設定完了","お気に入り・遅延情報の通知を受け取れる状態になりました。");
     }else if(permission==="denied"){
-      closeNotificationPrompt();
-      alert("通知は許可されませんでした。必要ならブラウザのサイト設定から変更できます。");
+      const el=document.getElementById("notification-permission-pop");
+      const text=document.getElementById("notify-pop-text");
+      const title=document.getElementById("notify-pop-title");
+      if(title)title.textContent="🔔 通知を許可してください";
+      if(text)text.textContent="通知がブロックされました。ブラウザのサイト設定でこのサイトの通知を「許可」に変更すると、通知を受け取れるようになります。";
+      if(el)el.classList.add("show");
     }
   }catch(err){
     console.error("Notification permission error:",err);
