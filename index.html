@@ -41,7 +41,7 @@ button,input,select{font:inherit}
 .map-tools{background:white;padding:8px;border-bottom:1px solid var(--border)}
 .map-tabs{display:flex;gap:7px}.map-tab{flex:1;border:1px solid var(--border);background:#f3f4f6;border-radius:10px;padding:10px 6px;font-weight:700;color:#4b5563}
 .map-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-#map{height:38vh;min-height:240px;flex:0 0 38vh;background:#fff;position:relative;z-index:1}
+#map{height:32vh;min-height:220px;flex:0 0 32vh;background:#fff;position:relative;z-index:1}
 .location-btn{position:absolute;right:12px;bottom:12px;z-index:650;border:1px solid #d1d5db;background:#fff;color:#374151;border-radius:11px;padding:9px 11px;font-weight:800;box-shadow:0 2px 8px #0003}.location-btn:active{transform:scale(.97)}.location-btn.active{background:#eff6ff;color:#2563eb;border-color:#93c5fd}.location-note{font-size:11px;color:#6b7280;padding:6px 2px 0;line-height:1.5}.leaflet-control-attribution{font-size:10px}
 
 .place-detail-panel{display:block;position:absolute;left:10px;right:10px;bottom:10px;z-index:700;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 8px 28px #0003;max-height:min(58vh,460px);overflow:auto;transform:translateY(calc(100% + 30px));opacity:0;pointer-events:none;transition:transform .28s ease,opacity .22s ease}.place-detail-panel.show{transform:translateY(0);opacity:1;pointer-events:auto}.place-detail-inner{padding:14px 14px 16px}.place-detail-top{display:flex;gap:11px;align-items:flex-start}.place-detail-icon{width:46px;height:46px;flex:0 0 46px;border-radius:12px;background:#ecfdf5;color:var(--primary);display:grid;place-items:center;font-size:19px}.place-detail-title{flex:1}.place-detail-title h3{font-size:17px;line-height:1.35}.place-detail-title small{display:block;color:var(--sub);margin-top:4px;line-height:1.5}.place-detail-close{border:0;background:#f3f4f6;color:#6b7280;width:34px;height:34px;border-radius:50%;font-size:19px}.place-detail-image{display:block;width:auto;height:220px;max-width:100%;object-fit:contain;border-radius:11px;margin-top:12px;background:#f8fafc;border:1px solid var(--border)}.place-detail-body{font-size:13px;line-height:1.7;margin-top:12px;white-space:pre-wrap}.place-detail-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.place-detail-tag{font-size:11px;padding:5px 8px;border-radius:999px;background:#f3f4f6;color:#4b5563}
@@ -562,6 +562,7 @@ let placeImagePreviewData="";
 
 // 管理画面専用の店舗フォルダ。一般公開画面では一切使用しません。
 const ADMIN_PLACE_FOLDER_KEY="ayu_admin_place_folders_v1";
+const ADMIN_PLACE_FOLDER_FIREBASE_PATH="adminPlaceFolders";
 const ADMIN_UNCLASSIFIED_FOLDER_ID="__unclassified__";
 let adminPlaceFolders=[];
 let adminPlaceFolderAssignments={};
@@ -569,17 +570,10 @@ let currentAdminPlaceFolderId="";
 let selectedAdminPlaceIds=new Set();
 let adminPlaceSortMode=localStorage.getItem("ayu_admin_place_sort_v1")||"name";
 
-function loadAdminPlaceFolders(){
-  try{
-    const raw=JSON.parse(localStorage.getItem(ADMIN_PLACE_FOLDER_KEY)||"{}");
-    adminPlaceFolders=Array.isArray(raw.folders)?raw.folders.filter(f=>f&&f.id&&f.name):[];
-    adminPlaceFolderAssignments=(raw.assignments&&typeof raw.assignments==="object")?raw.assignments:{};
-  }catch(e){adminPlaceFolders=[];adminPlaceFolderAssignments={};}
-  // 「未分類」は常設フォルダとして扱い、削除できないようにする。
+function ensureAdminPlaceFoldersBase(){
   if(!adminPlaceFolders.some(f=>String(f.id)===ADMIN_UNCLASSIFIED_FOLDER_ID)){
     adminPlaceFolders.unshift({id:ADMIN_UNCLASSIFIED_FOLDER_ID,name:"未分類",parentId:"",system:true});
   }
-  // 既存データで分類先がない店舗は未分類へ移行。
   let changed=false;
   placeData.forEach(item=>{
     const id=String(item.id);
@@ -592,12 +586,51 @@ function loadAdminPlaceFolders(){
       adminPlaceFolderAssignments[id]=folderId;
       changed=true;
     }
-    if(!String(item.placementName||"").trim()){ item.placementName="0"; }
+    if(!String(item.placementName||"").trim()) item.placementName="0";
   });
-  if(changed) saveAdminPlaceFolders();
+  if(changed) localStorage.setItem(ADMIN_PLACE_FOLDER_KEY,JSON.stringify({folders:adminPlaceFolders,assignments:adminPlaceFolderAssignments}));
+}
+function loadAdminPlaceFolders(){
+  try{
+    const raw=JSON.parse(localStorage.getItem(ADMIN_PLACE_FOLDER_KEY)||"{}");
+    adminPlaceFolders=Array.isArray(raw.folders)?raw.folders.filter(f=>f&&f.id&&f.name):[];
+    adminPlaceFolderAssignments=(raw.assignments&&typeof raw.assignments==="object")?raw.assignments:{};
+  }catch(e){adminPlaceFolders=[];adminPlaceFolderAssignments={};}
+  ensureAdminPlaceFoldersBase();
+}
+async function syncAdminPlaceFoldersFromFirebase(){
+  if(!firebaseReady || !currentUserIsAdmin)return;
+  try{
+    const snap=await firebase.database().ref(ADMIN_PLACE_FOLDER_FIREBASE_PATH).once("value");
+    const cloud=snap.val();
+    if(cloud && Array.isArray(cloud.folders)){
+      adminPlaceFolders=cloud.folders.filter(f=>f&&f.id&&f.name).map(f=>({id:String(f.id),name:String(f.name),parentId:String(f.parentId||""),system:!!f.system}));
+      ensureAdminPlaceFoldersBase();
+      localStorage.setItem(ADMIN_PLACE_FOLDER_KEY,JSON.stringify({folders:adminPlaceFolders,assignments:adminPlaceFolderAssignments}));
+    }else{
+      ensureAdminPlaceFoldersBase();
+      await firebase.database().ref(ADMIN_PLACE_FOLDER_FIREBASE_PATH).set({
+        folders:adminPlaceFolders.map(f=>({id:String(f.id),name:String(f.name),parentId:String(f.parentId||""),system:!!f.system}))
+      });
+    }
+    if(document.getElementById("admin-page-places")?.classList.contains("show")){
+      renderAdminPlaceFolderTree();
+      renderAdminPlaceFolderSelect(document.getElementById("place-admin-folder")?.value||"");
+      renderAdminPlaceMoveFolderSelect();
+      renderAdminPlaceList();
+    }
+  }catch(e){
+    console.error("管理フォルダのFirebase同期に失敗:",e);
+  }
 }
 function saveAdminPlaceFolders(){
+  ensureAdminPlaceFoldersBase();
   localStorage.setItem(ADMIN_PLACE_FOLDER_KEY,JSON.stringify({folders:adminPlaceFolders,assignments:adminPlaceFolderAssignments}));
+  if(firebaseReady && currentUserIsAdmin){
+    firebase.database().ref(ADMIN_PLACE_FOLDER_FIREBASE_PATH).set({
+      folders:adminPlaceFolders.map(f=>({id:String(f.id),name:String(f.name),parentId:String(f.parentId||""),system:!!f.system}))
+    }).catch(e=>console.error("管理フォルダ保存失敗:",e));
+  }
 }
 function getAdminPlaceFolderPath(folderId){
   const path=[];let id=folderId;let guard=0;
@@ -727,7 +760,7 @@ function createAdminPlaceFolder(parentId=""){
   renderAdminPlaceFolderSelect(document.getElementById("place-admin-folder")?.value||"");
   renderAdminPlaceFolderTree();
 }
-function deleteAdminPlaceFolder(id){
+async function deleteAdminPlaceFolder(id){
   if(!currentUserIsAdmin)return;
   if(String(id)===ADMIN_UNCLASSIFIED_FOLDER_ID){alert("「未分類」フォルダは削除できません。");return;}
   const target=adminPlaceFolders.find(f=>String(f.id)===String(id));if(!target)return;
@@ -735,16 +768,22 @@ function deleteAdminPlaceFolder(id){
   const collect=pid=>{adminPlaceFolders.filter(f=>String(f.parentId||"")===String(pid)).forEach(f=>{descendants.push(f.id);collect(f.id);});};
   collect(target.id);
   const removeIds=new Set([target.id,...descendants]);
-  const affected=placeData.filter(p=>removeIds.has(adminPlaceFolderAssignments[p.id]));
-  const message=affected.length?`フォルダ「${target.name}」と中のフォルダを削除します。
-
-${affected.length}件の店舗は未分類に戻ります。よろしいですか？`:`フォルダ「${target.name}」と中のフォルダを削除しますか？`;
+  const affected=placeData.filter(p=>removeIds.has(String(adminPlaceFolderAssignments[p.id]||"")));
+  const message=affected.length?`フォルダ「${target.name}」と中のフォルダを削除します。\n\n${affected.length}件の店舗は未分類に戻ります。よろしいですか？`:`フォルダ「${target.name}」と中のフォルダを削除しますか？`;
   if(!confirm(message))return;
   adminPlaceFolders=adminPlaceFolders.filter(f=>!removeIds.has(f.id));
-  affected.forEach(p=>delete adminPlaceFolderAssignments[p.id]);
+  affected.forEach(p=>{adminPlaceFolderAssignments[p.id]=ADMIN_UNCLASSIFIED_FOLDER_ID;});
   if(removeIds.has(currentAdminPlaceFolderId))currentAdminPlaceFolderId="";
   saveAdminPlaceFolders();
-  renderAdminPlaceFolderTree();renderAdminPlaceFolderSelect();renderAdminPlaceList();
+  const updates={};
+  affected.forEach(p=>updates[`places/${p.id}/adminFolderId`]=ADMIN_UNCLASSIFIED_FOLDER_ID);
+  try{
+    if(Object.keys(updates).length)await firebase.database().ref().update(updates);
+    renderAdminPlaceFolderTree();renderAdminPlaceFolderSelect();renderAdminPlaceList();
+  }catch(e){
+    console.error("フォルダ削除後の店舗分類更新失敗:",e);
+    alert("フォルダは変更しましたが、店舗分類のFirebase保存に失敗しました。Rulesを確認してください。");
+  }
 }
 
 let timeScheduleData = [];
@@ -1780,7 +1819,7 @@ function openAdminPage(section){
   page.classList.add("show");
   if(section==="notification")loadAdminDays();
   if(section==="schedule"){renderAdminScheduleDates();renderAdminScheduleList();}
-  if(section==="places"){loadAdminPlaceFolders();renderAdminPlaceFolderTree();renderAdminPlaceFolderSelect();renderAdminPlaceMoveFolderSelect();const sortEl=document.getElementById("admin-place-sort");if(sortEl)sortEl.value=adminPlaceSortMode;renderAdminPlaceList();}
+  if(section==="places"){loadAdminPlaceFolders();renderAdminPlaceFolderTree();renderAdminPlaceFolderSelect();renderAdminPlaceMoveFolderSelect();const sortEl=document.getElementById("admin-place-sort");if(sortEl)sortEl.value=adminPlaceSortMode;renderAdminPlaceList();syncAdminPlaceFoldersFromFirebase();}
 }
 function loadAdminDays(){
   const s=document.getElementById("admin-day");
@@ -2076,7 +2115,7 @@ function initAuth(){
     if(name)name.textContent=user.email||"管理者アカウント";
     if(status){status.textContent="🛡️ 管理者権限あり";status.style.color="#166534";}
     if(controls)controls.style.display="block";
-    loadAdminDays();renderAdminScheduleDates();renderAdminScheduleList();renderAdminPlaceList();
+    loadAdminDays();renderAdminScheduleDates();renderAdminScheduleList();loadAdminPlaceFolders();renderAdminPlaceList();syncAdminPlaceFoldersFromFirebase();
   });
 
   // Enterキーでも管理者ログインできるようにする。
