@@ -52,13 +52,6 @@ button,input,select{font:inherit}
 .alert{display:none;position:fixed;top:56px;left:0;right:0;z-index:900;background:#b91c1c;color:#fff;padding:10px 42px 10px 12px;font-size:13px;font-weight:700}
 .alert button{position:absolute;right:8px;top:6px;background:none;border:0;color:#fff;font-size:20px}
 /* 🔔 通知許可ポップアップ：サイト左上からピョコッと表示 */
-.notification-permission-pop{position:fixed;top:68px;left:12px;width:min(330px,calc(100vw - 24px));z-index:2400;background:#fff;border:1px solid #dbe4e8;border-radius:14px;box-shadow:0 8px 28px #0002;padding:13px 42px 13px 14px;transform:translateX(calc(-100% - 28px));opacity:0;pointer-events:none;transition:transform .34s cubic-bezier(.22,1.15,.35,1),opacity .22s ease}
-.notification-permission-pop.show{transform:translateX(0);opacity:1;pointer-events:auto}
-.notification-permission-pop .notify-pop-title{font-size:13px;font-weight:900;color:var(--text);display:flex;align-items:center;gap:7px}
-.notification-permission-pop .notify-pop-text{font-size:11px;color:var(--sub);line-height:1.55;margin-top:4px}
-.notification-permission-pop .notify-pop-btn{margin-top:9px;border:0;background:var(--primary);color:#fff;border-radius:9px;padding:8px 11px;font-size:12px;font-weight:800;cursor:pointer}
-.notification-permission-pop .notify-pop-close{position:absolute;right:7px;top:7px;width:30px;height:30px;border:0;background:#f3f4f6;color:#6b7280;border-radius:50%;font-size:18px;line-height:1}
-.notification-permission-pop .notify-pop-btn:active,.notification-permission-pop .notify-pop-close:active{transform:scale(.96)}
 .schedule-head{background:white;padding:10px;border-bottom:1px solid var(--border)}
 .dance-legend-fixed-notice{position:sticky;top:0;z-index:20;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;border-radius:10px;padding:10px 11px;margin-bottom:9px;font-size:12px;font-weight:800;line-height:1.5;text-align:center}
 .day-tabs{display:flex;gap:8px}.day-tab{flex:1;border:1px solid var(--border);background:#f3f4f6;border-radius:10px;padding:11px;font-weight:800;color:#4b5563}
@@ -283,17 +276,12 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.5.4</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.5.6</span></div>
   </div>
  </div>
 </div>
 
-<div id="notification-permission-pop" class="notification-permission-pop" role="status" aria-live="polite">
- <button class="notify-pop-close" type="button" onclick="closeNotificationPrompt()" aria-label="閉じる">×</button>
- <div class="notify-pop-title">🔔 通知を許可しますか？</div>
- <div class="notify-pop-text">お気に入りイベントの開始前や遅延情報をお知らせします。</div>
- <button class="notify-pop-btn" type="button" onclick="requestNotification(false)">通知を許可する</button>
-</div>
+
 
 <div id="modal-notify" class="modal" onclick="overlayClose(event,'modal-notify')">
  <div class="modal-card">
@@ -1402,38 +1390,9 @@ function showScheduleHint(){
     const n=document.querySelector(".schedule-note");if(n)n.textContent="⭐でお気に入り登録。通知を許可すると、開始前・遅延時にお知らせします。";
   }
 }
-function closeNotificationPrompt(){
-  const el=document.getElementById("notification-permission-pop");
-  if(!el)return;
-  el.classList.remove("show");
-  sessionStorage.setItem("ayu_notification_prompt_dismissed","1");
-}
 function showNotificationPrompt(){
-  const el=document.getElementById("notification-permission-pop");
-  if(!el || !window.isSecureContext || !("Notification" in window))return;
-  if(Notification.permission==="granted")return;
-  // 未設定・拒否済みのどちらでも、左上の通知案内を表示する。
-  // 拒否済みの場合でも「通知を許可する」ボタンは表示するが、ブラウザ仕様上、
-  // 一度拒否された権限をWebページから再度ネイティブ許可ダイアログへ戻すことはできない。
-  if(Notification.permission==="default" && sessionStorage.getItem("ayu_notification_prompt_dismissed"))return;
-  const welcome=document.getElementById("modal-welcome");
-  if(welcome?.classList.contains("show")){
-    setTimeout(showNotificationPrompt,900);
-    return;
-  }
-  const title=document.getElementById("notify-pop-title");
-  const text=document.getElementById("notify-pop-text");
-  const btn=el.querySelector(".notify-pop-btn");
-  if(Notification.permission==="denied"){
-    if(title)title.textContent="🔔 通知を許可してください";
-    if(text)text.textContent="このサイトの通知が現在ブロックされています。下のボタンから再度確認できますが、ブラウザで一度拒否した場合はサイト設定で許可し直す必要があります。";
-    if(btn)btn.textContent="通知を許可する";
-  }else{
-    if(title)title.textContent="🔔 通知を許可しますか？";
-    if(text)text.textContent="通知を許可すると、お気に入り登録したイベントの開始前や遅延情報をお知らせします。";
-    if(btn)btn.textContent="通知を許可する";
-  }
-  el.classList.add("show");
+  // 通知許可のUIはサイト内には作らず、ブラウザ標準の権限UIだけを使用します。
+  // Notification.requestPermission() はユーザー操作から requestNotification() を呼んだときに実行します。
 }
 
 function updateNotifyUI(){
@@ -1560,8 +1519,8 @@ function showInAppToast(title,body){
 }
 
 async function requestNotification(closeWelcome=false){
-  // 通知許可の要求は「ユーザーが押した瞬間」の操作として直接実行する。
-  // モーダルを先に閉じたり、別処理を挟んだりせず、requestPermission()をここで呼ぶ。
+  // ブラウザ標準の通知権限UIを直接表示します。
+  // 必ずユーザーのクリックから呼び出すことで、Chrome/Android等のネイティブ権限UIが表示されます。
   saveNotifyPrefs();
   if(!window.isSecureContext){
     alert("通知を許可するにはHTTPSでこのサイトを開いてください。");
@@ -1573,44 +1532,27 @@ async function requestNotification(closeWelcome=false){
   }
   if(Notification.permission==="granted"){
     updateNotifyUI();
-    closeNotificationPrompt();
     await initFCM();
     if(closeWelcome)closeModal("modal-welcome");
     return;
   }
   if(Notification.permission==="denied"){
+    // 一度拒否した権限はWebページから再度ネイティブダイアログを強制表示できません。
+    // サイト内の独自ポップアップは出さず、現在の権限状態だけを表示します。
     updateNotifyUI();
-    const el=document.getElementById("notification-permission-pop");
-    const text=document.getElementById("notify-pop-text");
-    const title=document.getElementById("notify-pop-title");
-    if(title)title.textContent="🔔 通知を許可してください";
-    if(text)text.textContent="このサイトは通知がブロックされています。ブラウザのサイト設定でこのサイトの通知を「許可」に変更してから、もう一度このボタンを押してください。";
-    if(el)el.classList.add("show");
     return;
   }
   try{
-    // ここは必ずクリックイベントの同期処理中に呼び出す。
     const permission=await Notification.requestPermission();
     updateNotifyUI();
     ga("notification_permission",{result:permission});
     if(permission==="granted"){
-      closeNotificationPrompt();
       await initFCM();
       if(closeWelcome)closeModal("modal-welcome");
-      // モバイルブラウザでは Notification() が使えない場合があるため、
-      // 許可直後のテスト通知は無理に生成しない。
-      showInAppToast("通知設定完了","お気に入り・遅延情報の通知を受け取れる状態になりました。");
-    }else if(permission==="denied"){
-      const el=document.getElementById("notification-permission-pop");
-      const text=document.getElementById("notify-pop-text");
-      const title=document.getElementById("notify-pop-title");
-      if(title)title.textContent="🔔 通知を許可してください";
-      if(text)text.textContent="通知がブロックされました。ブラウザのサイト設定でこのサイトの通知を「許可」に変更すると、通知を受け取れるようになります。";
-      if(el)el.classList.add("show");
     }
   }catch(err){
     console.error("Notification permission error:",err);
-    alert("通知の許可画面を開けませんでした。ブラウザの遅延設定をご確認ください。");
+    updateNotifyUI();
   }
 }
 async function initPlaceDataListener(){
@@ -2190,7 +2132,6 @@ function initAuth(){
 window.addEventListener("load",()=>{
   initMap();renderDayTabs();renderSchedule();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAuth();initFCM();
   if(!localStorage.getItem("ayu_welcome_seen")){setTimeout(()=>{openDrawer();openModal("modal-welcome");localStorage.setItem("ayu_welcome_seen","1")},450)}
-  setTimeout(showNotificationPrompt,1100);
 });
 </script>
 </body>
