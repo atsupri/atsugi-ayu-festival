@@ -288,7 +288,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.5.4</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.5.5</span></div>
   </div>
  </div>
 </div>
@@ -298,7 +298,13 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   <div class="modal-title"><h3>🔔 遅延設定</h3><button onclick="closeModal('modal-notify')">×</button></div>
   <div class="notice">通知を許可すると、お気に入り登録したイベントの開始前や遅延情報をお知らせします。FCMを使用したバックグラウンド通知に対応しています。通知を許可すると、このページを閉じている場合でも通知を受け取れる構成です。</div>
   <p id="notify-status" style="font-size:13px;color:#6b7280;margin-bottom:8px"></p>
-  <button id="notify-btn" class="auth-btn" onclick="requestNotification()">通知を許可する</button>
+  <button id="notify-btn" class="auth-btn" onclick="requestNotification()">① 通知を許可する</button>
+  <div id="webpush-status-box" style="margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#f8fafc">
+    <strong style="font-size:13px">② Web Push（FCM）</strong>
+    <p id="webpush-status" style="font-size:12px;line-height:1.6;color:#6b7280;margin:6px 0 8px">「通知を許可する」を押すと、ブラウザ本物の通知許可ダイアログが表示されます。許可後にWeb Pushへ登録します。</p>
+    <button id="webpush-btn" class="auth-btn" style="display:none" onclick="enableWebPush()">Web Pushを有効にする</button>
+    <p style="font-size:11px;line-height:1.6;color:#9ca3af;margin:8px 0 0">※Web Pushは通知の許可後にFCMへ登録します。ブラウザのサイト設定で通知がブロックされている場合は、先にURL左側のサイト情報から「通知」を許可してください。</p>
+  </div>
   <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px">
     <strong style="font-size:13px">お気に入り登録したイベントの通知</strong>
     <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px"><input id="notify-10min" type="checkbox" checked onchange="saveNotifyPrefs()">開始10分前に通知</label>
@@ -1396,11 +1402,66 @@ function showScheduleHint(){
   }
 }
 function updateNotifyUI(){
-  const t=document.getElementById("notify-status"),b=document.getElementById("notify-btn");
-  if(!("Notification" in window)){t.textContent="このブラウザは通知に対応していません。";b.disabled=true;return}
-  if(Notification.permission==="granted"){t.textContent="現在：通知は許可されています。";b.textContent="✅ 通知は許可されています"}
-  else if(Notification.permission==="denied"){t.textContent="現在：通知はブロックされています。ブラウザのサイト設定から変更できます。";b.textContent="⚠️ 遅延設定を確認"}
-  else{t.textContent="現在：通知は未設定です。";b.textContent="🔔 通知を許可する"}
+  const t=document.getElementById("notify-status"),b=document.getElementById("notify-btn"),ws=document.getElementById("webpush-status"),wb=document.getElementById("webpush-btn");
+  if(!t||!b)return;
+  if(!("Notification" in window)){
+    t.textContent="このブラウザは通知に対応していません。";
+    b.disabled=true;
+    if(ws)ws.textContent="Web Push：このブラウザでは利用できません。";
+    if(wb)wb.style.display="none";
+    return;
+  }
+  if(Notification.permission==="granted"){
+    t.textContent="現在：通知は許可されています。";
+    b.textContent="✅ 通知は許可されています";
+    b.disabled=false;
+    if(ws){
+      if(fcmInitialized && fcmToken){
+        ws.textContent="Web Push：有効（FCMへの登録が完了しています）";
+        if(wb)wb.style.display="none";
+      }else{
+        ws.textContent="通知は許可されています。Web Pushを登録できます。";
+        if(wb)wb.style.display="block";
+      }
+    }
+  }else if(Notification.permission==="denied"){
+    t.textContent="現在：通知はブロックされています。ブラウザのサイト設定から変更できます。";
+    b.textContent="⚠️ ブラウザのサイト設定を確認";
+    b.disabled=false;
+    if(ws)ws.textContent="Web Push：未登録（先にブラウザ側の通知を「許可」にしてください）";
+    if(wb)wb.style.display="none";
+  }else{
+    t.textContent="現在：通知は未設定です。";
+    b.textContent="① 通知を許可する";
+    b.disabled=false;
+    if(ws)ws.textContent="まず本物の通知許可ダイアログを表示し、許可後にWeb Push（FCM）を登録します。";
+    if(wb)wb.style.display="none";
+  }
+}
+
+async function enableWebPush(){
+  const ws=document.getElementById("webpush-status"),wb=document.getElementById("webpush-btn");
+  if(Notification.permission!=="granted"){
+    updateNotifyUI();
+    return;
+  }
+  if(ws)ws.textContent="Web Pushを登録しています…";
+  if(wb)wb.disabled=true;
+  try{
+    const token=await initFCM();
+    if(token){
+      if(ws)ws.textContent="Web Push：有効（FCMへの登録が完了しています）";
+      if(wb){wb.style.display="none";wb.disabled=false;}
+      showInAppToast("Web Push登録完了","この端末をプッシュ通知の送信先として登録しました。");
+    }else{
+      if(ws)ws.textContent="Web Push：登録できませんでした。FirebaseのVAPID設定・Service Worker・ブラウザの対応状況を確認してください。";
+      if(wb)wb.disabled=false;
+    }
+  }catch(err){
+    console.error("Web Push registration error:",err);
+    if(ws)ws.textContent="Web Push：登録に失敗しました。";
+    if(wb)wb.disabled=false;
+  }
 }
 function saveNotifyPrefs(){
   notificationPrefs={
@@ -1504,6 +1565,7 @@ async function initFCM(){
     });
 
     console.log("FCM登録完了",fcmToken);
+    updateNotifyUI();
     return fcmToken;
   }catch(err){
     console.error("FCM initialization error:",err);
@@ -1532,7 +1594,7 @@ async function requestNotification(closeWelcome=false){
   }
   if(Notification.permission==="granted"){
     updateNotifyUI();
-    await initFCM();
+    await enableWebPush();
     if(closeWelcome)closeModal("modal-welcome");
     return;
   }
@@ -1547,7 +1609,7 @@ async function requestNotification(closeWelcome=false){
     updateNotifyUI();
     ga("notification_permission",{result:permission});
     if(permission==="granted"){
-      await initFCM();
+      await enableWebPush();
       if(closeWelcome)closeModal("modal-welcome");
       // モバイルブラウザでは Notification() が使えない場合があるため、
       // 許可直後のテスト通知は無理に生成しない。
