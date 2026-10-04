@@ -288,7 +288,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.5.5</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.5.6</span></div>
   </div>
  </div>
 </div>
@@ -590,6 +590,8 @@ let adminPlaceSortMode=localStorage.getItem("ayu_admin_place_sort_v1")||"name";
 
 let adminPlaceFoldersLoaded=false;
 let adminPlaceFoldersLoading=null;
+let adminPlaceFoldersListenerRef=null;
+let adminPlaceFoldersListenerAttached=false;
 function ensureAdminPlaceFoldersLocal(){
   try{
     const raw=JSON.parse(localStorage.getItem(ADMIN_PLACE_FOLDER_KEY)||"{}");
@@ -599,6 +601,50 @@ function ensureAdminPlaceFoldersLocal(){
   if(!adminPlaceFolders.some(f=>String(f.id)===ADMIN_UNCLASSIFIED_FOLDER_ID)){
     adminPlaceFolders.unshift({id:ADMIN_UNCLASSIFIED_FOLDER_ID,name:"未分類",parentId:"",system:true});
   }
+}
+function startAdminPlaceFoldersRealtime(){
+  if(adminPlaceFoldersListenerAttached || !currentUserIsAdmin || !firebaseReady)return;
+  adminPlaceFoldersListenerAttached=true;
+  adminPlaceFoldersListenerRef=firebase.database().ref("adminPlaceFolders");
+  adminPlaceFoldersListenerRef.on("value",snap=>{
+    const data=snap.val();
+    if(!data || typeof data!=="object")return;
+    const remote=Array.isArray(data.folders)?data.folders:Object.values(data.folders||{});
+    const previousCurrent=currentAdminPlaceFolderId;
+    adminPlaceFolders=remote.filter(f=>f&&f.id&&f.name).map(f=>({id:String(f.id),name:String(f.name),parentId:String(f.parentId||""),system:!!f.system}));
+    ensureAdminPlaceFoldersLocal();
+    const validIds=new Set(adminPlaceFolders.map(f=>String(f.id)));
+    placeData.forEach(item=>{
+      const id=String(item.id);
+      const remoteFolderId=String(item.adminFolderId||"");
+      const localFolderId=String(adminPlaceFolderAssignments[id]||"");
+      const folderId=(remoteFolderId&&validIds.has(remoteFolderId))?remoteFolderId:(localFolderId&&validIds.has(localFolderId)?localFolderId:ADMIN_UNCLASSIFIED_FOLDER_ID);
+      adminPlaceFolderAssignments[id]=folderId;
+      if(remoteFolderId!==folderId){
+        firebase.database().ref(`places/${id}/adminFolderId`).set(folderId).catch(e=>console.error("店舗フォルダ同期失敗:",e));
+      }
+    });
+    currentAdminPlaceFolderId=validIds.has(previousCurrent)?previousCurrent:"";
+    adminPlaceFoldersLoaded=true;
+    saveAdminPlaceFoldersLocal();
+    if(document.getElementById("admin-page-places")?.style.display!=="none" || document.getElementById("admin-place-folder-tree")){
+      renderAdminPlaceFolderTree();
+      renderAdminPlaceFolderSelect(document.getElementById("place-admin-folder")?.value||"");
+      renderAdminPlaceMoveFolderSelect();
+      renderAdminPlaceList();
+    }
+  },err=>{
+    console.error("管理フォルダのリアルタイム同期失敗:",err);
+    adminPlaceFoldersListenerAttached=false;
+    adminPlaceFoldersListenerRef=null;
+  });
+}
+function stopAdminPlaceFoldersRealtime(){
+  if(adminPlaceFoldersListenerRef){
+    adminPlaceFoldersListenerRef.off();
+  }
+  adminPlaceFoldersListenerRef=null;
+  adminPlaceFoldersListenerAttached=false;
 }
 async function loadAdminPlaceFolders(force=false){
   ensureAdminPlaceFoldersLocal();
@@ -631,6 +677,7 @@ async function loadAdminPlaceFolders(force=false){
       if(Object.keys(updates).length) await firebase.database().ref().update(updates);
       adminPlaceFoldersLoaded=true;
       saveAdminPlaceFoldersLocal();
+      startAdminPlaceFoldersRealtime();
     }catch(e){
       console.error("管理フォルダのFirebase読み込み失敗:",e);
       ensureAdminPlaceFoldersLocal();
@@ -794,9 +841,14 @@ function deleteAdminPlaceFolder(id){
 ${affected.length}件の店舗は未分類に戻ります。よろしいですか？`:`フォルダ「${target.name}」と中のフォルダを削除しますか？`;
   if(!confirm(message))return;
   adminPlaceFolders=adminPlaceFolders.filter(f=>!removeIds.has(f.id));
-  affected.forEach(p=>delete adminPlaceFolderAssignments[p.id]);
+  const updates={};
+  affected.forEach(p=>{
+    adminPlaceFolderAssignments[p.id]=ADMIN_UNCLASSIFIED_FOLDER_ID;
+    updates[`places/${p.id}/adminFolderId`]=ADMIN_UNCLASSIFIED_FOLDER_ID;
+  });
   if(removeIds.has(currentAdminPlaceFolderId))currentAdminPlaceFolderId="";
   saveAdminPlaceFolders();
+  if(Object.keys(updates).length)firebase.database().ref().update(updates).catch(e=>console.error("削除後の店舗フォルダ同期失敗:",e));
   renderAdminPlaceFolderTree();renderAdminPlaceFolderSelect();renderAdminPlaceList();
 }
 
