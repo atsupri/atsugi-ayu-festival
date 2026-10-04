@@ -288,7 +288,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.5.8</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.5.9</span></div>
   </div>
  </div>
 </div>
@@ -1233,14 +1233,14 @@ function renderMapMarkers(){
     const marker = L.marker(markerPosition,{
       icon:L.divIcon({
         className:"",
-        html:`<div class="ayu-marker-wrap" style="position:relative;width:${Math.max(width,120)}px;height:${Math.max(height,40)}px;display:grid;place-items:center;">
+        html:`<div class="ayu-marker-wrap" style="position:relative;width:${width}px;height:${height}px;display:grid;place-items:center;">
           <div class="ayu-pin" style="width:${width}px;height:${height}px;border-radius:${radius};background:${style.bg};color:white;border:${PIN_STYLE.borderWidth}px solid white;box-shadow:0 2px 7px #0005;display:grid;place-items:center;transform:scale(${getPinScale()});transition:transform .15s ease;transform-origin:center center;${getPlaceLabelMode(p)==="name"&&showName?"display:none;":""}">
             <i class="fa-solid ${p.icon}" style="font-size:13px"></i>
           </div>
           <div class="ayu-place-name-label" data-place-id="${escapeHtml(p.id)}" style="display:${showName?"block":"none"};position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);">${formatPlaceMapLabel(p)}</div>
         </div>`,
-        iconSize:[Math.max(width,120),Math.max(height,40)],
-        iconAnchor:[Math.max(width,120)/2,Math.max(height,40)/2]
+        iconSize:[width,height],
+        iconAnchor:[width/2,height/2]
       })
     }).addTo(markerLayer);
 
