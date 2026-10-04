@@ -288,7 +288,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.5.7</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.5.8</span></div>
   </div>
  </div>
 </div>
@@ -407,6 +407,10 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
           </div>
           <div class="admin-place-list-panel">
             <div class="admin-list-head"><strong id="admin-place-list-title">すべての店舗・施設</strong><button type="button" onclick="selectAdminPlaceFolder('')">すべて表示</button></div>
+            <div class="admin-place-search" style="display:flex;gap:7px;align-items:center;margin-bottom:8px">
+              <input id="admin-place-search" type="search" placeholder="店舗名・設置名・検索キーワードで検索" aria-label="店舗・施設を検索" oninput="changeAdminPlaceSearch(this.value)" style="flex:1;border:1px solid var(--border);border-radius:9px;padding:9px 10px;background:#fff;outline:none;font-size:12px">
+              <button type="button" onclick="clearAdminPlaceSearch()" style="border:1px solid var(--border);background:#f8fafc;color:#4b5563;border-radius:8px;padding:8px 9px;font-size:11px;white-space:nowrap">クリア</button>
+            </div>
             <div class="admin-place-list-tools">
               <span id="admin-place-selection-count" class="admin-place-selection-count">0件選択中</span>
               <select id="admin-place-sort" onchange="changeAdminPlaceSort(this.value)" aria-label="店舗の表示順">
@@ -593,6 +597,7 @@ let adminPlaceFolderAssignments={};
 let currentAdminPlaceFolderId="";
 let selectedAdminPlaceIds=new Set();
 let adminPlaceSortMode=localStorage.getItem("ayu_admin_place_sort_v1")||"name";
+let adminPlaceSearchQuery="";
 
 let adminPlaceFoldersLoaded=false;
 let adminPlaceFoldersLoading=null;
@@ -774,7 +779,26 @@ function clearAdminPlaceSelection(){
   renderAdminPlaceList();
 }
 function getFilteredAdminPlaceList(){
-  return [...placeData].filter(p=>!currentAdminPlaceFolderId || String(adminPlaceFolderAssignments[p.id]||"")===String(currentAdminPlaceFolderId));
+  const q=String(adminPlaceSearchQuery||"").trim().toLocaleLowerCase("ja");
+  return [...placeData].filter(p=>{
+    if(currentAdminPlaceFolderId && String(adminPlaceFolderAssignments[p.id]||"")!==String(currentAdminPlaceFolderId))return false;
+    if(!q)return true;
+    const keywords=Array.isArray(p.searchKeywords)?p.searchKeywords.join(" "):String(p.searchKeywords||"");
+    const haystack=[p.name,p.mapLabel,p.placementName,p.detail,p.description,keywords].map(v=>String(v??"").toLocaleLowerCase("ja")).join(" ");
+    return haystack.includes(q);
+  });
+}
+function changeAdminPlaceSearch(value){
+  adminPlaceSearchQuery=String(value||"");
+  selectedAdminPlaceIds.clear();
+  renderAdminPlaceList();
+}
+function clearAdminPlaceSearch(){
+  adminPlaceSearchQuery="";
+  const input=document.getElementById("admin-place-search");
+  if(input)input.value="";
+  selectedAdminPlaceIds.clear();
+  renderAdminPlaceList();
 }
 function sortAdminPlaceList(list){
   return list.sort((a,b)=>{
@@ -1933,6 +1957,7 @@ function renderAdminPlaceList(){
   const el=document.getElementById("admin-place-list");if(!el)return;
   loadAdminPlaceFolders();
   const sortEl=document.getElementById("admin-place-sort");if(sortEl)sortEl.value=adminPlaceSortMode;
+  const searchEl=document.getElementById("admin-place-search");if(searchEl && searchEl.value!==adminPlaceSearchQuery)searchEl.value=adminPlaceSearchQuery;
   renderAdminPlaceMoveFolderSelect();
   const list=sortAdminPlaceList(getFilteredAdminPlaceList());
   const title=document.getElementById("admin-place-list-title");
