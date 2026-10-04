@@ -288,7 +288,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.5.6</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.5.7</span></div>
   </div>
  </div>
 </div>
@@ -437,7 +437,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
           <div id="place-icon-palette" class="admin-icon-palette"></div>
           <div class="admin-pin-options" style="margin-top:8px">
             <div><label>形</label><select id="place-pin-shape" class="auth-input"><option value="rect">四角</option><option value="circle">丸</option></select></div>
-            <div><label>色</label><select id="place-pin-color" class="auth-input"><option value="#0f766e">緑</option><option value="#f59e0b">黄色</option><option value="#2563eb">青</option><option value="#dc2626">赤</option><option value="#7c3aed">紫</option><option value="#6b7280">グレー</option></select></div>
+            <div><label>色</label><select id="place-pin-color" class="auth-input"><option value="#0f766e">緑</option><option value="#f59e0b">黄色</option><option value="#67c7e8">水色</option><option value="#2563eb">青</option><option value="#dc2626">赤</option><option value="#7c3aed">紫</option><option value="#6b7280">グレー</option></select></div>
           </div>
           <label>マップ上の表示</label>
           <div class="admin-label-options">
@@ -569,6 +569,12 @@ const PIN_TYPES = {
   stage:  { shape:"rect",   bg:"#7c3aed" },
   food:   { shape:"rect",   bg:"#dc2626" }
 };
+
+// 以前の「青」(#2563eb)を、今回の「水色」に引き継ぐ。
+// 既存の店舗で明示的に青を選んでいたものだけを移行し、
+// トイレなどPIN_TYPESの既定色には影響させない。
+const LEGACY_PLACE_BLUE = "#2563eb";
+const MILD_LIGHT_BLUE = "#67c7e8";
 
 let placeData = [];
 
@@ -1678,9 +1684,23 @@ async function initPlaceDataListener(){
   if(!firebaseReady)return;
   firebase.database().ref("places").on("value",snapshot=>{
     const data=snapshot.val();
-    placeData=(data && typeof data === "object")
-      ? Object.values(data).filter(Boolean).map(p=>({...p,searchKeywords:Array.isArray(p.searchKeywords)?p.searchKeywords:[]}))
+    const rawPlaces=(data && typeof data === "object")
+      ? Object.values(data).filter(Boolean)
       : [];
+    const migrationUpdates={};
+    placeData=rawPlaces.map(p=>{
+      const normalized={...p,searchKeywords:Array.isArray(p.searchKeywords)?p.searchKeywords:[]};
+      // 旧バージョンで店舗に設定されていた「青」を「水色」へ移行。
+      // pinColorが実際に保存されている店舗だけを対象にする。
+      if(normalized.pinColor===LEGACY_PLACE_BLUE){
+        normalized.pinColor=MILD_LIGHT_BLUE;
+        migrationUpdates[String(normalized.id) + "/pinColor"] = MILD_LIGHT_BLUE;
+      }
+      return normalized;
+    });
+    if(Object.keys(migrationUpdates).length){
+      firebase.database().ref("places").update(migrationUpdates).catch(err=>console.error("pin color migration error:",err));
+    }
     placeFirebaseLoaded=true;
     renderMapMarkers();
     renderPlaceList();
@@ -1705,7 +1725,10 @@ function setPlacePinChoices(p){
   const type=p?.type||"shop";const style=PIN_TYPES[type]||PIN_TYPES.shop;
   const shape=document.getElementById("place-pin-shape"),color=document.getElementById("place-pin-color");
   if(shape)shape.value=p?.pinShape||style.shape;
-  if(color)color.value=p?.pinColor||style.bg;
+  if(color){
+    const savedColor=p?.pinColor||style.bg;
+    color.value=(savedColor===LEGACY_PLACE_BLUE)?MILD_LIGHT_BLUE:savedColor;
+  }
 }
 
 function openPlaceEditor(id=null){
