@@ -97,6 +97,23 @@ button,input,select{font:inherit}
 .stepper-vertical{width:150px;margin:14px auto;display:flex;flex-direction:column;align-items:center;gap:5px}.stepper-vertical strong{display:flex;align-items:center;justify-content:center;width:150px;min-height:58px;border:1px solid var(--border);border-radius:12px;background:#fff;font-size:27px}.delay-arrow{width:150px;height:38px;border:1px solid var(--border);border-radius:10px;background:#f3f4f6;color:#374151;font-size:19px;font-weight:900;line-height:1}.delay-arrow:active{transform:scale(.97);background:#e5e7eb}
 .notice{padding:10px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:10px;font-size:12px;margin-bottom:10px}
 
+/* 通知設定ガイド */
+.notify-guide-card{margin-top:14px;padding:13px;border:1px solid var(--border);border-radius:14px;background:#f8fafc}
+.notify-guide-card h4{font-size:13px;margin-bottom:8px}
+.notify-platforms{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.notify-platform-card{background:#fff;border:1px solid var(--border);border-radius:11px;padding:10px}
+.notify-platform-card strong{display:block;font-size:13px;margin-bottom:5px}
+.notify-platform-card p{font-size:11px;line-height:1.6;color:var(--sub)}
+.notify-guide-open{width:100%;margin-top:9px;padding:10px;border:1px solid #99f6e4;border-radius:9px;background:#ecfdf5;color:#065f46;font-weight:900}
+.notify-guide-section{margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)}
+.notify-guide-section:first-child{margin-top:0;padding-top:0;border-top:0}
+.notify-guide-section h4{font-size:14px;margin-bottom:6px}
+.notify-guide-section ol{padding-left:20px;font-size:12px;line-height:1.75}
+.notify-guide-note{font-size:11px;line-height:1.6;color:var(--sub);margin-top:7px}
+.notify-guide-image{display:block;width:100%;max-height:460px;object-fit:contain;border:1px solid var(--border);border-radius:11px;background:#111;margin-top:8px}
+.notify-guide-caption{font-size:10px;color:#6b7280;line-height:1.5;margin-top:4px}
+@media(max-width:390px){.notify-platforms{grid-template-columns:1fr}}
+
 /* 管理者ツール：メニューから専用ページへ移動 */
 .admin-dashboard{margin-top:10px;display:flex;flex-direction:column;gap:10px;align-items:stretch}
 .admin-menu-card{display:flex;align-items:center;justify-content:space-between;gap:18px;width:100%;padding:14px 16px;border:1px solid var(--border);border-radius:12px;background:#fff;color:var(--text);font-size:13px;font-weight:900;text-align:left;box-shadow:0 1px 3px #00000008}
@@ -275,7 +292,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
    <i class="fa-solid fa-bullhorn"></i>お知らせ
   </button>
   <button class="side-btn" onclick="closeDrawer();openModal('modal-notify')">
-   <i class="fa-solid fa-bell"></i>遅延設定
+   <i class="fa-solid fa-bell"></i>通知設定
   </button>
   <div class="side-section">その他</div>
   <button class="side-btn" onclick="closeDrawer();openModal('modal-about')">
@@ -288,7 +305,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.5.10</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.5.12</span></div>
   </div>
  </div>
 </div>
@@ -305,6 +322,14 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
     <button id="webpush-btn" class="auth-btn" style="display:none" onclick="enableWebPush()">Web Pushを有効にする</button>
     <p style="font-size:11px;line-height:1.6;color:#9ca3af;margin:8px 0 0">※Web Pushは通知の許可後にFCMへ登録します。ブラウザのサイト設定で通知がブロックされている場合は、先にURL左側のサイト情報から「通知」を許可してください。</p>
   </div>
+  <div class="notify-guide-card">
+    <h4>📱 端末ごとの通知設定</h4>
+    <div class="notify-platforms">
+      <div class="notify-platform-card"><strong>🍎 iPhone</strong><p>Safariでこのサイトを「ホーム画面に追加」→「ウェブアプリとして開く」→追加したアイコンから起動して通知を許可します。</p></div>
+      <div class="notify-platform-card"><strong>🤖 Android</strong><p>Chromeのサイト設定から、このサイトの「通知」を「許可」にします。下の手順画像で確認できます。</p></div>
+    </div>
+    <button class="notify-guide-open" onclick="openModal('modal-notification-guide')">📖 iPhone / Android の詳しい設定手順を見る</button>
+  </div>
   <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px">
     <strong style="font-size:13px">お気に入り登録したイベントの通知</strong>
     <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px"><input id="notify-10min" type="checkbox" checked onchange="saveNotifyPrefs()">開始10分前に通知</label>
@@ -319,9 +344,58 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   <div class="modal-title"><h3>🎆 鮎まつり案内へようこそ！</h3><button onclick="closeModal('modal-welcome')">×</button></div>
   <div class="notice">厚木中央公園にてDanceLegend（ダンスレジェンド）を開催します！！</div>
   <p style="line-height:1.8;font-size:13px">見たいイベントを⭐お気に入り登録すると、開始時間の10分前にウェブ内でリマインドします。また、開始時刻の変更・遅延情報もお知らせします。ぜひ通知権限を許可して、快適に鮎まつりをお楽しみください！</p>
+  <div class="notify-guide-card" style="margin-top:10px">
+    <h4>📱 通知を受け取るには</h4>
+    <div class="notify-platforms">
+      <div class="notify-platform-card"><strong>🍎 iPhone</strong><p>Safariでホーム画面に追加し、「ウェブアプリとして開く」から起動します。</p></div>
+      <div class="notify-platform-card"><strong>🤖 Android</strong><p>Chromeのサイト設定で、このサイトの通知を「許可」にします。</p></div>
+    </div>
+    <button class="notify-guide-open" onclick="openModal('modal-notification-guide')">📖 設定手順を詳しく見る</button>
+  </div>
   <button class="auth-btn" onclick="requestNotification(true)">通知を許可する</button>
   <button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="closeModal('modal-welcome')">スキップ</button>
   <p style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px">※メニューの「遅延設定」から後で変更できます。</p>
+ </div>
+</div>
+
+<div id="modal-notification-guide" class="modal" onclick="overlayClose(event,'modal-notification-guide')">
+ <div class="modal-card">
+  <div class="modal-title"><h3>📱 通知設定ガイド</h3><button onclick="closeModal('modal-notification-guide')">×</button></div>
+  <div class="notify-guide-section">
+   <h4>🍎 iPhoneの場合</h4>
+   <ol>
+    <li>Safariで「あつぎ鮎まつり案内」を開きます。</li>
+    <li>ページメニューから「共有」をタップします。</li>
+    <li>「ホーム画面に追加」をタップします。</li>
+    <li>「ウェブアプリとして開く」をオンにして「追加」をタップします。</li>
+    <li>ホーム画面に追加されたアイコンから、このアプリを起動します。</li>
+    <li>アプリ内の「通知を許可する」をタップし、通知を許可します。</li>
+   </ol>
+   <p class="notify-guide-note">※ iPhoneのWeb Push通知は、Safariでホーム画面に追加したWebアプリから利用する方式です。Appleの案内でも、ホーム画面に追加したWebアプリから通知を受け取れるとされています。</p>
+  </div>
+  <div class="notify-guide-section">
+   <h4>🤖 Android（Chrome）の場合</h4>
+   <ol>
+    <li>Chromeで「あつぎ鮎まつり案内」を開きます。</li>
+    <li>右上の「⋮」をタップし、「サイトの設定」を開きます。</li>
+    <li>「権限」の「通知」を開き、「許可」にします。</li>
+    <li>通知設定の画面で、このサイトの通知が「許可」になっていることを確認します。</li>
+    <li>アプリに戻り、「通知を許可する」をタップします。</li>
+   </ol>
+   <p class="notify-guide-note">※すでに通知をブロックしている場合は、アプリ内から許可ダイアログを再表示できないことがあります。その場合はChromeのサイト設定から、このサイトの通知を「許可」に変更してください。</p>
+   <img class="notify-guide-image" src="./images/notification/1000023323.jpg" alt="Android Chromeでこのサイトの通知がブロックされている表示" loading="lazy">
+   <div class="notify-guide-caption">※この表示が出た場合も、Chromeのサイト設定から通知を「許可」に変更します。</div>
+   <img class="notify-guide-image" src="./images/notification/1000023325.jpg" alt="Android Chromeのメニューからサイトの設定を開く画面" loading="lazy">
+   <div class="notify-guide-caption">① Chrome右上の「⋮」→「サイトの設定」</div>
+   <img class="notify-guide-image" src="./images/notification/1000023326.jpg" alt="Android Chromeのサイト設定で通知を許可する画面" loading="lazy">
+   <div class="notify-guide-caption">② 「権限」→「通知を許可」</div>
+   <img class="notify-guide-image" src="./images/notification/1000023327.jpg" alt="AndroidのChrome通知設定画面" loading="lazy">
+   <div class="notify-guide-caption">③ Chromeの通知設定で、サイトの通知を許可</div>
+  </div>
+  <div class="notify-guide-section">
+   <h4>🔔 最後に</h4>
+   <p class="notify-guide-note">端末側の設定ができたら、この画面に戻って「通知を許可する」→「Web Push（FCM）」の順に進めます。お気に入りイベントの開始前・遅延情報を通知します。</p>
+  </div>
  </div>
 </div>
 
