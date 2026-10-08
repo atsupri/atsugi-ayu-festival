@@ -300,7 +300,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.5.14</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.5.18</span></div>
   </div>
  </div>
 </div>
@@ -426,13 +426,11 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
 <div id="modal-notice" class="modal" onclick="overlayClose(event,'modal-notice')">
  <div class="modal-card">
   <div class="modal-title"><h3>📢 お知らせ</h3><button onclick="closeModal('modal-notice')">×</button></div>
-  <div class="notice">
-   <strong>あつぎ鮎まつり案内 仮版</strong><br>
-   現在はアプリのマップ・スケジュール機能を確認するための仮版です。
+  <div id="notice-main-box" class="notice">
+   <strong id="notice-title" style="white-space:pre-wrap"></strong>
+   <div id="notice-body" style="white-space:pre-wrap;margin-top:5px"></div>
   </div>
-  <p style="font-size:13px;line-height:1.7;color:#6b7280">
-   正式な会場情報・地図画像が用意できたら、こちらの内容も本番用に更新できます。
-  </p>
+  <p id="notice-footer" style="font-size:13px;line-height:1.7;color:#6b7280;white-space:pre-wrap"></p>
  </div>
 </div>
 
@@ -576,6 +574,17 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
     <div class="admin-subpage-inner">
       <div class="admin-subpage-header"><button type="button" class="admin-subpage-back" onclick="closeAdminPage()">← 戻る</button><div class="admin-subpage-title">ℹ️ このアプリについて</div></div>
       <div class="admin-subpage-card app-about-editor">
+        <h4 style="margin-bottom:6px">📢 お知らせ</h4>
+        <p class="admin-migrate-note">メニューの「お知らせ」を開いたときに表示する内容を変更できます。緑色の枠内と、その下の補足文を別々に編集できます。改行もそのまま表示されます。</p>
+        <label style="display:block;font-size:11px;font-weight:800;color:#4b5563;margin:8px 0 5px">お知らせの見出し</label>
+        <input id="admin-notice-title" class="auth-input" placeholder="例：あつぎ鮎まつり案内 仮版">
+        <label style="display:block;font-size:11px;font-weight:800;color:#4b5563;margin:8px 0 5px">緑色の枠内の本文</label>
+        <textarea id="admin-notice-body" placeholder="お知らせの本文を入力してください。"></textarea>
+        <label style="display:block;font-size:11px;font-weight:800;color:#4b5563;margin:8px 0 5px">枠の外の補足文</label>
+        <textarea id="admin-notice-footer" placeholder="補足文を入力してください。空欄にもできます。"></textarea>
+        <button class="auth-btn" style="margin-top:8px" onclick="saveNoticeText()">💾 お知らせを保存</button>
+        <p id="admin-notice-status" style="font-size:11px;color:#6b7280;line-height:1.6;margin-top:8px"></p>
+        <hr style="margin:16px 0;border:none;border-top:1px dashed var(--border)">
         <p class="admin-migrate-note">最初に表示される「このアプリについて」と、メニューの説明文をここから変更できます。改行もそのまま表示されます。</p>
         <label style="display:block;font-size:11px;font-weight:800;color:#4b5563;margin:8px 0 5px">アプリについての説明</label>
         <textarea id="admin-app-about-text" placeholder="このアプリはこんなものです！
@@ -1019,6 +1028,13 @@ const GA_CONSENT_KEY="ayu_google_analytics_consent_v1";
 let gaReady=false;
 let appAboutText="このアプリでは、あつぎ鮎まつりの会場・イベント情報を確認できます。";
 let appAboutLoaded=false;
+const DEFAULT_NOTICE_TITLE="あつぎ鮎まつり案内 仮版";
+const DEFAULT_NOTICE_BODY="現在はアプリのマップ・スケジュール機能を確認するための仮版です。";
+const DEFAULT_NOTICE_FOOTER="正式な会場情報・地図画像が用意できたら、こちらの内容も本番用に更新できます。";
+let noticeTitle=DEFAULT_NOTICE_TITLE;
+let noticeBody=DEFAULT_NOTICE_BODY;
+let noticeFooter=DEFAULT_NOTICE_FOOTER;
+let noticeLoaded=false;
 const DEFAULT_ANALYTICS_CONSENT_TEXT=`このアプリでは、サービスの利用状況を把握し、改善するために<strong>Google アナリティクス</strong>を使用しています。<br><br>Google アナリティクスの利用に同意いただいた場合、アクセス状況や利用状況などのデータをGoogle アナリティクスで収集・分析します。<br><br><strong>同意しない場合でも、このアプリは通常どおり利用できます。この場合、Google アナリティクスによる情報の収集・分析は行いません。</strong>`;
 let analyticsConsentText=DEFAULT_ANALYTICS_CONSENT_TEXT;
 let analyticsConsentTextLoaded=false;
@@ -1059,6 +1075,19 @@ function updateAnalyticsConsentStatus(){
   const value=localStorage.getItem(GA_CONSENT_KEY);
   el.textContent=value==="granted"?"現在：Google アナリティクスの利用に同意しています。":value==="denied"?"現在：Google アナリティクスの利用に同意していません。":"現在：未設定です。";
 }
+function renderNotice(){
+  const title=document.getElementById("notice-title");
+  const body=document.getElementById("notice-body");
+  const footer=document.getElementById("notice-footer");
+  const box=document.getElementById("notice-main-box");
+  if(title){title.textContent=noticeTitle||"";title.style.display=noticeTitle?"block":"none";}
+  if(body){body.textContent=noticeBody||"";body.style.display=noticeBody?"block":"none";}
+  if(box)box.style.display=(noticeTitle||noticeBody)?"block":"none";
+  if(footer){footer.textContent=noticeFooter||"";footer.style.display=noticeFooter?"block":"none";}
+  const a=document.getElementById("admin-notice-title");if(a && document.activeElement!==a)a.value=noticeTitle;
+  const b=document.getElementById("admin-notice-body");if(b && document.activeElement!==b)b.value=noticeBody;
+  const c=document.getElementById("admin-notice-footer");if(c && document.activeElement!==c)c.value=noticeFooter;
+}
 function renderAppAbout(){
   const text=appAboutText||"このアプリでは、あつぎ鮎まつりの会場・イベント情報を確認できます。";
   const a=document.getElementById("app-about-text");if(a)a.textContent=text;
@@ -1078,6 +1107,20 @@ function continueAfterAnalyticsConsent(){
 }
 function openAnalyticsSettings(){
   openModal("modal-analytics");
+}
+function saveNoticeText(){
+  if(!currentUserIsAdmin){alert("管理者権限が必要です。");return;}
+  const title=String(document.getElementById("admin-notice-title")?.value||"").trim();
+  const body=String(document.getElementById("admin-notice-body")?.value||"").trim();
+  const footer=String(document.getElementById("admin-notice-footer")?.value||"").trim();
+  if(!title && !body && !footer){
+    if(!confirm("お知らせをすべて空欄にします。よろしいですか？"))return;
+  }
+  noticeTitle=title;noticeBody=body;noticeFooter=footer;
+  if(!firebaseReady){alert("Firebaseに接続できません。");return;}
+  firebase.database().ref("broadcast/notice").set({title,body,footer,updatedAt:firebase.database.ServerValue.TIMESTAMP,updatedBy:currentUser?.uid||""})
+    .then(()=>{renderNotice();const st=document.getElementById("admin-notice-status");if(st)st.textContent="保存しました。一般公開画面のお知らせにも反映されます。";})
+    .catch(err=>{console.error(err);alert("保存に失敗しました。Firebase Rulesを確認してください。");});
 }
 function saveAppAboutText(){
   if(!currentUserIsAdmin){alert("管理者権限が必要です。");return;}
@@ -1108,6 +1151,15 @@ function initAppAboutListener(){
     if(data&&typeof data==="object"&&typeof data.text==="string"&&data.text.trim())appAboutText=data.text.trim();
     appAboutLoaded=true;renderAppAbout();
   },err=>console.error("app about listener error:",err));
+  firebase.database().ref("broadcast/notice").on("value",snap=>{
+    const data=snap.val();
+    if(data&&typeof data==="object"){
+      noticeTitle=typeof data.title==="string"?data.title:DEFAULT_NOTICE_TITLE;
+      noticeBody=typeof data.body==="string"?data.body:DEFAULT_NOTICE_BODY;
+      noticeFooter=typeof data.footer==="string"?data.footer:DEFAULT_NOTICE_FOOTER;
+    }
+    noticeLoaded=true;renderNotice();
+  },err=>console.error("notice listener error:",err));
   firebase.database().ref("broadcast/analyticsConsent").on("value",snap=>{
     const data=snap.val();
     if(data&&typeof data==="object"&&typeof data.text==="string"&&data.text.trim())analyticsConsentText=data.text.trim();
@@ -1497,7 +1549,7 @@ function renderPlaceList(){
         ${imageHtml}
         <div class="place-card-detail-text">
           <div class="detail-meta"><span class="detail-tag">${typeLabel}</span></div>
-          <p>${escapeHtml(p.description||"詳細情報は準備中です。")}</p>
+          <p>${p.description ? escapeHtml(p.description) : ""}</p>
         </div>
       </div>
     </div>` : "";
@@ -2526,7 +2578,7 @@ function initAuth(){
   });
 }
 window.addEventListener("load",()=>{
-  initMap();renderDayTabs();renderSchedule();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAppAboutListener();initAuth();initFCM();
+  initMap();renderDayTabs();renderSchedule();renderNotice();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAppAboutListener();initAuth();initFCM();
   const analyticsConsent=localStorage.getItem(GA_CONSENT_KEY);
   if(analyticsConsent==="granted")initGoogleAnalytics();
   setTimeout(()=>{
