@@ -6,18 +6,6 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>あつぎ鮎まつり案内</title>
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y0W73T4552"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-Y0W73T4552', {
-  allow_google_signals:false,
-  allow_ad_personalization_signals:false,
-  anonymize_ip:true
-});
-</script>
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -97,21 +85,21 @@ button,input,select{font:inherit}
 .stepper-vertical{width:150px;margin:14px auto;display:flex;flex-direction:column;align-items:center;gap:5px}.stepper-vertical strong{display:flex;align-items:center;justify-content:center;width:150px;min-height:58px;border:1px solid var(--border);border-radius:12px;background:#fff;font-size:27px}.delay-arrow{width:150px;height:38px;border:1px solid var(--border);border-radius:10px;background:#f3f4f6;color:#374151;font-size:19px;font-weight:900;line-height:1}.delay-arrow:active{transform:scale(.97);background:#e5e7eb}
 .notice{padding:10px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:10px;font-size:12px;margin-bottom:10px}
 
-/* 通知設定ガイド */
+/* 通知設定ガイド：最初は見出しだけ、矢印で開く */
 .notify-guide-card{margin-top:14px;padding:13px;border:1px solid var(--border);border-radius:14px;background:#f8fafc}
 .notify-guide-card h4{font-size:13px;margin-bottom:8px}
-.notify-platforms{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.notify-platform-card{background:#fff;border:1px solid var(--border);border-radius:11px;padding:10px}
-.notify-platform-card strong{display:block;font-size:13px;margin-bottom:5px}
-.notify-platform-card p{font-size:11px;line-height:1.6;color:var(--sub)}
+.notify-step{margin-top:8px;border:1px solid var(--border);border-radius:11px;background:#fff;overflow:hidden}
+.notify-step:first-of-type{margin-top:0}
+.notify-step summary{list-style:none;cursor:pointer;padding:11px 12px;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:space-between}
+.notify-step summary::-webkit-details-marker{display:none}
+.notify-step summary::after{content:'›';font-size:20px;line-height:1;transform:rotate(90deg);transition:transform .15s ease;color:#6b7280}
+.notify-step[open] summary::after{transform:rotate(-90deg)}
+.notify-step-body{padding:0 12px 12px;border-top:1px dashed var(--border)}
+.notify-step-body p{font-size:12px;line-height:1.8;margin:10px 0 0;white-space:pre-line}
+.notify-warning{font-weight:800;color:#92400e}
+.notify-video-link{display:inline-block;margin-top:7px;font-size:12px;font-weight:900;color:#0f766e;text-decoration:underline}
 .notify-guide-open{width:100%;margin-top:9px;padding:10px;border:1px solid #99f6e4;border-radius:9px;background:#ecfdf5;color:#065f46;font-weight:900}
-.notify-guide-section{margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)}
-.notify-guide-section:first-child{margin-top:0;padding-top:0;border-top:0}
-.notify-guide-section h4{font-size:14px;margin-bottom:6px}
-.notify-guide-section ol{padding-left:20px;font-size:12px;line-height:1.75}
-.notify-guide-note{font-size:11px;line-height:1.6;color:var(--sub);margin-top:7px}
-.notify-guide-image{display:block;width:100%;max-height:460px;object-fit:contain;border:1px solid var(--border);border-radius:11px;background:#111;margin-top:8px}
-.notify-guide-caption{font-size:10px;color:#6b7280;line-height:1.5;margin-top:4px}
+
 @media(max-width:390px){.notify-platforms{grid-template-columns:1fr}}
 
 /* 管理者ツール：メニューから専用ページへ移動 */
@@ -228,6 +216,10 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   from { opacity: 0; transform: translateY(7px) scale(.985); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
+.ga-consent-note{font-size:12px;line-height:1.75;color:#4b5563;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:12px}
+.ga-consent-actions{display:flex;gap:8px;margin-top:14px}.ga-consent-actions button{flex:1}
+.app-intro-highlight{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;border-radius:13px;padding:13px;font-size:14px;font-weight:800;line-height:1.7;white-space:pre-wrap}
+.app-about-editor textarea{width:100%;min-height:150px;border:1px solid var(--border);border-radius:10px;padding:10px;background:#fff;resize:vertical;line-height:1.7;outline:none}
 
 /* メニューの開閉を滑らかに */
 #drawer .drawer-panel, #drawer .drawer-inner {
@@ -298,6 +290,9 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   <button class="side-btn" onclick="closeDrawer();openModal('modal-about')">
    <i class="fa-solid fa-circle-info"></i>このアプリについて
   </button>
+  <button class="side-btn" onclick="closeDrawer();openModal('modal-analytics')">
+   <i class="fa-solid fa-chart-line"></i>アクセス解析について
+  </button>
 
   <div class="side-footer-note">
    あつぎ鮎まつりの会場・イベント情報を確認できます。<br>
@@ -305,7 +300,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.5.12</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.5.14</span></div>
   </div>
  </div>
 </div>
@@ -323,18 +318,70 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
     <p style="font-size:11px;line-height:1.6;color:#9ca3af;margin:8px 0 0">※Web Pushは通知の許可後にFCMへ登録します。ブラウザのサイト設定で通知がブロックされている場合は、先にURL左側のサイト情報から「通知」を許可してください。</p>
   </div>
   <div class="notify-guide-card">
-    <h4>📱 端末ごとの通知設定</h4>
-    <div class="notify-platforms">
-      <div class="notify-platform-card"><strong>🍎 iPhone</strong><p>Safariでこのサイトを「ホーム画面に追加」→「ウェブアプリとして開く」→追加したアイコンから起動して通知を許可します。</p></div>
-      <div class="notify-platform-card"><strong>🤖 Android</strong><p>Chromeのサイト設定から、このサイトの「通知」を「許可」にします。下の手順画像で確認できます。</p></div>
-    </div>
-    <button class="notify-guide-open" onclick="openModal('modal-notification-guide')">📖 iPhone / Android の詳しい設定手順を見る</button>
+    <h4>📱 通知設定の見本</h4>
+    <details class="notify-step">
+      <summary>🍎 iPhone➤</summary>
+      <div class="notify-step-body">
+        <p>①「共有」ボタンをタップ
+②「表示を増やす」を選択
+③「ホーム画面に追加」をタップ
+④ ホーム画面からデジタルマップを開き、「通知を許可」をタップ</p>
+        <p class="notify-warning">⚠️タブを消さず、そのままにしておいてください</p>
+        <a class="notify-video-link" href="./videos/iphone-notification.mp4" target="_blank" rel="noopener">見本動画→</a>
+      </div>
+    </details>
+    <details class="notify-step">
+      <summary>🤖 android・パソコン等➤</summary>
+      <div class="notify-step-body">
+        <p>①「メニュー」をタップ
+②「通知設定」をタップ
+③「通知を許可する」をタップ</p>
+        <p class="notify-warning">⚠️送信元が「atsupri.github.io」であることを必ず確認してください</p>
+        <p>④ 画面下に「通知設定完了」の表示または左上にベルマークの表示を確認</p>
+        <p class="notify-warning">⚠️ブラウザを閉じず、タブもそのままにしておいてください</p>
+        <a class="notify-video-link" href="./videos/android-notification.mp4" target="_blank" rel="noopener">見本動画→</a>
+      </div>
+    </details>
   </div>
   <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px">
     <strong style="font-size:13px">お気に入り登録したイベントの通知</strong>
     <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px"><input id="notify-10min" type="checkbox" checked onchange="saveNotifyPrefs()">開始10分前に通知</label>
     <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13px"><input id="notify-delay" type="checkbox" checked onchange="saveNotifyPrefs()">開始時刻の変更・遅延を通知</label>
     <p style="font-size:11px;color:#9ca3af;line-height:1.6;margin-top:10px">※通知は端末・ブラウザ・通信環境・省電力設定などにより遅れたり届かない場合があります。</p>
+  </div>
+ </div>
+</div>
+
+<div id="modal-intro" class="modal">
+ <div class="modal-card">
+  <div class="modal-title"><h3>ℹ️ このアプリについて</h3><button onclick="closeModal('modal-intro')">×</button></div>
+  <div id="initial-app-about-text" class="app-intro-highlight">このアプリでは、あつぎ鮎まつりの会場・イベント情報を確認できます。</div>
+  <p style="font-size:12px;line-height:1.7;color:#6b7280;margin-top:10px">まずはこのアプリでできることをご確認ください。</p>
+  <button class="auth-btn" style="margin-top:10px" onclick="continueInitialIntro()">次へ</button>
+ </div>
+</div>
+
+<div id="modal-analytics" class="modal" onclick="overlayClose(event,'modal-analytics')">
+ <div class="modal-card">
+  <div class="modal-title"><h3>📊 アクセス解析について</h3><button onclick="closeModal('modal-analytics')">×</button></div>
+  <div id="analytics-consent-text-settings" class="ga-consent-note"></div>
+  <a href="https://support.google.com/analytics/answer/9019185?hl=ja" target="_blank" rel="noopener" style="display:block;margin-top:10px;font-size:12px">Google アナリティクスのプライバシー管理（公式）→</a>
+  <p id="analytics-consent-status" style="font-size:11px;color:#6b7280;line-height:1.6;margin-top:9px"></p>
+  <div class="ga-consent-actions">
+   <button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="setAnalyticsConsent(false,true)">同意しない</button>
+   <button class="auth-btn" onclick="setAnalyticsConsent(true,true)">同意する</button>
+  </div>
+ </div>
+</div>
+
+<div id="modal-ga-consent" class="modal">
+ <div class="modal-card">
+  <div class="modal-title"><h3>📊 アクセス解析について</h3></div>
+  <div id="analytics-consent-text-initial" class="ga-consent-note"></div>
+  <a href="https://support.google.com/analytics/answer/9019185?hl=ja" target="_blank" rel="noopener" style="display:block;margin-top:10px;font-size:12px">Google アナリティクスのプライバシー管理（公式）→</a>
+  <div class="ga-consent-actions">
+   <button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="setAnalyticsConsent(false,true)">同意しない</button>
+   <button class="auth-btn" onclick="setAnalyticsConsent(true,true)">同意する</button>
   </div>
  </div>
 </div>
@@ -346,56 +393,33 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   <p style="line-height:1.8;font-size:13px">見たいイベントを⭐お気に入り登録すると、開始時間の10分前にウェブ内でリマインドします。また、開始時刻の変更・遅延情報もお知らせします。ぜひ通知権限を許可して、快適に鮎まつりをお楽しみください！</p>
   <div class="notify-guide-card" style="margin-top:10px">
     <h4>📱 通知を受け取るには</h4>
-    <div class="notify-platforms">
-      <div class="notify-platform-card"><strong>🍎 iPhone</strong><p>Safariでホーム画面に追加し、「ウェブアプリとして開く」から起動します。</p></div>
-      <div class="notify-platform-card"><strong>🤖 Android</strong><p>Chromeのサイト設定で、このサイトの通知を「許可」にします。</p></div>
-    </div>
-    <button class="notify-guide-open" onclick="openModal('modal-notification-guide')">📖 設定手順を詳しく見る</button>
+    <details class="notify-step">
+      <summary>🍎 iPhone➤</summary>
+      <div class="notify-step-body">
+        <p>①「共有」ボタンをタップ
+②「表示を増やす」を選択
+③「ホーム画面に追加」をタップ
+④ ホーム画面からデジタルマップを開き、「通知を許可」をタップ</p>
+        <p class="notify-warning">⚠️タブを消さず、そのままにしておいてください</p>
+        <a class="notify-video-link" href="./videos/iphone-notification.mp4" target="_blank" rel="noopener">見本動画→</a>
+      </div>
+    </details>
+    <details class="notify-step">
+      <summary>🤖 android・パソコン等➤</summary>
+      <div class="notify-step-body">
+        <p>①「メニュー」をタップ
+②「通知設定」をタップ
+③「通知を許可する」をタップ</p>
+        <p class="notify-warning">⚠️送信元が「atsupri.github.io」であることを必ず確認してください</p>
+        <p>④ 画面下に「通知設定完了」の表示または左上にベルマークの表示を確認</p>
+        <p class="notify-warning">⚠️ブラウザを閉じず、タブもそのままにしておいてください</p>
+        <a class="notify-video-link" href="./videos/android-notification.mp4" target="_blank" rel="noopener">見本動画→</a>
+      </div>
+    </details>
   </div>
   <button class="auth-btn" onclick="requestNotification(true)">通知を許可する</button>
   <button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="closeModal('modal-welcome')">スキップ</button>
-  <p style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px">※メニューの「遅延設定」から後で変更できます。</p>
- </div>
-</div>
-
-<div id="modal-notification-guide" class="modal" onclick="overlayClose(event,'modal-notification-guide')">
- <div class="modal-card">
-  <div class="modal-title"><h3>📱 通知設定ガイド</h3><button onclick="closeModal('modal-notification-guide')">×</button></div>
-  <div class="notify-guide-section">
-   <h4>🍎 iPhoneの場合</h4>
-   <ol>
-    <li>Safariで「あつぎ鮎まつり案内」を開きます。</li>
-    <li>ページメニューから「共有」をタップします。</li>
-    <li>「ホーム画面に追加」をタップします。</li>
-    <li>「ウェブアプリとして開く」をオンにして「追加」をタップします。</li>
-    <li>ホーム画面に追加されたアイコンから、このアプリを起動します。</li>
-    <li>アプリ内の「通知を許可する」をタップし、通知を許可します。</li>
-   </ol>
-   <p class="notify-guide-note">※ iPhoneのWeb Push通知は、Safariでホーム画面に追加したWebアプリから利用する方式です。Appleの案内でも、ホーム画面に追加したWebアプリから通知を受け取れるとされています。</p>
-  </div>
-  <div class="notify-guide-section">
-   <h4>🤖 Android（Chrome）の場合</h4>
-   <ol>
-    <li>Chromeで「あつぎ鮎まつり案内」を開きます。</li>
-    <li>右上の「⋮」をタップし、「サイトの設定」を開きます。</li>
-    <li>「権限」の「通知」を開き、「許可」にします。</li>
-    <li>通知設定の画面で、このサイトの通知が「許可」になっていることを確認します。</li>
-    <li>アプリに戻り、「通知を許可する」をタップします。</li>
-   </ol>
-   <p class="notify-guide-note">※すでに通知をブロックしている場合は、アプリ内から許可ダイアログを再表示できないことがあります。その場合はChromeのサイト設定から、このサイトの通知を「許可」に変更してください。</p>
-   <img class="notify-guide-image" src="./images/notification/1000023323.jpg" alt="Android Chromeでこのサイトの通知がブロックされている表示" loading="lazy">
-   <div class="notify-guide-caption">※この表示が出た場合も、Chromeのサイト設定から通知を「許可」に変更します。</div>
-   <img class="notify-guide-image" src="./images/notification/1000023325.jpg" alt="Android Chromeのメニューからサイトの設定を開く画面" loading="lazy">
-   <div class="notify-guide-caption">① Chrome右上の「⋮」→「サイトの設定」</div>
-   <img class="notify-guide-image" src="./images/notification/1000023326.jpg" alt="Android Chromeのサイト設定で通知を許可する画面" loading="lazy">
-   <div class="notify-guide-caption">② 「権限」→「通知を許可」</div>
-   <img class="notify-guide-image" src="./images/notification/1000023327.jpg" alt="AndroidのChrome通知設定画面" loading="lazy">
-   <div class="notify-guide-caption">③ Chromeの通知設定で、サイトの通知を許可</div>
-  </div>
-  <div class="notify-guide-section">
-   <h4>🔔 最後に</h4>
-   <p class="notify-guide-note">端末側の設定ができたら、この画面に戻って「通知を許可する」→「Web Push（FCM）」の順に進めます。お気に入りイベントの開始前・遅延情報を通知します。</p>
-  </div>
+  <p style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px">※メニューの「通知設定」から後で変更できます。</p>
  </div>
 </div>
 
@@ -415,8 +439,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
 <div id="modal-about" class="modal" onclick="overlayClose(event,'modal-about')">
  <div class="modal-card">
   <div class="modal-title"><h3>ℹ️ アプリについて</h3><button onclick="closeModal('modal-about')">×</button></div>
-  <p style="line-height:1.8;font-size:14px">第80回あつぎ鮎まつり（10月10日・11日）のマップとタイムスケジュールを確認するための仮版です。</p>
-  <p style="line-height:1.8;font-size:13px;color:#6b7280;margin-top:10px">厚木中央公園は会場用の地図画像、本厚木駅周辺はOpenStreetMapの実地図を使用しています。現在地機能はユーザーが許可した場合のみ端末上で使用し、現在地の座標をFirebaseやGoogle Analyticsへ保存・送信しません。</p>
+  <div id="app-about-text" style="line-height:1.8;font-size:14px;white-space:pre-wrap">このアプリでは、あつぎ鮎まつりの会場・イベント情報を確認できます。</div>
  </div>
 </div>
 
@@ -446,6 +469,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
       <button type="button" class="admin-menu-card" onclick="openAdminPage('notification')"><span>🔔 遅延設定</span><span class="admin-menu-arrow">➤</span></button>
       <button type="button" class="admin-menu-card" onclick="openAdminPage('places')"><span>🏪 店舗・施設設定</span><span class="admin-menu-arrow">➤</span></button>
       <button type="button" class="admin-menu-card" onclick="openAdminPage('schedule')"><span>📅 ダンスレジェンドスケジュール</span><span class="admin-menu-arrow">➤</span></button>
+      <button type="button" class="admin-menu-card" onclick="openAdminPage('appinfo')"><span>ℹ️ このアプリについて</span><span class="admin-menu-arrow">➤</span></button>
     </div>
    </div>
 
@@ -544,6 +568,26 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
           <div class="admin-place-upload">GitHubのリポジトリの <code>images/stores/</code> に画像を置き、ここには<strong>画像のファイル名と拡張子だけ</strong>入力します。例：<code>yakisoba.jpg</code>。</div>
           <div class="admin-place-actions"><button class="auth-btn" onclick="savePlaceFromAdmin()">💾 保存</button><button class="auth-btn" style="background:#f3f4f6;color:#374151" onclick="closePlaceEditor()">キャンセル</button></div>
         </div>
+      </div>
+    </div>
+   </div>
+
+   <div id="admin-page-appinfo" class="admin-subpage">
+    <div class="admin-subpage-inner">
+      <div class="admin-subpage-header"><button type="button" class="admin-subpage-back" onclick="closeAdminPage()">← 戻る</button><div class="admin-subpage-title">ℹ️ このアプリについて</div></div>
+      <div class="admin-subpage-card app-about-editor">
+        <p class="admin-migrate-note">最初に表示される「このアプリについて」と、メニューの説明文をここから変更できます。改行もそのまま表示されます。</p>
+        <label style="display:block;font-size:11px;font-weight:800;color:#4b5563;margin:8px 0 5px">アプリについての説明</label>
+        <textarea id="admin-app-about-text" placeholder="このアプリはこんなものです！
+できることや目的を簡単に説明してください。"></textarea>
+        <button class="auth-btn" style="margin-top:8px" onclick="saveAppAboutText()">💾 説明を保存</button>
+        <p id="admin-app-about-status" style="font-size:11px;color:#6b7280;line-height:1.6;margin-top:8px"></p>
+        <hr style="margin:16px 0;border:none;border-top:1px dashed var(--border)">
+        <label style="display:block;font-size:11px;font-weight:800;color:#4b5563;margin:8px 0 5px">Google アナリティクス同意画面の文面</label>
+        <p class="admin-migrate-note">初回に表示する「アクセス解析について」の説明文を変更できます。「同意する」「同意しない」のボタンは固定で表示されます。</p>
+        <textarea id="admin-analytics-consent-text" placeholder="Google アナリティクスについての説明を入力してください。"></textarea>
+        <button class="auth-btn" style="margin-top:8px" onclick="saveAnalyticsConsentText()">💾 同意画面の文面を保存</button>
+        <p id="admin-analytics-consent-status" style="font-size:11px;color:#6b7280;line-height:1.6;margin-top:8px"></p>
       </div>
     </div>
    </div>
@@ -970,8 +1014,107 @@ let scheduleUnread=false;
 let expandedPlaceId=null;
 let notified=JSON.parse(localStorage.getItem("ayu_notified")||"{}");
 
-function ga(name,params={}){if(typeof gtag==="function")gtag("event",name,params)}
-function openModal(id){document.getElementById(id).classList.add("show");if(id==="modal-notify")updateNotifyUI()}
+const GA_MEASUREMENT_ID="G-Y0W73T4552";
+const GA_CONSENT_KEY="ayu_google_analytics_consent_v1";
+let gaReady=false;
+let appAboutText="このアプリでは、あつぎ鮎まつりの会場・イベント情報を確認できます。";
+let appAboutLoaded=false;
+const DEFAULT_ANALYTICS_CONSENT_TEXT=`このアプリでは、サービスの利用状況を把握し、改善するために<strong>Google アナリティクス</strong>を使用しています。<br><br>Google アナリティクスの利用に同意いただいた場合、アクセス状況や利用状況などのデータをGoogle アナリティクスで収集・分析します。<br><br><strong>同意しない場合でも、このアプリは通常どおり利用できます。この場合、Google アナリティクスによる情報の収集・分析は行いません。</strong>`;
+let analyticsConsentText=DEFAULT_ANALYTICS_CONSENT_TEXT;
+let analyticsConsentTextLoaded=false;
+function initGoogleAnalytics(){
+  if(gaReady || localStorage.getItem(GA_CONSENT_KEY)!=="granted")return;
+  window.dataLayer=window.dataLayer||[];
+  window.gtag=window.gtag||function(){dataLayer.push(arguments)};
+  const script=document.createElement("script");
+  script.async=true;
+  script.src="https://www.googletagmanager.com/gtag/js?id="+encodeURIComponent(GA_MEASUREMENT_ID);
+  document.head.appendChild(script);
+  gtag("js",new Date());
+  gtag("config",GA_MEASUREMENT_ID,{allow_google_signals:false,allow_ad_personalization_signals:false,anonymize_ip:true});
+  gaReady=true;
+}
+function setAnalyticsConsent(granted,fromUi=false){
+  localStorage.setItem(GA_CONSENT_KEY,granted?"granted":"denied");
+  if(granted)initGoogleAnalytics();
+  closeModal("modal-ga-consent");
+  if(fromUi)closeModal("modal-analytics");
+  if(fromUi){
+    const status=document.getElementById("analytics-consent-status");
+    if(status)status.textContent=granted?"Google アナリティクスの利用に同意しています。":"Google アナリティクスの利用に同意していません。";
+  }
+  continueAfterAnalyticsConsent();
+}
+function ga(name,params={}){if(gaReady&&typeof gtag==="function")gtag("event",name,params)}
+function openModal(id){document.getElementById(id).classList.add("show");if(id==="modal-notify")updateNotifyUI();if(id==="modal-about")renderAppAbout();if(id==="modal-analytics"){updateAnalyticsConsentStatus();renderAnalyticsConsentText()}}
+function renderAnalyticsConsentText(){
+  const text=analyticsConsentText||DEFAULT_ANALYTICS_CONSENT_TEXT;
+  ["analytics-consent-text-initial","analytics-consent-text-settings"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=text;});
+  const a=document.getElementById("admin-analytics-consent-text");
+  if(a && document.activeElement!==a)a.value=text.replace(/<br\s*\/?>(\n)?/gi,"\n").replace(/<[^>]+>/g,"");
+}
+function updateAnalyticsConsentStatus(){
+  const el=document.getElementById("analytics-consent-status");
+  if(!el)return;
+  const value=localStorage.getItem(GA_CONSENT_KEY);
+  el.textContent=value==="granted"?"現在：Google アナリティクスの利用に同意しています。":value==="denied"?"現在：Google アナリティクスの利用に同意していません。":"現在：未設定です。";
+}
+function renderAppAbout(){
+  const text=appAboutText||"このアプリでは、あつぎ鮎まつりの会場・イベント情報を確認できます。";
+  const a=document.getElementById("app-about-text");if(a)a.textContent=text;
+  const b=document.getElementById("initial-app-about-text");if(b)b.textContent=text;
+  const c=document.getElementById("admin-app-about-text");if(c && document.activeElement!==c)c.value=text;
+}
+function continueInitialIntro(){
+  closeModal("modal-intro");
+  const consent=localStorage.getItem(GA_CONSENT_KEY);
+  if(!consent){openModal("modal-ga-consent");return;}
+  if(!localStorage.getItem("ayu_welcome_seen")){openModal("modal-welcome");localStorage.setItem("ayu_welcome_seen","1");}
+}
+function continueAfterAnalyticsConsent(){
+  const intro=document.getElementById("modal-intro")?.classList.contains("show");
+  if(intro)return;
+  if(!localStorage.getItem("ayu_welcome_seen")){openModal("modal-welcome");localStorage.setItem("ayu_welcome_seen","1");}
+}
+function openAnalyticsSettings(){
+  openModal("modal-analytics");
+}
+function saveAppAboutText(){
+  if(!currentUserIsAdmin){alert("管理者権限が必要です。");return;}
+  const text=String(document.getElementById("admin-app-about-text")?.value||"").trim();
+  if(!text){alert("説明文を入力してください。");return;}
+  appAboutText=text;
+  if(!firebaseReady){alert("Firebaseに接続できません。");return;}
+  firebase.database().ref("broadcast/appAbout").set({text,updatedAt:firebase.database.ServerValue.TIMESTAMP,updatedBy:currentUser?.uid||""})
+    .then(()=>{renderAppAbout();const st=document.getElementById("admin-app-about-status");if(st)st.textContent="保存しました。一般公開画面にも反映されます。";})
+    .catch(err=>{console.error(err);alert("保存に失敗しました。Firebase Rulesを確認してください。");});
+}
+function saveAnalyticsConsentText(){
+  if(!currentUserIsAdmin){alert("管理者権限が必要です。");return;}
+  const raw=String(document.getElementById("admin-analytics-consent-text")?.value||"").trim();
+  if(!raw){alert("同意画面の文面を入力してください。");return;}
+  // 管理者入力はプレーンテキストとして保存し、表示時のみ改行をHTMLへ変換。
+  const text=raw.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\r?\n/g,"<br>");
+  analyticsConsentText=text;
+  if(!firebaseReady){alert("Firebaseに接続できません。");return;}
+  firebase.database().ref("broadcast/analyticsConsent").set({text,updatedAt:firebase.database.ServerValue.TIMESTAMP,updatedBy:currentUser?.uid||""})
+    .then(()=>{renderAnalyticsConsentText();const st=document.getElementById("admin-analytics-consent-status");if(st)st.textContent="保存しました。初回の同意画面とメニューの設定画面に反映されます。";})
+    .catch(err=>{console.error(err);alert("保存に失敗しました。Firebase Rulesを確認してください。");});
+}
+function initAppAboutListener(){
+  if(!firebaseReady)return;
+  firebase.database().ref("broadcast/appAbout").on("value",snap=>{
+    const data=snap.val();
+    if(data&&typeof data==="object"&&typeof data.text==="string"&&data.text.trim())appAboutText=data.text.trim();
+    appAboutLoaded=true;renderAppAbout();
+  },err=>console.error("app about listener error:",err));
+  firebase.database().ref("broadcast/analyticsConsent").on("value",snap=>{
+    const data=snap.val();
+    if(data&&typeof data==="object"&&typeof data.text==="string"&&data.text.trim())analyticsConsentText=data.text.trim();
+    analyticsConsentTextLoaded=true;renderAnalyticsConsentText();
+  },err=>console.error("analytics consent text listener error:",err));
+}
+function closeModal(id){document.getElementById(id).classList.remove("show")}
 function closeModal(id){document.getElementById(id).classList.remove("show")}
 function overlayClose(e,id){if(e.target.id===id)closeModal(id)}
 function openDrawer(){
@@ -2062,6 +2205,7 @@ function openAdminPage(section){
   if(!page)return;
   page.classList.add("show");
   if(section==="notification")loadAdminDays();
+  if(section==="appinfo"){renderAppAbout();}
   if(section==="schedule"){renderAdminScheduleDates();renderAdminScheduleList();}
   if(section==="places"){loadAdminPlaceFolders(true).finally(()=>{renderAdminPlaceFolderTree();renderAdminPlaceFolderSelect();renderAdminPlaceMoveFolderSelect();const sortEl=document.getElementById("admin-place-sort");if(sortEl)sortEl.value=adminPlaceSortMode;renderAdminPlaceList();});}
 }
@@ -2382,8 +2526,19 @@ function initAuth(){
   });
 }
 window.addEventListener("load",()=>{
-  initMap();renderDayTabs();renderSchedule();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAuth();initFCM();
-  if(!localStorage.getItem("ayu_welcome_seen")){setTimeout(()=>{openDrawer();openModal("modal-welcome");localStorage.setItem("ayu_welcome_seen","1")},450)}
+  initMap();renderDayTabs();renderSchedule();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAppAboutListener();initAuth();initFCM();
+  const analyticsConsent=localStorage.getItem(GA_CONSENT_KEY);
+  if(analyticsConsent==="granted")initGoogleAnalytics();
+  setTimeout(()=>{
+    renderAppAbout();renderAnalyticsConsentText();
+    if(!localStorage.getItem("ayu_app_intro_seen")){
+      openDrawer();openModal("modal-intro");localStorage.setItem("ayu_app_intro_seen","1");
+    }else if(!analyticsConsent){
+      openDrawer();openModal("modal-ga-consent");
+    }else if(!localStorage.getItem("ayu_welcome_seen")){
+      openDrawer();openModal("modal-welcome");localStorage.setItem("ayu_welcome_seen","1");
+    }
+  },450)
 });
 </script>
 </body>
