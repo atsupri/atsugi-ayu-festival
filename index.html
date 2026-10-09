@@ -40,6 +40,7 @@ button,input,select{font:inherit}
 .alert{display:none;position:fixed;top:56px;left:0;right:0;z-index:900;background:#b91c1c;color:#fff;padding:10px 42px 10px 12px;font-size:13px;font-weight:700}
 .alert button{position:absolute;right:8px;top:6px;background:none;border:0;color:#fff;font-size:20px}
 .schedule-head{background:white;padding:10px;border-bottom:1px solid var(--border)}
+.stage-tabs{margin-top:7px;gap:7px}.stage-tabs[hidden]{display:none !important}.stage-tabs .day-tab{flex:1}
 .dance-legend-fixed-notice{position:sticky;top:0;z-index:20;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;border-radius:10px;padding:10px 11px;margin-bottom:9px;font-size:12px;font-weight:800;line-height:1.5;text-align:center}
 .day-tabs{display:flex;gap:8px}.day-tab{flex:1;border:1px solid var(--border);background:#f3f4f6;border-radius:10px;padding:11px;font-weight:800;color:#4b5563}
 .day-tab.active{background:var(--primary);color:white;border-color:var(--primary)}
@@ -241,8 +242,8 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
 <section id="map-page" class="page active">
   <div class="map-tools">
     <div class="map-tabs">
-      <button id="map-tab-park" class="map-tab" onclick="switchMap('park')">🌳 厚木中央公園</button>
-      <button id="map-tab-station" class="map-tab active" onclick="switchMap('station')">🚉 本厚木駅周辺</button>
+      <button id="map-tab-park" class="map-tab active" onclick="switchMap('park')">🌳 厚木中央公園</button>
+      <button id="map-tab-station" class="map-tab" onclick="switchMap('station')">🚉 本厚木駅周辺</button>
     </div>
   </div>
   <div id="map">
@@ -255,6 +256,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   <div class="schedule-head">
     <div class="dance-legend-fixed-notice">🎵 ダンスレジェンドは厚木中央公園で行われています！</div>
     <div id="day-tabs" class="day-tabs"></div>
+    <div id="stage-tabs" class="day-tabs stage-tabs" hidden></div>
     <div class="schedule-note">⭐でお気に入り登録。管理者が登録した遅延は、そのイベント自身の開始時間に反映されます。遅延が発生するとスケジュールアイコンに「!」が表示されます。</div>
   </div>
   <div id="timeline"></div>
@@ -286,6 +288,9 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   <button class="side-btn" onclick="closeDrawer();openModal('modal-notify')">
    <i class="fa-solid fa-bell"></i>通知設定
   </button>
+  <button id="menu-survey-button" class="side-btn" onclick="openSurvey()" hidden>
+   <i class="fa-solid fa-clipboard-question"></i>アンケート
+  </button>
   <div class="side-section">その他</div>
   <button class="side-btn" onclick="closeDrawer();openModal('modal-about')">
    <i class="fa-solid fa-circle-info"></i>このアプリについて
@@ -300,7 +305,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.5.18</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.5.19</span></div>
   </div>
  </div>
 </div>
@@ -584,6 +589,13 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
         <textarea id="admin-notice-footer" placeholder="補足文を入力してください。空欄にもできます。"></textarea>
         <button class="auth-btn" style="margin-top:8px" onclick="saveNoticeText()">💾 お知らせを保存</button>
         <p id="admin-notice-status" style="font-size:11px;color:#6b7280;line-height:1.6;margin-top:8px"></p>
+        <hr style="margin:16px 0;border:none;border-top:1px dashed var(--border)">
+        <h4 style="margin-bottom:6px">📝 アンケート</h4>
+        <p class="admin-migrate-note">メニューに表示するアンケートのリンク先を設定できます。URLを空欄にすると、一般公開メニューの「アンケート」は非表示になります。</p>
+        <label style="display:block;font-size:11px;font-weight:800;color:#4b5563;margin:8px 0 5px">アンケートURL</label>
+        <input id="admin-survey-url" class="auth-input" type="url" inputmode="url" placeholder="https://example.com/survey">
+        <button class="auth-btn" style="margin-top:8px" onclick="saveSurveyUrl()">💾 アンケートURLを保存</button>
+        <p id="admin-survey-status" style="font-size:11px;color:#6b7280;line-height:1.6;margin-top:8px"></p>
         <hr style="margin:16px 0;border:none;border-top:1px dashed var(--border)">
         <p class="admin-migrate-note">最初に表示される「このアプリについて」と、メニューの説明文をここから変更できます。改行もそのまま表示されます。</p>
         <label style="display:block;font-size:11px;font-weight:800;color:#4b5563;margin:8px 0 5px">アプリについての説明</label>
@@ -1012,8 +1024,97 @@ ${affected.length}件の店舗は未分類に戻ります。よろしいです�
 let timeScheduleData = [];
 let scheduleFirebaseLoaded=false;
 
+// 10月10日限定の特設ステージ。メインステージのFirebaseデータは変更しない。
+const specialStageRaw = [
+  ["MC挨拶", "9:15", "0:05"],
+  ["UNICORN", "9:20", "0:05"],
+  ["ミラクル東淵野辺校", "9:25", "0:05"],
+  ["UNKNOWN", "9:30", "0:05"],
+  ["StudioΦ_TOMOY∀クラス_中級", "9:35", "0:05"],
+  ["ANGEL7", "9:40", "0:05"],
+  ["Victrush pearl", "9:45", "0:05"],
+  ["LITCLAB 入門", "9:50", "0:05"],
+  ["L.A CREW", "9:55", "0:05"],
+  ["StudioΦ_TOMOY∀クラス_初級", "10:00", "0:05"],
+  ["RISE YAAD DANCE (Why Not!!)", "10:05", "0:05"],
+  ["Rythm DA Beat", "10:10", "0:05"],
+  ["Dreamy", "10:15", "0:05"],
+  ["☆ 【ゆらぴこ】 ミニLIVE ☆", "10:20", "0:12"],
+  ["FUN DANCE STUDIO mi-na KidsNumber", "10:32", "0:05"],
+  ["Selin of THE UNDERGROUND", "10:37", "0:05"],
+  ["Dreamy Lala", "10:42", "0:05"],
+  ["LITCLAB 中級", "10:47", "0:05"],
+  ["STELLA", "10:52", "0:05"],
+  ["Glitter", "10:57", "0:05"],
+  ["DOPE Crew", "11:02", "0:05"],
+  ["addict from STARme DANCE STUDIO", "11:07", "0:05"],
+  ["シンデレラバレエスタジオ (プレキッズ)", "11:12", "0:05"],
+  ["La a kea nui loa", "11:17", "0:05"],
+  ["NO LIMIT", "11:22", "0:05"],
+  ["TMH 土曜CHALLENGE", "11:27", "0:05"],
+  ["Studio Ameyakumo P", "11:32", "0:05"],
+  ["Vina☆Star チアダンス入門Class", "11:37", "0:05"],
+  ["NOVA", "11:42", "0:05"],
+  ["USAKI THE TEAM from STARme DANCE STUDIO", "11:47", "0:05"],
+  ["休憩（90分 ＋ 再開MC1分）", "11:52", "1:31"],
+  ["ACE NEXT DOOR", "13:23", "0:05"],
+  ["FANTAS CREW", "13:28", "0:05"],
+  ["Sparkle", "13:33", "0:05"],
+  ["Vanessa SPIDER from STARme DANCE STUDIO", "13:38", "0:05"],
+  ["strikerz", "13:43", "0:05"],
+  ["THE UNDERGROUND ゆめくま Crew", "13:48", "0:05"],
+  ["MOEMI THE TEAM from STARme DANCE STUDIO", "13:53", "0:05"],
+  ["THE UNDERGROUND MIZUHO Girls", "13:58", "0:05"],
+  ["BLAST", "14:03", "0:05"],
+  ["Tight Jessy from STARme DANCE STUDIO", "14:08", "0:05"],
+  ["ROCKeT'S Betty from STARme DANCE STUDIO", "14:13", "0:05"],
+  ["RISE YAAD DANCE (Beans)", "14:18", "0:05"],
+  ["Milk Dipper", "14:23", "0:05"],
+  ["StudioΦ_TAKKUNクラス_リトルキッズ", "14:28", "0:05"],
+  ["Victrush spinel", "14:33", "0:05"],
+  ["Orca Force Queen from STARme DANCE STUDIO", "14:38", "0:05"],
+  ["ちあ～ず", "14:43", "0:05"],
+  ["NEXUS", "14:48", "0:05"],
+  ["Victrush azure", "14:53", "0:05"],
+  ["StudioΦ_KEITOクラス_house", "14:58", "0:05"],
+  ["Monsta ACE", "15:03", "0:05"],
+  ["ありんこkids", "15:08", "0:05"],
+  ["★ 【 優衣優 - yuiyu - 】 ミニLIVE ★", "15:13", "0:12"],
+  ["StudioΦ_おうかLOCKクラス初級", "15:25", "0:05"],
+  ["シンデレラバレエスタジオ(キッズ)", "15:30", "0:05"],
+  ["Miracles", "15:35", "0:05"],
+  ["シンデレラバレエスタジオ", "15:40", "0:05"],
+  ["TMH 水曜CHALLENGE", "15:45", "0:05"],
+  ["Studio Ameyakumo M", "15:50", "0:05"],
+  ["Studio Ameyakumo L", "15:55", "0:05"],
+  ["Vina☆Star チアダンスClass", "16:00", "0:05"],
+  ["THE UNDERGROUND BREAKERS", "16:05", "0:05"],
+  ["大人のダンス教室おとなdeだんす。", "16:10", "0:05"],
+  ["ASH", "16:15", "0:05"],
+  ["Feel FREE", "16:20", "0:05"],
+  ["TMH 土曜BASIC", "16:25", "0:05"],
+  ["Studio Ameyakumo G", "16:30", "0:05"],
+  ["DaZZle Dolls of THE UNDERGROUND", "16:50", "0:05"],
+  ["SLAY!!", "16:55", "0:05"],
+  ["MC終了", "17:00", "-"]
+];
+function specialStageItems(){
+  return specialStageRaw.map(([name,start,duration],index)=>{
+    let end="";
+    if(duration!=="-"){
+      const [h,m]=start.split(":").map(Number);
+      const [dh,dm]=duration.split(":").map(Number);
+      const total=h*60+m+dh*60+dm;
+      end=`${String(Math.floor(total/60)).padStart(2,"0")}:${String(total%60).padStart(2,"0")}`;
+    }
+    return {id:`special-stage-${String(index+1).padStart(3,"0")}`,dateKey:"2026-10-10",dateLabel:"10月10日",start,end,time:end?`${start} - ${end}`:start,name,venue:"特設ステージ"};
+  });
+}
 
-let currentMap="park", currentDay="2026-10-10";
+
+
+let currentMap="park", currentDay="2026-10-10", currentStage="main";
+let surveyUrl="";
 let map, imageLayer, tileLayer, markerLayer, myLocationMarker, myAccuracyCircle, locationWatchId=null;
 let favorites=JSON.parse(localStorage.getItem("ayu_favorites")||"[]").map(String);
 let scheduleDelayMap=JSON.parse(localStorage.getItem("ayu_demo_delays")||"{}");
@@ -1144,6 +1245,33 @@ function saveAnalyticsConsentText(){
     .then(()=>{renderAnalyticsConsentText();const st=document.getElementById("admin-analytics-consent-status");if(st)st.textContent="保存しました。初回の同意画面とメニューの設定画面に反映されます。";})
     .catch(err=>{console.error(err);alert("保存に失敗しました。Firebase Rulesを確認してください。");});
 }
+function renderSurveyLink(){
+  const button=document.getElementById("menu-survey-button");
+  if(button)button.hidden=!surveyUrl;
+  const input=document.getElementById("admin-survey-url");
+  if(input&&document.activeElement!==input)input.value=surveyUrl;
+}
+function openSurvey(){
+  if(!surveyUrl)return;
+  try{
+    const u=new URL(surveyUrl);
+    if(!["https:","http:"].includes(u.protocol))throw new Error("invalid protocol");
+    window.open(u.href,"_blank","noopener,noreferrer");
+  }catch(e){alert("アンケートURLが正しく設定されていません。管理者に確認してください。");}
+}
+function saveSurveyUrl(){
+  if(!currentUserIsAdmin){alert("管理者権限が必要です。");return;}
+  const raw=String(document.getElementById("admin-survey-url")?.value||"").trim();
+  let normalized="";
+  if(raw){
+    try{const u=new URL(raw);if(!["https:","http:"].includes(u.protocol))throw new Error("invalid protocol");normalized=u.href;}
+    catch(e){alert("https:// または http:// から始まる有効なURLを入力してください。");return;}
+  }
+  if(!firebaseReady){alert("Firebaseに接続できません。");return;}
+  firebase.database().ref("broadcast/surveyUrl").set({url:normalized,updatedAt:firebase.database.ServerValue.TIMESTAMP,updatedBy:currentUser?.uid||""})
+    .then(()=>{surveyUrl=normalized;renderSurveyLink();const st=document.getElementById("admin-survey-status");if(st)st.textContent=normalized?"保存しました。一般公開メニューの「アンケート」に反映されます。":"保存しました。アンケートのメニュー項目は非表示になります。";})
+    .catch(err=>{console.error(err);alert("保存に失敗しました。Firebase Rulesを確認してください。");});
+}
 function initAppAboutListener(){
   if(!firebaseReady)return;
   firebase.database().ref("broadcast/appAbout").on("value",snap=>{
@@ -1165,6 +1293,12 @@ function initAppAboutListener(){
     if(data&&typeof data==="object"&&typeof data.text==="string"&&data.text.trim())analyticsConsentText=data.text.trim();
     analyticsConsentTextLoaded=true;renderAnalyticsConsentText();
   },err=>console.error("analytics consent text listener error:",err));
+  firebase.database().ref("broadcast/surveyUrl").on("value",snap=>{
+    const data=snap.val();
+    surveyUrl=data&&typeof data.url==="string"?data.url.trim():"";
+    renderSurveyLink();
+  },err=>console.error("survey URL listener error:",err));
+  renderSurveyLink();
 }
 function closeModal(id){document.getElementById(id).classList.remove("show")}
 function closeModal(id){document.getElementById(id).classList.remove("show")}
@@ -1297,7 +1431,7 @@ function searchMenu(){
 const STATION_MAP_BOUNDS=[[35.4315,139.3510],[35.4490,139.3770]];
 
 function initMap(){
-  switchMap("station");
+  switchMap("park");
 }
 
 function createMapInstance(key){
@@ -1679,15 +1813,32 @@ function renderDayTabs(){
   const el=document.getElementById("day-tabs");
   if(!el)return;
   const dates=scheduleDates();
-  if(!dates.length){el.innerHTML="<div style=\"font-size:12px;color:#6b7280;padding:8px 2px\">スケジュールを読み込み中です…</div>";return;}
+  if(!dates.length){el.innerHTML="<div style=\"font-size:12px;color:#6b7280;padding:8px 2px\">スケジュールを読み込み中です…</div>";renderStageTabs();return;}
   if(!dates.some(([key])=>key===currentDay)) currentDay=dates[0][0];
   el.innerHTML=dates.map(([key,label])=>`<button class="day-tab ${key===currentDay?"active":""}" onclick="switchDay('${key}')">${escapeHtml(label)}</button>`).join("");
+  renderStageTabs();
+}
+function renderStageTabs(){
+  const el=document.getElementById("stage-tabs");
+  if(!el)return;
+  const visible=currentDay==="2026-10-10";
+  el.hidden=!visible;
+  if(!visible){currentStage="main";el.innerHTML="";return;}
+  el.innerHTML=`<button class="day-tab ${currentStage==="main"?"active":""}" onclick="switchStage('main')">メインステージ</button><button class="day-tab ${currentStage==="special"?"active":""}" onclick="switchStage('special')">特設ステージ</button>`;
 }
 function switchDay(dateKey){
   currentDay=String(dateKey);
+  currentStage="main";
   renderDayTabs();
   renderSchedule();
   ga("select_day",{day:currentDay});
+}
+function switchStage(stage){
+  if(currentDay!=="2026-10-10")return;
+  currentStage=stage==="special"?"special":"main";
+  renderStageTabs();
+  renderSchedule();
+  ga("select_content",{content:`schedule-${currentDay}-${currentStage}`});
 }
 function timeToMinutes(s){const p=s.trim().split(":");if(p.length!==2)return null;return +p[0]*60 + +p[1]}
 function shiftRange(range,delay){
@@ -1698,21 +1849,21 @@ function shiftRange(range,delay){
 }
 function renderSchedule(){
   const el=document.getElementById("timeline");
-  const items=timeScheduleData
-    .filter(x=>x.dateKey===currentDay)
-    .slice()
-    .sort((a,b)=>timeToMinutes(a.time.split("-")[0].trim())-timeToMinutes(b.time.split("-")[0].trim()));
+  const items=(currentDay==="2026-10-10"&&currentStage==="special")
+    ? specialStageItems()
+    : timeScheduleData.filter(x=>x.dateKey===currentDay);
+  items.sort((a,b)=>timeToMinutes(a.time.split("-")[0].trim())-timeToMinutes(b.time.split("-")[0].trim()));
   el.innerHTML=items.map(x=>{
     const d=Number(scheduleDelayMap[x.id]||0), delayed=d>0, fav=isFavorite(x.id);
     return `<article class="event ${delayed?"delayed":""}">
       <div class="event-main">
-        <div class="time">${x.time}</div>
-        <div class="event-name">${x.name}</div>
+        <div class="time">${escapeHtml(x.time)}</div>
+        <div class="event-name">${escapeHtml(x.name)}</div>
         ${delayed?`<div class="delay">⚠️ ${d}分遅れ → ${shiftRange(x.time,d)}</div>`:""}
       </div>
       <button class="fav ${fav?"active":""}" onclick='toggleFavorite(${JSON.stringify(String(x.id))})'><i class="fa-${fav?"solid":"regular"} fa-star"></i></button>
     </article>`
-  }).join("");
+  }).join("") || '<div style="font-size:12px;color:#6b7280;padding:12px">この日の予定はありません。</div>';
 }
 function isFavorite(id){
   return favorites.some(favId=>String(favId)===String(id));
@@ -2578,7 +2729,7 @@ function initAuth(){
   });
 }
 window.addEventListener("load",()=>{
-  initMap();renderDayTabs();renderSchedule();renderNotice();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAppAboutListener();initAuth();initFCM();
+  initMap();renderDayTabs();renderSchedule();renderNotice();renderSurveyLink();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAppAboutListener();initAuth();initFCM();
   const analyticsConsent=localStorage.getItem(GA_CONSENT_KEY);
   if(analyticsConsent==="granted")initGoogleAnalytics();
   setTimeout(()=>{
