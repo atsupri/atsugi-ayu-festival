@@ -33,7 +33,7 @@ button,input,select{font:inherit}
 .location-btn{position:absolute;right:12px;bottom:12px;z-index:650;border:1px solid #d1d5db;background:#fff;color:#374151;border-radius:11px;padding:9px 11px;font-weight:800;box-shadow:0 2px 8px #0003}.location-btn:active{transform:scale(.97)}.location-btn.active{background:#eff6ff;color:#2563eb;border-color:#93c5fd}.location-note{font-size:11px;color:#6b7280;padding:6px 2px 0;line-height:1.5}.leaflet-control-attribution{font-size:10px}
 
 .place-detail-panel{display:block;position:absolute;left:10px;right:10px;bottom:10px;z-index:700;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 8px 28px #0003;max-height:min(58vh,460px);overflow:auto;transform:translateY(calc(100% + 30px));opacity:0;pointer-events:none;transition:transform .28s ease,opacity .22s ease}.place-detail-panel.show{transform:translateY(0);opacity:1;pointer-events:auto}.place-detail-inner{padding:14px 14px 16px}.place-detail-top{display:flex;gap:11px;align-items:flex-start}.place-detail-icon{width:46px;height:46px;flex:0 0 46px;border-radius:12px;background:#ecfdf5;color:var(--primary);display:grid;place-items:center;font-size:19px}.place-detail-title{flex:1}.place-detail-title h3{font-size:17px;line-height:1.35}.place-detail-title small{display:block;color:var(--sub);margin-top:4px;line-height:1.5}.place-detail-close{border:0;background:#f3f4f6;color:#6b7280;width:34px;height:34px;border-radius:50%;font-size:19px}.place-detail-image{display:block;width:auto;height:220px;max-width:100%;object-fit:contain;border-radius:11px;margin-top:12px;background:#f8fafc;border:1px solid var(--border)}.protected-place-image{-webkit-user-drag:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;touch-action:manipulation;}.place-detail-body{font-size:13px;line-height:1.7;margin-top:12px;white-space:pre-wrap}.place-detail-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.place-detail-tag{font-size:11px;padding:5px 8px;border-radius:999px;background:#f3f4f6;color:#4b5563}
-.map-list{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;padding:10px 10px 36px}
+.map-list{position:absolute;left:0;right:0;bottom:0;height:42%;z-index:500;min-height:0;overflow-y:auto;overflow-x:hidden;padding:22px 10px 36px;background:rgba(246,248,249,.97);border-top:1px solid #dbe3e7;border-radius:16px 16px 0 0;box-shadow:0 -5px 20px #00000012;overscroll-behavior:contain}.place-list-resize-handle{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);z-index:520;width:76px;height:26px;border:1px solid #d1d5db;border-radius:999px;background:#fff;box-shadow:0 2px 8px #0002;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:ns-resize;user-select:none;-webkit-user-select:none}.place-list-resize-handle span{display:block;width:34px;height:4px;border-radius:999px;background:#9ca3af}.place-list-resize-handle:focus-visible{outline:3px solid #0f766e;outline-offset:2px}
 .place-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:9px;display:flex;gap:10px;align-items:flex-start;cursor:pointer}.place-card.expanded{display:block;padding:12px}.place-card-row{display:flex;gap:10px;align-items:center}.place-card-content{flex:1;min-width:0}.place-card-detail{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);position:relative}.place-card-detail-content{display:flex;align-items:flex-start;gap:12px}.place-card-detail.has-image .place-card-detail-image{width:auto;height:76px;max-width:45%;flex:0 0 auto;object-fit:contain;border-radius:9px;background:#f8fafc;border:1px solid var(--border)}.place-card-detail.no-image .place-card-detail-text{width:100%}.place-card-detail-text{flex:1;min-width:0}.place-card-detail p{font-size:13px;line-height:1.7;white-space:pre-wrap;margin:0}.place-card-detail .detail-meta{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 7px}.place-card-detail .detail-tag{font-size:11px;padding:5px 8px;border-radius:999px;background:#f3f4f6;color:#4b5563}.place-card-detail .detail-close{float:right;border:0;background:#f3f4f6;color:#6b7280;width:32px;height:32px;border-radius:50%;font-size:18px;margin-left:8px;position:relative;z-index:2}.place-card:last-child{margin-bottom:24px}
 .place-icon{width:40px;height:40px;border-radius:11px;background:#ecfdf5;color:var(--primary);display:grid;place-items:center}
 .place-card b{font-size:14px}.place-card small{display:block;color:var(--sub);margin-top:3px}
@@ -249,6 +249,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   <div id="map">
     <button id="location-btn" class="location-btn" type="button" onclick="toggleMyLocation()" aria-label="現在地を表示">📍 現在地</button>
   </div>
+  <div id="place-list-resize-handle" class="place-list-resize-handle" role="slider" tabindex="0" aria-label="店舗一覧の表示範囲を上下に調整" aria-orientation="vertical" aria-valuemin="150" aria-valuemax="90" aria-valuenow="42"><span></span></div>
   <div id="place-list" class="map-list"></div>
 </section>
 
@@ -305,7 +306,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.5.19</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.5.20</span></div>
   </div>
  </div>
 </div>
@@ -1668,6 +1669,52 @@ function renderMapMarkers(){
   });
 }
 
+
+// 店舗一覧を地図に重ね、上端のハンドルをドラッグして表示範囲を変更する。
+function initPlaceListResizer(){
+  const page=document.getElementById("map-page");
+  const list=document.getElementById("place-list");
+  const handle=document.getElementById("place-list-resize-handle");
+  const tools=page?.querySelector(".map-tools");
+  if(!page||!list||!handle||handle.dataset.bound==="1")return;
+  handle.dataset.bound="1";
+  const minHeight=150;
+  const maxHeight=()=>Math.max(minHeight,page.clientHeight-(tools?.offsetHeight||0)-12);
+  const setHeight=(value)=>{
+    const max=maxHeight();
+    const height=Math.max(Math.min(minHeight,max),Math.min(max,Math.round(value)));
+    list.style.height=height+"px";
+    handle.style.top=(page.clientHeight-height)+"px";
+    handle.setAttribute("aria-valuenow",String(Math.round(height/page.clientHeight*100)));
+    handle.setAttribute("aria-valuetext",`店舗一覧 ${Math.round(height/page.clientHeight*100)}%`);
+  };
+  const initialHeight=Math.min(maxHeight(),Math.max(minHeight,page.clientHeight*0.42));
+  setHeight(initialHeight);
+  let startY=0,startHeight=initialHeight,dragging=false;
+  handle.addEventListener("pointerdown",e=>{
+    if(e.button!==undefined&&e.button!==0)return;
+    dragging=true;startY=e.clientY;startHeight=list.getBoundingClientRect().height;
+    handle.classList.add("dragging");
+    try{handle.setPointerCapture(e.pointerId)}catch(_){}
+    e.preventDefault();
+  });
+  handle.addEventListener("pointermove",e=>{
+    if(!dragging)return;
+    setHeight(startHeight-(e.clientY-startY));
+    e.preventDefault();
+  });
+  const finishDrag=()=>{dragging=false;handle.classList.remove("dragging")};
+  handle.addEventListener("pointerup",finishDrag);
+  handle.addEventListener("pointercancel",finishDrag);
+  handle.addEventListener("keydown",e=>{
+    if(e.key==="ArrowUp"){setHeight(list.getBoundingClientRect().height+30);e.preventDefault()}
+    else if(e.key==="ArrowDown"){setHeight(list.getBoundingClientRect().height-30);e.preventDefault()}
+    else if(e.key==="Home"){setHeight(maxHeight());e.preventDefault()}
+    else if(e.key==="End"){setHeight(minHeight);e.preventDefault()}
+  });
+  window.addEventListener("resize",()=>setHeight(list.getBoundingClientRect().height||initialHeight));
+}
+
 function renderPlaceList(){
   const el=document.getElementById("place-list");
   const list=placeData.filter(p=>p.map===currentMap);
@@ -2729,7 +2776,7 @@ function initAuth(){
   });
 }
 window.addEventListener("load",()=>{
-  initMap();renderDayTabs();renderSchedule();renderNotice();renderSurveyLink();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAppAboutListener();initAuth();initFCM();
+  initMap();initPlaceListResizer();renderDayTabs();renderSchedule();renderNotice();renderSurveyLink();loadNotifyPrefs();updateNotifyUI();updateFavoriteDelayAlert();updateScheduleBadge();initFirebaseListeners();initAppAboutListener();initAuth();initFCM();
   const analyticsConsent=localStorage.getItem(GA_CONSENT_KEY);
   if(analyticsConsent==="granted")initGoogleAnalytics();
   setTimeout(()=>{
