@@ -294,7 +294,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </button>
   <div class="side-section">その他</div>
   <button class="side-btn" onclick="closeDrawer();openModal('modal-about')">
-   <i class="fa-solid fa-circle-info"></i>このアプリについて
+   <i class="fa-solid fa-circle-info"></i>このWebサイトについて
   </button>
   <button class="side-btn" onclick="closeDrawer();openModal('modal-analytics')">
    <i class="fa-solid fa-chart-line"></i>アクセス解析について
@@ -306,7 +306,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
   </div>
   <div class="side-footer-links">
     <button class="quiet-admin-link" onclick="closeDrawer();openModal('modal-auth')">関係者用ログイン</button>
-    <div>鮎まつり案内 Web　<span id="app-version">v1.5.20</span></div>
+    <div>鮎まつり案内 Web　<span id="app-version">v1.5.21</span></div>
   </div>
  </div>
 </div>
@@ -360,9 +360,10 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
 
 <div id="modal-intro" class="modal">
  <div class="modal-card">
-  <div class="modal-title"><h3>ℹ️ このアプリについて</h3><button onclick="closeModal('modal-intro')">×</button></div>
-  <div id="initial-app-about-text" class="app-intro-highlight">このアプリでは、あつぎ鮎まつりの会場・イベント情報を確認できます。</div>
-  <p style="font-size:12px;line-height:1.7;color:#6b7280;margin-top:10px">まずはこのアプリでできることをご確認ください。</p>
+  <div class="modal-title"><h3>ℹ️ このWebサイトについて</h3><button onclick="closeModal('modal-intro')">×</button></div>
+  <div id="initial-app-about-text" class="app-intro-highlight">このWebサイトでは、あつぎ鮎まつりの会場・イベント情報を確認できます。</div>
+  <p style="font-size:12px;line-height:1.7;color:#6b7280;margin-top:10px">まずはこのWebサイトでできることをご確認ください。</p>
+  <p id="initial-survey-prompt" hidden style="font-size:12px;line-height:1.7;color:#0f766e;background:#f0fdfa;border-radius:10px;padding:9px 11px;margin-top:10px">ご利用後に、メニューの「アンケート（約1分）」から感想を聞かせてください。</p>
   <button class="auth-btn" style="margin-top:10px" onclick="continueInitialIntro()">次へ</button>
  </div>
 </div>
@@ -442,8 +443,8 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
 
 <div id="modal-about" class="modal" onclick="overlayClose(event,'modal-about')">
  <div class="modal-card">
-  <div class="modal-title"><h3>ℹ️ アプリについて</h3><button onclick="closeModal('modal-about')">×</button></div>
-  <div id="app-about-text" style="line-height:1.8;font-size:14px;white-space:pre-wrap">このアプリでは、あつぎ鮎まつりの会場・イベント情報を確認できます。</div>
+  <div class="modal-title"><h3>ℹ️ Webサイトについて</h3><button onclick="closeModal('modal-about')">×</button></div>
+  <div id="app-about-text" style="line-height:1.8;font-size:14px;white-space:pre-wrap">このWebサイトでは、あつぎ鮎まつりの会場・イベント情報を確認できます。</div>
  </div>
 </div>
 
@@ -473,7 +474,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
       <button type="button" class="admin-menu-card" onclick="openAdminPage('notification')"><span>🔔 遅延設定</span><span class="admin-menu-arrow">➤</span></button>
       <button type="button" class="admin-menu-card" onclick="openAdminPage('places')"><span>🏪 店舗・施設設定</span><span class="admin-menu-arrow">➤</span></button>
       <button type="button" class="admin-menu-card" onclick="openAdminPage('schedule')"><span>📅 ダンスレジェンドスケジュール</span><span class="admin-menu-arrow">➤</span></button>
-      <button type="button" class="admin-menu-card" onclick="openAdminPage('appinfo')"><span>ℹ️ このアプリについて</span><span class="admin-menu-arrow">➤</span></button>
+      <button type="button" class="admin-menu-card" onclick="openAdminPage('appinfo')"><span>ℹ️ このWebサイトについて</span><span class="admin-menu-arrow">➤</span></button>
     </div>
    </div>
 
@@ -578,7 +579,7 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
 
    <div id="admin-page-appinfo" class="admin-subpage">
     <div class="admin-subpage-inner">
-      <div class="admin-subpage-header"><button type="button" class="admin-subpage-back" onclick="closeAdminPage()">← 戻る</button><div class="admin-subpage-title">ℹ️ このアプリについて</div></div>
+      <div class="admin-subpage-header"><button type="button" class="admin-subpage-back" onclick="closeAdminPage()">← 戻る</button><div class="admin-subpage-title">ℹ️ このWebサイトについて</div></div>
       <div class="admin-subpage-card app-about-editor">
         <h4 style="margin-bottom:6px">📢 お知らせ</h4>
         <p class="admin-migrate-note">メニューの「お知らせ」を開いたときに表示する内容を変更できます。緑色の枠内と、その下の補足文を別々に編集できます。改行もそのまま表示されます。</p>
@@ -598,9 +599,9 @@ button:active, .place-card:active, .search-result:active, .map-tab:active, .day-
         <button class="auth-btn" style="margin-top:8px" onclick="saveSurveyUrl()">💾 アンケートURLを保存</button>
         <p id="admin-survey-status" style="font-size:11px;color:#6b7280;line-height:1.6;margin-top:8px"></p>
         <hr style="margin:16px 0;border:none;border-top:1px dashed var(--border)">
-        <p class="admin-migrate-note">最初に表示される「このアプリについて」と、メニューの説明文をここから変更できます。改行もそのまま表示されます。</p>
-        <label style="display:block;font-size:11px;font-weight:800;color:#4b5563;margin:8px 0 5px">アプリについての説明</label>
-        <textarea id="admin-app-about-text" placeholder="このアプリはこんなものです！
+        <p class="admin-migrate-note">最初に表示される「このWebサイトについて」と、メニューの説明文をここから変更できます。改行もそのまま表示されます。</p>
+        <label style="display:block;font-size:11px;font-weight:800;color:#4b5563;margin:8px 0 5px">Webサイトについての説明</label>
+        <textarea id="admin-app-about-text" placeholder="このWebサイトはこんなものです！
 できることや目的を簡単に説明してください。"></textarea>
         <button class="auth-btn" style="margin-top:8px" onclick="saveAppAboutText()">💾 説明を保存</button>
         <p id="admin-app-about-status" style="font-size:11px;color:#6b7280;line-height:1.6;margin-top:8px"></p>
@@ -1128,16 +1129,16 @@ let notified=JSON.parse(localStorage.getItem("ayu_notified")||"{}");
 const GA_MEASUREMENT_ID="G-7GR4XW690M";
 const GA_CONSENT_KEY="ayu_google_analytics_consent_v1";
 let gaReady=false;
-let appAboutText="このアプリでは、あつぎ鮎まつりの会場・イベント情報を確認できます。";
+let appAboutText="このWebサイトでは、あつぎ鮎まつりの会場・イベント情報を確認できます。";
 let appAboutLoaded=false;
 const DEFAULT_NOTICE_TITLE="あつぎ鮎まつり案内 仮版";
-const DEFAULT_NOTICE_BODY="現在はアプリのマップ・スケジュール機能を確認するための仮版です。";
+const DEFAULT_NOTICE_BODY="現在はWebサイトの地図・スケジュール機能を確認するための仮版です。";
 const DEFAULT_NOTICE_FOOTER="正式な会場情報・地図画像が用意できたら、こちらの内容も本番用に更新できます。";
 let noticeTitle=DEFAULT_NOTICE_TITLE;
 let noticeBody=DEFAULT_NOTICE_BODY;
 let noticeFooter=DEFAULT_NOTICE_FOOTER;
 let noticeLoaded=false;
-const DEFAULT_ANALYTICS_CONSENT_TEXT=`このアプリでは、サービスの利用状況を把握し、改善するために<strong>Google アナリティクス</strong>を使用しています。<br><br>Google アナリティクスの利用に同意いただいた場合、アクセス状況や利用状況などのデータをGoogle アナリティクスで収集・分析します。<br><br><strong>同意しない場合でも、このアプリは通常どおり利用できます。この場合、Google アナリティクスによる情報の収集・分析は行いません。</strong>`;
+const DEFAULT_ANALYTICS_CONSENT_TEXT=`このWebサイトでは、サービスの利用状況を把握し、改善するために<strong>Google アナリティクス</strong>を使用しています。<br><br>Google アナリティクスの利用に同意いただいた場合、アクセス状況や利用状況などのデータをGoogle アナリティクスで収集・分析します。<br><br><strong>同意しない場合でも、このWebサイトは通常どおり利用できます。この場合、Google アナリティクスによる情報の収集・分析は行いません。</strong>`;
 let analyticsConsentText=DEFAULT_ANALYTICS_CONSENT_TEXT;
 let analyticsConsentTextLoaded=false;
 function initGoogleAnalytics(){
@@ -1165,8 +1166,9 @@ function setAnalyticsConsent(granted,fromUi=false){
 }
 function ga(name,params={}){if(gaReady&&typeof gtag==="function")gtag("event",name,params)}
 function openModal(id){document.getElementById(id).classList.add("show");if(id==="modal-notify")updateNotifyUI();if(id==="modal-about")renderAppAbout();if(id==="modal-analytics"){updateAnalyticsConsentStatus();renderAnalyticsConsentText()}}
+function webTerminology(value){return String(value??"").replaceAll("このアプリ","このWebサイト").replaceAll("アプリ","Webサイト");}
 function renderAnalyticsConsentText(){
-  const text=analyticsConsentText||DEFAULT_ANALYTICS_CONSENT_TEXT;
+  const text=webTerminology(analyticsConsentText||DEFAULT_ANALYTICS_CONSENT_TEXT);
   ["analytics-consent-text-initial","analytics-consent-text-settings"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=text;});
   const a=document.getElementById("admin-analytics-consent-text");
   if(a && document.activeElement!==a)a.value=text.replace(/<br\s*\/?>(\n)?/gi,"\n").replace(/<[^>]+>/g,"");
@@ -1182,16 +1184,16 @@ function renderNotice(){
   const body=document.getElementById("notice-body");
   const footer=document.getElementById("notice-footer");
   const box=document.getElementById("notice-main-box");
-  if(title){title.textContent=noticeTitle||"";title.style.display=noticeTitle?"block":"none";}
-  if(body){body.textContent=noticeBody||"";body.style.display=noticeBody?"block":"none";}
+  if(title){title.textContent=webTerminology(noticeTitle||"");title.style.display=noticeTitle?"block":"none";}
+  if(body){body.textContent=webTerminology(noticeBody||"");body.style.display=noticeBody?"block":"none";}
   if(box)box.style.display=(noticeTitle||noticeBody)?"block":"none";
-  if(footer){footer.textContent=noticeFooter||"";footer.style.display=noticeFooter?"block":"none";}
+  if(footer){footer.textContent=webTerminology(noticeFooter||"");footer.style.display=noticeFooter?"block":"none";}
   const a=document.getElementById("admin-notice-title");if(a && document.activeElement!==a)a.value=noticeTitle;
   const b=document.getElementById("admin-notice-body");if(b && document.activeElement!==b)b.value=noticeBody;
   const c=document.getElementById("admin-notice-footer");if(c && document.activeElement!==c)c.value=noticeFooter;
 }
 function renderAppAbout(){
-  const text=appAboutText||"このアプリでは、あつぎ鮎まつりの会場・イベント情報を確認できます。";
+  const text=webTerminology(appAboutText||"このWebサイトでは、あつぎ鮎まつりの会場・イベント情報を確認できます。");
   const a=document.getElementById("app-about-text");if(a)a.textContent=text;
   const b=document.getElementById("initial-app-about-text");if(b)b.textContent=text;
   const c=document.getElementById("admin-app-about-text");if(c && document.activeElement!==c)c.value=text;
@@ -1249,6 +1251,8 @@ function saveAnalyticsConsentText(){
 function renderSurveyLink(){
   const button=document.getElementById("menu-survey-button");
   if(button)button.hidden=!surveyUrl;
+  const prompt=document.getElementById("initial-survey-prompt");
+  if(prompt)prompt.hidden=!surveyUrl;
   const input=document.getElementById("admin-survey-url");
   if(input&&document.activeElement!==input)input.value=surveyUrl;
 }
@@ -2692,7 +2696,7 @@ async function login(){
 async function logout(){
   // 通知用匿名アカウントも管理者アカウントも、この画面からはログアウトさせない。
   // 一般ユーザーが誤って通知用UIDを失うことを防ぎ、管理者の操作も固定します。
-  alert("このアプリでは、通知機能を維持するためログアウトはできません。");
+  alert("このWebサイトでは、通知機能を維持するためログアウトはできません。");
 }
 
 // 店舗画像の簡易保存対策：右クリック・長押しメニュー・ドラッグ・選択を抑止
